@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contacto | Carlouis Gourmet</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <nav>
+      <img src="assets/logo.png" alt="Logo Carlouis" class="logo">
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="productos.html">Productos</a></li>
+        <li><a href="testimonios.html">Testimonios</a></li>
+        <li><a href="encuentranos.html">Encuentranos</a></li>
+        <li><a href="contacto.html" class="activo">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="intro-productos">
+    <div class="contenido">
+      <h2>Contacto</h2>
+      <p>Escribinos para hacer pedidos, consultas o colaboraciones. Te responderemos pronto.</p>
+    </div>
+  </section>
+
+  <section class="formulario-contacto">
+    <form name="contacto" method="POST" netlify>
+      <input type="hidden" name="form-name" value="contacto">
+      
+      <label for="nombre">Nombre:</label>
+      <input type="text" name="nombre" id="nombre" required>
+
+      <label for="email">Correo electrónico:</label>
+      <input type="email" name="email" id="email" required>
+
+      <label for="mensaje">Mensaje:</label>
+      <textarea name="mensaje" id="mensaje" rows="5" required></textarea>
+
+      <button type="submit">Enviar</button>
+    </form>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Carlouis Productos Gourmet. Todos los derechos reservados.</p>
+  </footer>
+
+</body>
+</html>
