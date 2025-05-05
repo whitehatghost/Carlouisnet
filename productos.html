@@ -2,37 +2,44 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="strict-origin" />
+  <meta name="permissions-policy" content="camera=(), microphone=(), geolocation=()" />
   <title>Productos | Sabor Artesanal</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<a href="https://wa.me/50683908105" class="whatsapp-float" target="_blank">
-  <img src="assets/whatsapp-icon.png" alt="WhatsApp" />
-</a>
+
 <body>
+  <a href="https://wa.me/50683908105" class="whatsapp-float" target="_blank">
+    <img src="assets/whatsapp-icon.png" alt="WhatsApp" />
+  </a>
+
   <header class="header-productos">
     <nav>
       <img src="assets/logo.png" alt="Logo Sabor Artesanal" class="logo" />
       <ul>
         <li><a href="/index.html">Inicio</a></li>
-        <li><a href="/productos.html">Productos</a></li>
-        <li><a href="/testimonios">Testimonios</a></li>
-        <li><a href="/encuentranos">Encuentranos</a></li>
-        <li><a href="/contacto">Contacto</a></li>
+        <li><a href="/productos.html" class="activo">Productos</a></li>
+        <li><a href="/testimonios.html">Testimonios</a></li>
+        <li><a href="/encuentranos.html">Encuéntranos</a></li>
+        <li><a href="/contacto.html">Contacto</a></li>
       </ul>
     </nav>
     <h1 class="titulo-seccion">Nuestros Productos</h1>
   </header>
 
-<section class="intro-productos">
-  <div class="contenido">
-    <h2>Frescura Natural en Cada Bocado</h2>
-    <p>
-      Elaboramos nuestros productos con ingredientes puros, aceites de oliva de primera calidad y sin aditivos artificiales.<br>
-      Cada frasco representa nuestra pasión por lo saludable, artesanal y sabroso.
-    </p>
-  </div>
-</section>
+  <section class="intro-productos">
+    <div class="contenido">
+      <h2>Frescura Natural en Cada Bocado</h2>
+      <p>
+        Elaboramos nuestros productos con ingredientes puros, aceites de oliva de primera calidad y sin aditivos artificiales.<br>
+        Cada frasco representa nuestra pasión por lo saludable, artesanal y sabroso.
+      </p>
+    </div>
+  </section>
 
   <main class="productos-grid">
     <div class="producto">
@@ -99,17 +106,18 @@
       <h3>PRECIO 6000 CRC</h3>
     </div>
     <div class="producto">
-    <img src="assets/salsa-mora.jpg" alt="Salsa de mora" />
-    <h3>Salsa de Mora</h3>
-    <p>Dulce ideal para postres, pancakes o gourmet</p>
-    <a href="https://wa.me/50683908105" class="btn">Comprar</a>
-    <h3>PRECIO 5000 CRC</h3>
-  </div>
-</main>
+      <img src="assets/salsa-mora.jpg" alt="Salsa de mora" />
+      <h3>Salsa de Mora</h3>
+      <p>Dulce ideal para postres, pancakes o gourmet.</p>
+      <a href="https://wa.me/50683908105" class="btn">Comprar</a>
+      <h3>PRECIO 5000 CRC</h3>
+    </div>
   </main>
 
   <footer>
-    <p>© 2025 Sabor Artesanal | Contacto por WhatsApp</p>
+    <p>Desarrollado por <strong>HackSinCodigos / Luis Rodriguez</strong> | 
+      <a href="https://instagram.com/hacksincodigos" target="_blank">@hacksincodigos</a>
+    </p>
   </footer>
 </body>
 </html>
