@@ -2,23 +2,30 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="strict-origin" />
+  <meta name="permissions-policy" content="camera=(), microphone=(), geolocation=()" />
   <title>Sabor Artesanal</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<a href="https://wa.me/50683908105" class="whatsapp-float" target="_blank">
-  <img src="assets/whatsapp-icon.png" alt="WhatsApp" />
-</a>
+
 <body>
+  <a href="https://wa.me/50683908105" class="whatsapp-float" target="_blank">
+    <img src="assets/whatsapp-icon.png" alt="WhatsApp" />
+  </a>
+
   <header class="hero">
     <nav>
       <img src="assets/logo.png" alt="Logo Sabor Artesanal" class="logo" />
       <ul>
-        <li><a href="/index.html">Inicio</a></li>
+        <li><a href="/index.html" class="activo">Inicio</a></li>
         <li><a href="/productos.html">Productos</a></li>
-        <li><a href="/testimonios">Testimonios</a></li>
-        <li><a href="/encuentranos">Encuentranos</a></li>
-        <li><a href="/contacto">Contacto</a></li>
+        <li><a href="/testimonios.html">Testimonios</a></li>
+        <li><a href="/encuentranos.html">Encuéntranos</a></li>
+        <li><a href="/contacto.html">Contacto</a></li>
       </ul>
     </nav>
     <div class="hero-text">
@@ -43,7 +50,9 @@
   </section>
 
   <footer>
-    <p>© 2025 Sabor Artesanal. Hecho en Costa Rica con 💚</p>
+    <p>Desarrollado por <strong>HackSinCodigos / Luis Rodriguez</strong> | 
+      <a href="https://instagram.com/hacksincodigos" target="_blank">@hacksincodigos</a>
+    </p>
   </footer>
 </body>
 </html>
