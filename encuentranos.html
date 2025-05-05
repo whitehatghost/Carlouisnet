@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="strict-origin" />
+  <meta name="permissions-policy" content="camera=(), microphone=(), geolocation=()" />
   <title>Encuéntranos | Carlouis Gourmet</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
   <style>
     .imagen-feria {
       max-width: 300px;
@@ -31,10 +36,15 @@
     }
   </style>
 </head>
+
 <body>
+  <a href="https://wa.me/50683908105" class="whatsapp-float" target="_blank">
+    <img src="assets/whatsapp-icon.png" alt="WhatsApp" />
+  </a>
+
   <header>
     <nav>
-      <img src="assets/logo.png" alt="Logo Carlouis" class="logo">
+      <img src="assets/logo.png" alt="Logo Carlouis" class="logo" />
       <ul>
         <li><a href="/index.html">Inicio</a></li>
         <li><a href="/productos.html">Productos</a></li>
@@ -47,7 +57,7 @@
 
   <section class="intro-productos">
     <div class="contenido">
-      <h2>Visitanos en persona</h2>
+      <h2>Visítanos en persona</h2>
       <p>Encontranos cada sábado en la Feria Orgánica La Verbena y en eventos especiales alrededor del país.</p>
     </div>
   </section>
@@ -56,7 +66,7 @@
     <h2 class="titulo-seccion">Feria Orgánica La Verbena</h2>
     <p class="texto-seccion">📍 Plaza Real Alajuela</p>
     <p class="texto-seccion">🕒 Todos los sábados de 6 a.m. a 1 p.m.</p>
-    <img src="assets/laverbena.png" alt="La Verbena Logo" class="imagen-feria">
+    <img src="assets/laverbena.png" alt="La Verbena Logo" class="imagen-feria" />
     
     <p style="text-align: center;">
       <a href="https://www.google.com/maps/place/10%C2%B000'39.7%22N+84%C2%B012'17.3%22W/@10.011034,-84.2073784,17z/data=!3m1!4b1!4m4!3m3!8m2!3d10.011034!4d-84.2048035?hl=en&entry=ttu" target="_blank">
@@ -78,13 +88,15 @@
   <section class="seccion">
     <h2 class="titulo-seccion">Próximas Degustaciones</h2>
     <div class="evento-imgs">
-      <img src="assets/terrazas.png" alt="Degustación Terrazas Lindora" class="imagen-evento">
-      <img src="assets/encuentro.png" alt="Degustación El Encuentro San Carlos" class="imagen-evento">
+      <img src="assets/terrazas.png" alt="Degustación Terrazas Lindora" class="imagen-evento" />
+      <img src="assets/encuentro.png" alt="Degustación El Encuentro San Carlos" class="imagen-evento" />
     </div>
   </section>
 
   <footer>
-    <p>&copy; 2025 Carlouis Productos Gourmet. Todos los derechos reservados.</p>
+    <p>Desarrollado por <strong>HackSinCodigos / Luis Rodriguez</strong> | 
+      <a href="https://instagram.com/hacksincodigos" target="_blank">@hacksincodigos</a>
+    </p>
   </footer>
 </body>
 </html>
