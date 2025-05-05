@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>¿Dónde encontrarnos? Aca te dejamos toda la informacion! | Carlouis</title>
+  <title>¿Dónde encontrarnos? | Carlouis</title>
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
@@ -14,24 +14,42 @@
     }
     h1 {
       color: #8B0000;
+      text-align: center;
     }
     .seccion {
-      margin-bottom: 40px;
+      margin-bottom: 50px;
       text-align: center;
     }
     .seccion img {
-      max-width: 300px;
+      max-width: 280px;
       height: auto;
       margin: 20px auto;
       display: block;
     }
+    .seccion iframe {
+      border: 0;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
     .evento {
-      margin-top: 40px;
+      margin-top: 50px;
       text-align: center;
     }
+    .evento h2 {
+      color: #8B0000;
+    }
     .evento img {
-      max-width: 350px;
-      margin: 10px auto;
+      max-width: 380px;
+      margin: 20px auto;
+      display: block;
+    }
+    a {
+      color: #d4af37;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -43,17 +61,28 @@
     <p>Estamos todos los sábados en <strong>La Verbena</strong>, Plaza Real Alajuela.</p>
     <p><em>Feria Orgánica</em></p>
     <img src="assets/laverbena.png" alt="La Verbena Logo" />
+
+    <p><a href="https://maps.app.goo.gl/uRHNq4HqpWxENaPWA" target="_blank">📍 Ver ubicación en Google Maps</a></p>
+
+    <iframe 
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.472792035943!2d-84.2183303858479!3d10.01998199283007!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8fa0fb447a556e09%3A0x6cb662514ebea2f2!2sPlaza%20Real%2C%20Alajuela!5e0!3m2!1ses-419!2scr!4v1714927322193!5m2!1ses-419!2scr" 
+      width="100%" 
+      height="300" 
+      allowfullscreen="" 
+      loading="lazy" 
+      referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
   </div>
 
   <div class="evento">
     <h2>Próximas Degustaciones</h2>
 
     <div>
-      <img src="assets/terrazas.png" alt="Terrazas Lindora" />
+      <img src="assets/terrazas.png" alt="Degustación Terrazas Lindora" />
     </div>
 
     <div>
-      <img src="assets/encuentro.png" alt="El Encuentro San Carlos" />
+      <img src="assets/encuentro.png" alt="Degustación El Encuentro San Carlos" />
     </div>
   </div>
 
