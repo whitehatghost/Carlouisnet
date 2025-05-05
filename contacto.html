@@ -2,20 +2,29 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="strict-origin" />
+  <meta name="permissions-policy" content="camera=(), microphone=(), geolocation=()" />
   <title>Contacto | Carlouis Gourmet</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
+  <a href="https://wa.me/50683908105" class="whatsapp-float" target="_blank">
+    <img src="assets/whatsapp-icon.png" alt="WhatsApp" />
+  </a>
 
   <header>
     <nav>
-      <img src="assets/logo.png" alt="Logo Carlouis" class="logo">
+      <img src="assets/logo.png" alt="Logo Carlouis" class="logo" />
       <ul>
         <li><a href="index.html">Inicio</a></li>
         <li><a href="productos.html">Productos</a></li>
         <li><a href="testimonios.html">Testimonios</a></li>
-        <li><a href="encuentranos.html">Encuentranos</a></li>
+        <li><a href="encuentranos.html">Encuéntranos</a></li>
         <li><a href="contacto.html" class="activo">Contacto</a></li>
       </ul>
     </nav>
@@ -25,29 +34,56 @@
     <div class="contenido">
       <h2>Contacto</h2>
       <p>Escribinos para hacer pedidos, consultas o colaboraciones. Te responderemos pronto.</p>
+      <p><strong>📞 Teléfono / WhatsApp:</strong> <a href="tel:+50683908105">+506 8390 8105</a></p>
     </div>
   </section>
 
   <section class="formulario-contacto">
-    <form name="contacto" method="POST" netlify>
+    <form name="contacto" method="POST" netlify data-netlify="true" netlify-honeypot="bot-field">
       <input type="hidden" name="form-name" value="contacto">
-      
+      <p style="display:none">
+        <label>Don’t fill this out: <input name="bot-field" /></label>
+      </p>
+
       <label for="nombre">Nombre:</label>
-      <input type="text" name="nombre" id="nombre" required>
+      <input 
+        type="text" 
+        name="nombre" 
+        id="nombre" 
+        required 
+        maxlength="50" 
+        pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]{2,50}" 
+        autocomplete="name"
+      >
 
       <label for="email">Correo electrónico:</label>
-      <input type="email" name="email" id="email" required>
+      <input 
+        type="email" 
+        name="email" 
+        id="email" 
+        required 
+        maxlength="100" 
+        autocomplete="email"
+      >
 
       <label for="mensaje">Mensaje:</label>
-      <textarea name="mensaje" id="mensaje" rows="5" required></textarea>
+      <textarea 
+        name="mensaje" 
+        id="mensaje" 
+        rows="5" 
+        required 
+        maxlength="1000" 
+        pattern=".{5,1000}" 
+        title="El mensaje debe tener al menos 5 caracteres y máximo 1000."></textarea>
 
       <button type="submit">Enviar</button>
     </form>
   </section>
 
   <footer>
-    <p>&copy; 2025 Carlouis Productos Gourmet. Todos los derechos reservados.</p>
+    <p>Desarrollado por <strong>HackSinCodigos / Luis Rodriguez</strong> | 
+      <a href="https://instagram.com/hacksincodigos" target="_blank">@hacksincodigos</a>
+    </p>
   </footer>
-
 </body>
 </html>
