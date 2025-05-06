@@ -10,6 +10,15 @@
   <meta name="permissions-policy" content="camera=(), microphone=(), geolocation=()" />
   <title>Sabor Artesanal</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 
 <body>
@@ -31,11 +40,10 @@
     <div class="hero-text">
       <h1>Gourmet 100% artesanal</h1>
       <p>Descubrí sabores únicos: tomates deshidratados, salsas caseras y más</p>
-      <a href="productos.html" class="btn">Ver Productos</a>
-
-      <div style="margin-top: 15px;">
+      <div class="btn-group">
+        <a href="productos.html" class="btn">Ver Productos</a>
         <a href="assets/recetario-carlouis.pdf" download class="btn">
-          📥 Descargar Recetario Gourmet
+          📥 Descargar Recetario de Productos
         </a>
       </div>
     </div>
