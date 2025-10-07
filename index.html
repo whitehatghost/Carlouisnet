@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- CSP mantiene inline styles permitidos y bloquea JS inline; el carrusel es solo CSS -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none';">
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta name="referrer" content="strict-origin" />
@@ -20,45 +19,47 @@
       margin-top: 20px;
     }
 
-    /* ===== Carrusel centrado (solo CSS, sin JS) ===== */
+    /* ===== Carrusel centrado (versión sin distorsión) ===== */
+    .carrusel-section{ padding-inline:16px; }
     .carousel-wrapper{
-      width: min(100%, 1000px);
-      margin: 40px auto;            /* centrado */
+      width: min(100%, 900px);
+      margin: 28px auto;              /* centrado */
     }
     .carousel{
       position: relative;
-      aspect-ratio: 16 / 9;         /* alto flexible, se adapta */
       width: 100%;
+      height: clamp(220px, 55vw, 480px); /* alto adaptable sin pasarse */
       overflow: hidden;
       border-radius: 14px;
       box-shadow: 0 24px 48px rgba(0,0,0,.18);
+      background:#0b0b0b;               /* letterbox elegante para bordes */
     }
     .carousel-track{
       display: flex;
-      width: 400%;                   /* 3 slides + 1 duplicada */
+      width: 400%;                       /* 3 slides + 1 duplicada */
       height: 100%;
       animation: slideX 18s infinite;
     }
     .carousel img{
+      flex: 0 0 100%;
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      flex: 0 0 100%;
+      object-fit: contain;               /* sin recorte ni estiramiento */
+      object-position: center;
       user-select: none;
       -webkit-user-drag: none;
+      padding: 6px;                      /* pequeño margen interno */
+      background: transparent;
     }
     @keyframes slideX{
-      /* pausa en cada imagen para que se lea */
       0%, 20%    { transform: translateX(0%); }
       25%, 45%   { transform: translateX(-100%); }
       50%, 70%   { transform: translateX(-200%); }
       75%, 95%   { transform: translateX(-300%); }
       100%       { transform: translateX(0%); }
     }
-
-    /* opción: espaciar un poco las secciones respecto al header/hero si hace falta */
-    .carrusel-section{
-      padding-inline: 16px;
+    @media (min-width: 992px){
+      .carousel{ height: clamp(280px, 38vw, 520px); }
     }
   </style>
 </head>
@@ -85,12 +86,12 @@
       <div class="btn-group">
         <a href="productos.html" class="btn">Ver Productos</a>
 
-        <!-- Botón ya existente -->
+        <!-- Botón existente -->
         <a href="assets/recetario-carlouis.pdf" download class="btn">
           📥 Descargar Recetario de Productos
         </a>
 
-        <!-- NUEVO botón: Recetario de Bocadillos (link RAW para descarga directa) -->
+        <!-- Nuevo botón: Recetario de Bocadillos (RAW GitHub para descarga directa) -->
         <a
           href="https://raw.githubusercontent.com/whitehatghost/Carlouisnet/main/assets/Recetario%20de%20Bocadillos%20CARLOUIS.pdf"
           download
@@ -133,7 +134,7 @@
   </section>
 
   <footer>
-    <p>Desarrollado por <strong>HackSinCodigos</strong> |
+    <p>Desarrollado por <strong>HackSinCodigos</strong> | 
       <a href="https://instagram.com/hacksincodigos" target="_blank" rel="noopener">@hacksincodigos</a>
     </p>
   </footer>
