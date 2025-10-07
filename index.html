@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- CSP: sin JS inline; el carrusel es solo CSS -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none';">
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta name="referrer" content="strict-origin" />
@@ -11,53 +12,64 @@
   <title>Sabor Artesanal</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    .btn-group {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      margin-top: 20px;
+    .btn-group{
+      display:flex; flex-direction:column; align-items:center;
+      gap:10px; margin-top:20px;
     }
 
-    /* ===== Carrusel centrado (loop continuo y suave) ===== */
+    /* ===== Carrusel crossfade (sin “saltos”, sin fondo negro) ===== */
     .carrusel-section{ padding-inline:16px; }
     .carousel-wrapper{
-      width: min(100%, 900px);
-      margin: 28px auto;              /* centrado */
+      width:min(100%, 900px);
+      margin:28px auto;
     }
     .carousel{
-      position: relative;
-      width: 100%;
-      height: clamp(220px, 55vw, 480px); /* alto adaptable sin pasarse */
-      overflow: hidden;
-      border-radius: 14px;
-      box-shadow: 0 24px 48px rgba(0,0,0,.18);
-      background:#0b0b0b;               /* letterbox elegante */
+      position:relative;
+      width:100%;
+      height:clamp(240px, 55vw, 520px);
+      overflow:hidden;
+      border-radius:14px;
+      box-shadow:0 24px 48px rgba(0,0,0,.18);
+      background:#0b0b0b; /* se ve elegante si la imagen no llena */
     }
-    .carousel-track{
-      display: flex;
-      width: 500%;                       /* Secuencia 1-2-3-1-2 para loop perfecto */
-      height: 100%;
-      animation: autoSlide 28s linear infinite; /* más lento y lineal */
+    .carousel figure{
+      position:absolute; inset:0;
+      margin:0;
+      opacity:0;                       /* estado base: invisible */
+      animation:fade 18s ease-in-out infinite;
+      /* evita jitter por tamaño distinto */
+      display:grid; place-items:center;
+      padding:6px;
     }
-    .carousel:hover .carousel-track{ animation-play-state: paused; } /* pausa al pasar mouse */
     .carousel img{
-      flex: 0 0 20%;                     /* 5 imágenes en el track (todas 20%) */
-      width: 100%;
-      height: 100%;
-      object-fit: contain;               /* sin deformar */
-      object-position: center;
-      user-select: none;
-      -webkit-user-drag: none;
-      padding: 6px;                      /* pequeño margen interno */
-      background: transparent;
+      width:100%; height:100%;
+      object-fit:contain;              /* sin deformar; usa cover si querés llenar */
+      object-position:center;
+      user-select:none; -webkit-user-drag:none;
     }
-    @keyframes autoSlide{
-      0%   { transform: translateX(0%); }
-      100% { transform: translateX(-200%); } /* recorre 1-2-3, y sigue con 1-2 sin salto */
+
+    /* Tres imágenes con delays escalonados */
+    .carousel figure:nth-child(1){ animation-delay: 0s;  }
+    .carousel figure:nth-child(2){ animation-delay: 6s;  }
+    .carousel figure:nth-child(3){ animation-delay: 12s; }
+
+    /* Animación: cada imagen visible ~4.5s, solapada para transición suave */
+    @keyframes fade{
+      0%   { opacity:0 }
+      5%   { opacity:1 }
+      33%  { opacity:1 }
+      38%  { opacity:0 }
+      100% { opacity:0 }
     }
+
+    /* Accesibilidad: respeta usuarios que prefieren menos movimiento */
+    @media (prefers-reduced-motion: reduce){
+      .carousel figure{ animation:none; opacity:1; }
+      .carousel figure:not(:first-child){ display:none; }
+    }
+
     @media (min-width: 992px){
-      .carousel{ height: clamp(280px, 38vw, 520px); }
+      .carousel{ height:clamp(300px, 38vw, 560px); }
     }
   </style>
 </head>
@@ -89,31 +101,23 @@
           📥 Descargar Recetario de Productos
         </a>
 
-        <!-- Nuevo botón: Recetario de Bocadillos (RAW GitHub para descarga directa) -->
+        <!-- Botón nuevo (RAW de GitHub para descarga directa) -->
         <a
           href="https://raw.githubusercontent.com/whitehatghost/Carlouisnet/main/assets/Recetario%20de%20Bocadillos%20CARLOUIS.pdf"
-          download
-          class="btn"
-        >
-          📥 Descargar Recetario de Bocadillos
-        </a>
+          download class="btn"
+        >📥 Descargar Recetario de Bocadillos</a>
       </div>
     </div>
   </header>
 
-  <!-- ===== Carrusel centrado en la página ===== -->
+  <!-- ===== Carrusel crossfade ===== -->
   <section class="carrusel-section">
     <div class="carousel-wrapper" aria-label="Galería de productos destacados">
       <div class="carousel">
-        <div class="carousel-track">
-          <!-- Sube estas imágenes a /assets con estos nombres exactos -->
-          <img src="assets/carrusel1.jpg" alt="Producto destacado 1" />
-          <img src="assets/carrusel2.jpg" alt="Producto destacado 2" />
-          <img src="assets/carrusel3.jpg" alt="Producto destacado 3" />
-          <!-- Duplicados para loop perfecto sin “rebote” -->
-          <img src="assets/carrusel1.jpg" alt="" aria-hidden="true" />
-          <img src="assets/carrusel2.jpg" alt="" aria-hidden="true" />
-        </div>
+        <!-- Subí estas imágenes a /assets con estos nombres exactos -->
+        <figure><img src="assets/carrusel1.jpg" alt="Producto destacado 1"></figure>
+        <figure><img src="assets/carrusel2.jpg" alt="Producto destacado 2"></figure>
+        <figure><img src="assets/carrusel3.jpg" alt="Producto destacado 3"></figure>
       </div>
     </div>
   </section>
@@ -133,7 +137,7 @@
   </section>
 
   <footer>
-    <p>Desarrollado por <strong>HackSinCodigos</strong> | 
+    <p>Desarrollado por <strong>HackSinCodigos</strong> |
       <a href="https://instagram.com/hacksincodigos" target="_blank" rel="noopener">@hacksincodigos</a>
     </p>
   </footer>
