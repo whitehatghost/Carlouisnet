@@ -15,89 +15,89 @@
 
   <style>
     body {
-      background: #f7f1e8;
+      background: #f6efe6;
     }
 
     .productos-grid {
-      width: min(1200px, 92%);
+      width: min(1120px, 92%);
       margin: 0 auto;
-      padding: 50px 0 70px;
+      padding: 38px 0 60px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
-      gap: 32px;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 24px;
       align-items: stretch;
     }
 
     .producto {
       background: #fffdf8;
-      border-radius: 18px;
+      border-radius: 14px;
       overflow: hidden;
-      box-shadow: 0 12px 28px rgba(60, 28, 10, 0.13);
+      box-shadow: 0 8px 22px rgba(60, 28, 10, 0.12);
       border: 1px solid rgba(153, 0, 0, 0.08);
       text-align: center;
       display: flex;
       flex-direction: column;
-      min-height: 520px;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      min-height: 410px;
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
       position: relative;
     }
 
     .producto:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 18px 38px rgba(60, 28, 10, 0.18);
+      transform: translateY(-4px);
+      box-shadow: 0 14px 30px rgba(60, 28, 10, 0.17);
     }
 
     .producto img {
       width: 100%;
-      height: 185px;
+      height: 150px;
       object-fit: cover;
       display: block;
     }
 
     .producto-contenido {
-      padding: 24px 22px 26px;
+      padding: 18px 18px 20px;
       display: flex;
       flex-direction: column;
       flex: 1;
     }
 
+    .producto .nombre {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     .producto h3 {
       color: #8b0000;
-      font-size: 20px;
-      line-height: 1.3;
+      font-size: 18px;
+      line-height: 1.25;
       margin: 0;
       font-weight: 800;
       letter-spacing: 0.2px;
     }
 
-    .producto .nombre {
-      min-height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
     .producto .descripcion-producto {
-      min-height: 120px;
+      min-height: 78px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 18px 0 12px;
+      margin: 10px 0 10px;
     }
 
     .producto .descripcion-producto p {
       color: #2c201b;
-      font-size: 16px;
-      line-height: 1.5;
+      font-size: 15px;
+      line-height: 1.38;
       margin: 0;
     }
 
     .producto .separador {
-      width: 54px;
+      width: 44px;
       height: 3px;
       background: #ffd000;
       border-radius: 999px;
-      margin: 0 auto 20px;
+      margin: 4px auto 14px;
     }
 
     .producto .btn {
@@ -109,53 +109,48 @@
       font-weight: 900;
       text-decoration: none;
       border-radius: 999px;
-      padding: 13px 30px;
-      min-width: 130px;
+      padding: 11px 26px;
+      min-width: 120px;
       align-self: center;
       margin-top: auto;
-      box-shadow: 0 8px 18px rgba(255, 190, 0, 0.28);
+      box-shadow: 0 7px 16px rgba(255, 190, 0, 0.25);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .producto .btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(255, 190, 0, 0.35);
+      box-shadow: 0 10px 22px rgba(255, 190, 0, 0.35);
     }
 
     .producto .precio {
       color: #8b0000;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 900;
-      margin: 18px 0 0;
+      margin: 14px 0 0;
       letter-spacing: 0.5px;
-      min-height: auto;
     }
 
     .producto.destacado::before {
       content: "NUEVO";
       position: absolute;
-      top: 14px;
-      left: 14px;
+      top: 10px;
+      left: 10px;
       background: #8b0000;
       color: #ffd000;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 900;
-      letter-spacing: 1px;
-      padding: 7px 12px;
+      letter-spacing: 0.8px;
+      padding: 6px 10px;
       border-radius: 999px;
       z-index: 2;
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.22);
-    }
-
-    .producto.destacado .nombre h3 {
-      color: #7a0000;
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.22);
     }
 
     @media (max-width: 768px) {
       .productos-grid {
         width: 90%;
         grid-template-columns: 1fr;
-        padding: 35px 0 55px;
+        padding: 30px 0 50px;
       }
 
       .producto {
@@ -163,12 +158,16 @@
       }
 
       .producto img {
-        height: 210px;
+        height: 190px;
       }
 
       .producto .nombre,
       .producto .descripcion-producto {
         min-height: auto;
+      }
+
+      .producto .descripcion-producto {
+        margin: 12px 0;
       }
     }
   </style>
@@ -207,21 +206,14 @@
 
     <div class="producto destacado">
       <img src="assets/habanero_fire1.jpeg" alt="Habanero Fire CARLOUIS 160 gramos" />
-
       <div class="producto-contenido">
         <div class="nombre">
           <h3>Habanero Fire by CARLOUIS 160gr</h3>
         </div>
-
         <div class="descripcion-producto">
-          <p>
-            Salsa creada para los amantes del verdadero picante. Elaborada con habanero seleccionado
-            e ingredientes naturales que despiertan cada bocado.
-          </p>
+          <p>Salsa creada para los amantes del verdadero picante. Elaborada con habanero seleccionado e ingredientes naturales.</p>
         </div>
-
         <div class="separador"></div>
-
         <a href="https://wa.me/50688252608?text=Hola%2C%20quiero%20pedir%20Habanero%20Fire%20by%20CARLOUIS%20presentaci%C3%B3n%20de%20160gr" class="btn" target="_blank" rel="noopener">Comprar</a>
         <h3 class="precio">PRECIO 4000 CRC</h3>
       </div>
@@ -229,21 +221,14 @@
 
     <div class="producto destacado">
       <img src="assets/habanero_fire2.jpeg" alt="Habanero Fire CARLOUIS 60 gramos" />
-
       <div class="producto-contenido">
         <div class="nombre">
           <h3>Habanero Fire by CARLOUIS 60gr</h3>
         </div>
-
         <div class="descripcion-producto">
-          <p>
-            Una presentación perfecta para probar el fuego auténtico de CARLOUIS.
-            No es solo una salsa... es una experiencia.
-          </p>
+          <p>Una presentación perfecta para probar el fuego auténtico de CARLOUIS. No es solo una salsa, es una experiencia.</p>
         </div>
-
         <div class="separador"></div>
-
         <a href="https://wa.me/50688252608?text=Hola%2C%20quiero%20pedir%20Habanero%20Fire%20by%20CARLOUIS%20presentaci%C3%B3n%20de%2060gr" class="btn" target="_blank" rel="noopener">Comprar</a>
         <h3 class="precio">PRECIO 2000 CRC</h3>
       </div>
@@ -251,18 +236,14 @@
 
     <div class="producto">
       <img src="assets/tomates.jpg" alt="Tomates deshidratados" />
-
       <div class="producto-contenido">
         <div class="nombre">
           <h3>Tomates Deshidratados</h3>
         </div>
-
         <div class="descripcion-producto">
           <p>Intensos, dulces y perfectos para pastas o snacks.</p>
         </div>
-
         <div class="separador"></div>
-
         <a href="https://wa.me/50688252608" class="btn" target="_blank" rel="noopener">Comprar</a>
         <h3 class="precio">PRECIO 6000 CRC</h3>
       </div>
@@ -270,18 +251,14 @@
 
     <div class="producto">
       <img src="assets/chimichurri.jpg" alt="Chimichurri argentino" />
-
       <div class="producto-contenido">
         <div class="nombre">
           <h3>Chimichurri Argentino</h3>
         </div>
-
         <div class="descripcion-producto">
           <p>Ideal para parrilladas o como aderezo gourmet.</p>
         </div>
-
         <div class="separador"></div>
-
         <a href="https://wa.me/50688252608" class="btn" target="_blank" rel="noopener">Comprar</a>
         <h3 class="precio">PRECIO 5000 CRC</h3>
       </div>
@@ -289,18 +266,14 @@
 
     <div class="producto">
       <img src="assets/pesto-albahaca.jpg" alt="Pesto de albahaca" />
-
       <div class="producto-contenido">
         <div class="nombre">
           <h3>Pesto de Albahaca</h3>
         </div>
-
         <div class="descripcion-producto">
           <p>Clásico, aromático y 100% artesanal.</p>
         </div>
-
         <div class="separador"></div>
-
         <a href="https://wa.me/50688252608" class="btn" target="_blank" rel="noopener">Comprar</a>
         <h3 class="precio">PRECIO 6000 CRC</h3>
       </div>
@@ -308,18 +281,14 @@
 
     <div class="producto">
       <img src="assets/alioli.jpg" alt="Alioli" />
-
       <div class="producto-contenido">
         <div class="nombre">
           <h3>Alioli</h3>
         </div>
-
         <div class="descripcion-producto">
           <p>Cremoso y con un toque de ajo perfecto para papas o pan.</p>
         </div>
-
         <div class="separador"></div>
-
         <a href="https://wa.me/50688252608" class="btn" target="_blank" rel="noopener">Comprar</a>
         <h3 class="precio">PRECIO 5000 CRC</h3>
       </div>
@@ -327,18 +296,14 @@
 
     <div class="producto">
       <img src="assets/mayo-chipotle.jpg" alt="Mayonesa chipotle" />
-
       <div class="producto-contenido">
         <div class="nombre">
           <h3>Mayonesa Chipotle</h3>
         </div>
-
         <div class="descripcion-producto">
           <p>Picante suave con un sabor ahumado irresistible.</p>
         </div>
-
         <div class="separador"></div>
-
         <a href="https://wa.me/50688252608" class="btn" target="_blank" rel="noopener">Comprar</a>
         <h3 class="precio">PRECIO 5000 CRC</h3>
       </div>
@@ -346,18 +311,14 @@
 
     <div class="producto">
       <img src="assets/mayo-culantro.jpg" alt="Mayonesa de culantro" />
-
       <div class="producto-contenido">
         <div class="nombre">
           <h3>Mayonesa de Culantro</h3>
         </div>
-
         <div class="descripcion-producto">
           <p>Un giro fresco y tico para cualquier platillo.</p>
         </div>
-
         <div class="separador"></div>
-
         <a href="https://wa.me/50688252608" class="btn" target="_blank" rel="noopener">Comprar</a>
         <h3 class="precio">PRECIO 5000 CRC</h3>
       </div>
@@ -365,18 +326,14 @@
 
     <div class="producto">
       <img src="assets/pesto-tomate.jpg" alt="Pesto de tomate" />
-
       <div class="producto-contenido">
         <div class="nombre">
           <h3>Pesto de Tomate</h3>
         </div>
-
         <div class="descripcion-producto">
           <p>Una mezcla sabrosa con base de tomate y especias.</p>
         </div>
-
         <div class="separador"></div>
-
         <a href="https://wa.me/50688252608" class="btn" target="_blank" rel="noopener">Comprar</a>
         <h3 class="precio">PRECIO 6000 CRC</h3>
       </div>
@@ -384,18 +341,14 @@
 
     <div class="producto">
       <img src="assets/chile-dulce.jpg" alt="Salsa de chile dulce" />
-
       <div class="producto-contenido">
         <div class="nombre">
           <h3>Salsa de Chile Dulce</h3>
         </div>
-
         <div class="descripcion-producto">
           <p>Perfecta para rollitos primavera, tofu o ensaladas.</p>
         </div>
-
         <div class="separador"></div>
-
         <a href="https://wa.me/50688252608" class="btn" target="_blank" rel="noopener">Comprar</a>
         <h3 class="precio">PRECIO 5000 CRC</h3>
       </div>
@@ -403,18 +356,14 @@
 
     <div class="producto">
       <img src="assets/chile-morron.jpg" alt="Chile morrón asado" />
-
       <div class="producto-contenido">
         <div class="nombre">
           <h3>Chile Morrón Asado</h3>
         </div>
-
         <div class="descripcion-producto">
           <p>En aceite de oliva y ajo, listo para acompañar o picar.</p>
         </div>
-
         <div class="separador"></div>
-
         <a href="https://wa.me/50688252608" class="btn" target="_blank" rel="noopener">Comprar</a>
         <h3 class="precio">PRECIO 6000 CRC</h3>
       </div>
@@ -422,18 +371,14 @@
 
     <div class="producto">
       <img src="assets/salsa-mora.jpg" alt="Salsa de mora" />
-
       <div class="producto-contenido">
         <div class="nombre">
           <h3>Salsa de Mora</h3>
         </div>
-
         <div class="descripcion-producto">
           <p>Dulce ideal para postres, pancakes o gourmet.</p>
         </div>
-
         <div class="separador"></div>
-
         <a href="https://wa.me/50688252608" class="btn" target="_blank" rel="noopener">Comprar</a>
         <h3 class="precio">PRECIO 5000 CRC</h3>
       </div>
