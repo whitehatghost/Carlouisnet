@@ -19,23 +19,39 @@
     }
 
     .contacto-hero {
+      min-height: 390px;
       background:
-        radial-gradient(circle at top left, rgba(255, 208, 0, 0.18), transparent 34%),
-        linear-gradient(135deg, #7a0000 0%, #3a0b05 55%, #170604 100%);
+        linear-gradient(rgba(35, 8, 4, 0.72), rgba(35, 8, 4, 0.78)),
+        url("assets/tomates.jpg") center center / cover no-repeat;
       color: #fff8e8;
-      padding: 72px 20px;
+      padding: 80px 20px;
       text-align: center;
       position: relative;
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .contacto-hero::before {
       content: "";
       position: absolute;
-      inset: 20px;
-      border: 1px solid rgba(255, 208, 0, 0.18);
+      inset: 22px;
+      border: 1px solid rgba(255, 208, 0, 0.28);
       border-radius: 26px;
       pointer-events: none;
+      z-index: 1;
+    }
+
+    .contacto-hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top left, rgba(255, 208, 0, 0.22), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(139, 0, 0, 0.32), transparent 35%);
+      pointer-events: none;
+      z-index: 0;
     }
 
     .contacto-hero .contenido {
@@ -55,16 +71,17 @@
       padding: 8px 16px;
       border-radius: 999px;
       margin-bottom: 18px;
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
     }
 
     .contacto-hero h1 {
       color: #ffd000;
-      font-size: clamp(38px, 6vw, 64px);
+      font-size: clamp(40px, 6vw, 68px);
       line-height: 1;
       margin: 0 0 18px;
       text-transform: uppercase;
       letter-spacing: 1px;
+      text-shadow: 0 5px 18px rgba(0, 0, 0, 0.45);
     }
 
     .contacto-hero p {
@@ -73,6 +90,7 @@
       max-width: 720px;
       margin: 0 auto;
       color: #fff3dc;
+      text-shadow: 0 3px 12px rgba(0, 0, 0, 0.45);
     }
 
     .contacto-main {
@@ -408,7 +426,8 @@
 
     @media (max-width: 600px) {
       .contacto-hero {
-        padding: 55px 18px;
+        min-height: 330px;
+        padding: 60px 18px;
       }
 
       .contacto-main {
@@ -663,110 +682,4 @@
     </p>
   </footer>
 </body>
-</html><!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none';">
-  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-  <meta name="referrer" content="strict-origin" />
-  <meta name="permissions-policy" content="camera=(), microphone=(), geolocation=()" />
-  <title>Contacto | Carlouis Gourmet</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    .telefono-destacado {
-      color: #FFD700;
-      font-weight: bold;
-      font-size: 1.1em;
-    }
-    .instagram-destacado {
-      color: #FFD700;
-      font-weight: bold;
-      font-size: 1em;
-    }
-  </style>
-</head>
-
-<body>
-  <a href="https://wa.me/50688252608" class="whatsapp-float" target="_blank">
-    <img src="assets/whatsapp-icon.png" alt="WhatsApp" />
-  </a>
-
-  <header>
-    <nav>
-      <img src="assets/logo.png" alt="Logo Carlouis" class="logo" />
-      <ul>
-        <li><a href="index.html">Inicio</a></li>
-        <li><a href="productos.html">Productos</a></li>
-        <li><a href="testimonios.html">Testimonios</a></li>
-        <li><a href="encuentranos.html">Encuéntranos</a></li>
-        <li><a href="contacto.html" class="activo">Contacto</a></li>
-      </ul>
-    </nav>
-  </header>
-
-  <section class="intro-productos">
-    <div class="contenido">
-      <h2>Contacto</h2>
-      <p>Escribinos para hacer pedidos, consultas o colaboraciones. Te responderemos pronto.</p>
-      <p><strong>📞 Teléfono / WhatsApp:</strong> 
-        <a href="tel:+50688252608" class="telefono-destacado">+506 8825 2608</a>
-      </p>
-      <p><strong>📸 Instagram:</strong> 
-        <a href="https://instagram.com/carlouis_cr" target="_blank" class="instagram-destacado">@carlouis_cr</a>
-      </p>
-    </div>
-  </section>
-
-  <section class="formulario-contacto">
-    <form name="contacto" method="POST" netlify data-netlify="true" netlify-honeypot="bot-field">
-      <input type="hidden" name="form-name" value="contacto">
-      <p style="display:none">
-        <label>Don’t fill this out: <input name="bot-field" /></label>
-      </p>
-
-      <label for="nombre">Nombre:</label>
-      <input 
-        type="text" 
-        name="nombre" 
-        id="nombre" 
-        required 
-        maxlength="50" 
-        pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]{2,50}" 
-        autocomplete="name"
-      >
-
-      <label for="email">Correo electrónico:</label>
-      <input 
-        type="email" 
-        name="email" 
-        id="email" 
-        required 
-        maxlength="100" 
-        autocomplete="email"
-      >
-
-      <label for="mensaje">Mensaje:</label>
-      <textarea 
-        name="mensaje" 
-        id="mensaje" 
-        rows="5" 
-        required 
-        maxlength="1000" 
-        pattern=".{5,1000}" 
-        title="El mensaje debe tener al menos 5 caracteres y máximo 1000."></textarea>
-
-      <button type="submit">Enviar</button>
-    </form>
-  </section>
-
-  <footer>
-    <p>Desarrollado por <strong>HackSinCodigos</strong> | 
-      <a href="https://instagram.com/hacksincodigos" target="_blank">@hacksincodigos</a>
-    </p>
-  </footer>
-</body>
 </html>
-
