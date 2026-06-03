@@ -10,6 +10,122 @@
   <meta name="permissions-policy" content="camera=(), microphone=(), geolocation=()" />
   <title>Productos | Sabor Artesanal</title>
   <link rel="stylesheet" href="style.css" />
+
+  <style>
+    .productos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      padding: 40px 5%;
+      align-items: stretch;
+    }
+
+    .producto {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 15px 18px 25px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 500px;
+      box-sizing: border-box;
+    }
+
+    .producto img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 18px;
+    }
+
+    .producto h3 {
+      color: #990000;
+      font-size: 20px;
+      line-height: 1.3;
+      margin: 0 0 15px;
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .producto p {
+      color: #222;
+      font-size: 16px;
+      line-height: 1.45;
+      margin: 0 0 14px;
+    }
+
+    .producto .descripcion-producto {
+      min-height: 115px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .producto .detalles-producto {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .producto .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      background: #ffd400;
+      color: #990000;
+      font-weight: 700;
+      text-decoration: none;
+      border-radius: 6px;
+      padding: 12px 24px;
+      margin: auto auto 15px;
+      width: fit-content;
+      align-self: center;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .producto .btn:hover {
+      transform: translateY(-2px);
+      opacity: 0.9;
+    }
+
+    .producto .precio {
+      color: #990000;
+      font-size: 18px;
+      font-weight: 800;
+      margin: 0;
+      min-height: auto;
+      letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 768px) {
+      .productos-grid {
+        grid-template-columns: 1fr;
+        padding: 30px 20px;
+      }
+
+      .producto {
+        min-height: auto;
+      }
+
+      .producto h3,
+      .producto .descripcion-producto,
+      .producto .detalles-producto {
+        min-height: auto;
+      }
+
+      .producto .btn {
+        margin-top: 10px;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -46,105 +162,207 @@
     <div class="producto">
       <img src="assets/habanero_fire1.jpeg" alt="Habanero Fire CARLOUIS 160 gramos" />
       <h3>Habanero Fire by CARLOUIS 160gr</h3>
-      <p>
-        Salsa creada para los amantes del verdadero picante. Elaborada con habanero seleccionado
-        e ingredientes naturales que despiertan cada bocado.
-      </p>
-     
+
+      <div class="descripcion-producto">
+        <p>
+          Salsa creada para los amantes del verdadero picante. Elaborada con habanero seleccionado
+          e ingredientes naturales que despiertan cada bocado.
+        </p>
+      </div>
+
+      <div class="detalles-producto">
+        <p>
+          🔥 9/10 en intensidad<br>
+          🌶️ Sabor profundo y auténtico<br>
+          ❤️ Hecha con amor
+        </p>
+      </div>
+
       <a href="https://wa.me/50688252608?text=Hola%2C%20quiero%20pedir%20Habanero%20Fire%20by%20CARLOUIS%20presentaci%C3%B3n%20de%20160gr" class="btn" target="_blank" rel="noopener">Comprar</a>
-      <h3>PRECIO 4000 CRC</h3>
+      <h3 class="precio">PRECIO 4000 CRC</h3>
     </div>
 
     <div class="producto">
       <img src="assets/habanero_fire2.jpeg" alt="Habanero Fire CARLOUIS 60 gramos" />
       <h3>Habanero Fire by CARLOUIS 60gr</h3>
-      <p>
-        Una presentación perfecta para probar el fuego auténtico de CARLOUIS.
-        No es solo una salsa... es una experiencia.
-      </p>
-     
+
+      <div class="descripcion-producto">
+        <p>
+          Una presentación perfecta para probar el fuego auténtico de CARLOUIS.
+          No es solo una salsa... es una experiencia.
+        </p>
+      </div>
+
+      <div class="detalles-producto">
+        <p>
+          🔥 9/10 en intensidad<br>
+          🌶️ Habanero seleccionado<br>
+          ❤️ Hecha con amor
+        </p>
+      </div>
+
       <a href="https://wa.me/50688252608?text=Hola%2C%20quiero%20pedir%20Habanero%20Fire%20by%20CARLOUIS%20presentaci%C3%B3n%20de%2060gr" class="btn" target="_blank" rel="noopener">Comprar</a>
-      <h3>PRECIO 2000 CRC</h3>
+      <h3 class="precio">PRECIO 2000 CRC</h3>
     </div>
 
     <div class="producto">
       <img src="assets/tomates.jpg" alt="Tomates deshidratados" />
       <h3>Tomates Deshidratados</h3>
-      <p>Intensos, dulces y perfectos para pastas o snacks.</p>
+
+      <div class="descripcion-producto">
+        <p>Intensos, dulces y perfectos para pastas o snacks.</p>
+      </div>
+
+      <div class="detalles-producto">
+        <p>Producto artesanal hecho con ingredientes seleccionados.</p>
+      </div>
+
       <a href="https://wa.me/50688252608" class="btn" target="_blank" rel="noopener">Comprar</a>
-      <h3>PRECIO 6000 CRC</h3>
+      <h3 class="precio">PRECIO 6000 CRC</h3>
     </div>
 
     <div class="producto">
       <img src="assets/chimichurri.jpg" alt="Chimichurri argentino" />
       <h3>Chimichurri Argentino</h3>
-      <p>Ideal para parrilladas o como aderezo gourmet.</p>
+
+      <div class="descripcion-producto">
+        <p>Ideal para parrilladas o como aderezo gourmet.</p>
+      </div>
+
+      <div class="detalles-producto">
+        <p>Producto artesanal hecho con ingredientes seleccionados.</p>
+      </div>
+
       <a href="https://wa.me/50688252608" class="btn" target="_blank" rel="noopener">Comprar</a>
-      <h3>PRECIO 5000 CRC</h3>
+      <h3 class="precio">PRECIO 5000 CRC</h3>
     </div>
 
     <div class="producto">
       <img src="assets/pesto-albahaca.jpg" alt="Pesto de albahaca" />
       <h3>Pesto de Albahaca</h3>
-      <p>Clásico, aromático y 100% artesanal.</p>
+
+      <div class="descripcion-producto">
+        <p>Clásico, aromático y 100% artesanal.</p>
+      </div>
+
+      <div class="detalles-producto">
+        <p>Producto artesanal hecho con ingredientes seleccionados.</p>
+      </div>
+
       <a href="https://wa.me/50688252608" class="btn" target="_blank" rel="noopener">Comprar</a>
-      <h3>PRECIO 6000 CRC</h3>
+      <h3 class="precio">PRECIO 6000 CRC</h3>
     </div>
 
     <div class="producto">
       <img src="assets/alioli.jpg" alt="Alioli" />
       <h3>Alioli</h3>
-      <p>Cremoso y con un toque de ajo perfecto para papas o pan.</p>
+
+      <div class="descripcion-producto">
+        <p>Cremoso y con un toque de ajo perfecto para papas o pan.</p>
+      </div>
+
+      <div class="detalles-producto">
+        <p>Producto artesanal hecho con ingredientes seleccionados.</p>
+      </div>
+
       <a href="https://wa.me/50688252608" class="btn" target="_blank" rel="noopener">Comprar</a>
-      <h3>PRECIO 5000 CRC</h3>
+      <h3 class="precio">PRECIO 5000 CRC</h3>
     </div>
 
     <div class="producto">
       <img src="assets/mayo-chipotle.jpg" alt="Mayonesa chipotle" />
       <h3>Mayonesa Chipotle</h3>
-      <p>Picante suave con un sabor ahumado irresistible.</p>
+
+      <div class="descripcion-producto">
+        <p>Picante suave con un sabor ahumado irresistible.</p>
+      </div>
+
+      <div class="detalles-producto">
+        <p>Producto artesanal hecho con ingredientes seleccionados.</p>
+      </div>
+
       <a href="https://wa.me/50688252608" class="btn" target="_blank" rel="noopener">Comprar</a>
-      <h3>PRECIO 5000 CRC</h3>
+      <h3 class="precio">PRECIO 5000 CRC</h3>
     </div>
 
     <div class="producto">
       <img src="assets/mayo-culantro.jpg" alt="Mayonesa de culantro" />
       <h3>Mayonesa de Culantro</h3>
-      <p>Un giro fresco y tico para cualquier platillo.</p>
+
+      <div class="descripcion-producto">
+        <p>Un giro fresco y tico para cualquier platillo.</p>
+      </div>
+
+      <div class="detalles-producto">
+        <p>Producto artesanal hecho con ingredientes seleccionados.</p>
+      </div>
+
       <a href="https://wa.me/50688252608" class="btn" target="_blank" rel="noopener">Comprar</a>
-      <h3>PRECIO 5000 CRC</h3>
+      <h3 class="precio">PRECIO 5000 CRC</h3>
     </div>
 
     <div class="producto">
       <img src="assets/pesto-tomate.jpg" alt="Pesto de tomate" />
       <h3>Pesto de Tomate</h3>
-      <p>Una mezcla sabrosa con base de tomate y especias.</p>
+
+      <div class="descripcion-producto">
+        <p>Una mezcla sabrosa con base de tomate y especias.</p>
+      </div>
+
+      <div class="detalles-producto">
+        <p>Producto artesanal hecho con ingredientes seleccionados.</p>
+      </div>
+
       <a href="https://wa.me/50688252608" class="btn" target="_blank" rel="noopener">Comprar</a>
-      <h3>PRECIO 6000 CRC</h3>
+      <h3 class="precio">PRECIO 6000 CRC</h3>
     </div>
 
     <div class="producto">
       <img src="assets/chile-dulce.jpg" alt="Salsa de chile dulce" />
       <h3>Salsa de Chile Dulce</h3>
-      <p>Perfecta para rollitos primavera, tofu o ensaladas.</p>
+
+      <div class="descripcion-producto">
+        <p>Perfecta para rollitos primavera, tofu o ensaladas.</p>
+      </div>
+
+      <div class="detalles-producto">
+        <p>Producto artesanal hecho con ingredientes seleccionados.</p>
+      </div>
+
       <a href="https://wa.me/50688252608" class="btn" target="_blank" rel="noopener">Comprar</a>
-      <h3>PRECIO 5000 CRC</h3>
+      <h3 class="precio">PRECIO 5000 CRC</h3>
     </div>
 
     <div class="producto">
       <img src="assets/chile-morron.jpg" alt="Chile morrón asado" />
       <h3>Chile Morrón Asado</h3>
-      <p>En aceite de oliva y ajo, listo para acompañar o picar.</p>
+
+      <div class="descripcion-producto">
+        <p>En aceite de oliva y ajo, listo para acompañar o picar.</p>
+      </div>
+
+      <div class="detalles-producto">
+        <p>Producto artesanal hecho con ingredientes seleccionados.</p>
+      </div>
+
       <a href="https://wa.me/50688252608" class="btn" target="_blank" rel="noopener">Comprar</a>
-      <h3>PRECIO 6000 CRC</h3>
+      <h3 class="precio">PRECIO 6000 CRC</h3>
     </div>
 
     <div class="producto">
       <img src="assets/salsa-mora.jpg" alt="Salsa de mora" />
       <h3>Salsa de Mora</h3>
-      <p>Dulce ideal para postres, pancakes o gourmet.</p>
+
+      <div class="descripcion-producto">
+        <p>Dulce ideal para postres, pancakes o gourmet.</p>
+      </div>
+
+      <div class="detalles-producto">
+        <p>Producto artesanal hecho con ingredientes seleccionados.</p>
+      </div>
+
       <a href="https://wa.me/50688252608" class="btn" target="_blank" rel="noopener">Comprar</a>
-      <h3>PRECIO 5000 CRC</h3>
+      <h3 class="precio">PRECIO 5000 CRC</h3>
     </div>
 
   </main>
