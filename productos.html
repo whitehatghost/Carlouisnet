@@ -146,6 +146,21 @@
       box-shadow: 0 5px 12px rgba(0, 0, 0, 0.22);
     }
 
+    .producto.pina-destacada::before {
+      content: "NUEVO";
+      background: #8b0000;
+      color: #ffd000;
+    }
+
+    .producto.pina-destacada {
+      border: 1px solid rgba(255, 183, 0, 0.35);
+      box-shadow: 0 10px 26px rgba(154, 61, 0, 0.18);
+    }
+
+    .producto.pina-destacada .separador {
+      background: linear-gradient(135deg, #ffd000, #ff8a00);
+    }
+
     @media (max-width: 768px) {
       .productos-grid {
         width: 90%;
@@ -203,6 +218,21 @@
   </section>
 
   <main class="productos-grid">
+
+    <div class="producto destacado pina-destacada">
+      <img src="assets/piña_habanero.jpeg" alt="Piña Habanero CARLOUIS" />
+      <div class="producto-contenido">
+        <div class="nombre">
+          <h3>Piña Habanero CARLOUIS</h3>
+        </div>
+        <div class="descripcion-producto">
+          <p>Salsa gourmet artesanal que mezcla la dulzura tropical de la piña con el picante equilibrado del habanero.</p>
+        </div>
+        <div class="separador"></div>
+        <a href="https://wa.me/50688252608?text=Hola%2C%20quiero%20pedir%20Pi%C3%B1a%20Habanero%20CARLOUIS" class="btn" target="_blank" rel="noopener">Comprar</a>
+        <h3 class="precio">PRECIO 5000 CRC</h3>
+      </div>
+    </div>
 
     <div class="producto destacado">
       <img src="assets/habanero_fire1.jpeg" alt="Habanero Fire CARLOUIS 160 gramos" />
