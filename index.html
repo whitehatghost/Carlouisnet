@@ -4,84 +4,357 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none';">
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta name="referrer" content="strict-origin" />
   <meta name="permissions-policy" content="camera=(), microphone=(), geolocation=()" />
+
   <title>Sabor Artesanal</title>
   <link rel="stylesheet" href="style.css" />
+
   <style>
-    .btn-group{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:10px;
-      margin-top:20px;
+    body {
+      background: #f7f1e8;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
     }
 
     /* === Carrusel con crossfade ajustado y proporción elegante === */
-    .carrusel-section{ padding-inline:16px; }
-    .carousel-wrapper{
-      width:min(100%, 800px);
-      margin:35px auto;
-    }
-    .carousel{
-      position:relative;
-      width:100%;
-      aspect-ratio: 16/9; /* Proporción horizontal tipo banner */
-      max-height:480px;
-      overflow:hidden;
-      border-radius:16px;
-      box-shadow:0 15px 35px rgba(0,0,0,.25);
-      background:#0b0b0b;
+    .carrusel-section {
+      padding-inline: 16px;
     }
 
-    .carousel figure{
-      position:absolute;
-      inset:0;
-      margin:0;
-      opacity:0;
-      animation:fade 18s ease-in-out infinite;
-      display:grid;
-      place-items:center;
-      padding:8px;
+    .carousel-wrapper {
+      width: min(100%, 850px);
+      margin: 38px auto;
     }
 
-    .carousel img{
-      width:100%;
-      height:100%;
-      object-fit:contain; /* mantiene proporciones */
-      object-position:center;
-      user-select:none;
-      -webkit-user-drag:none;
+    .carousel {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      max-height: 480px;
+      overflow: hidden;
+      border-radius: 20px;
+      box-shadow: 0 18px 40px rgba(60, 28, 10, 0.25);
+      background: #120b08;
+      border: 1px solid rgba(255, 208, 0, 0.18);
+    }
+
+    .carousel figure {
+      position: absolute;
+      inset: 0;
+      margin: 0;
+      opacity: 0;
+      animation: fade 24s ease-in-out infinite;
+      display: grid;
+      place-items: center;
+      padding: 8px;
+    }
+
+    .carousel img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      user-select: none;
+      -webkit-user-drag: none;
       transition: transform 0.5s ease;
     }
 
-    .carousel:hover img{
+    .carousel:hover img {
       transform: scale(1.02);
     }
 
-    /* Secuencia de imágenes con delay */
-    .carousel figure:nth-child(1){animation-delay:0s;}
-    .carousel figure:nth-child(2){animation-delay:6s;}
-    .carousel figure:nth-child(3){animation-delay:12s;}
+    .carousel figure:nth-child(1) { animation-delay: 0s; }
+    .carousel figure:nth-child(2) { animation-delay: 6s; }
+    .carousel figure:nth-child(3) { animation-delay: 12s; }
+    .carousel figure:nth-child(4) { animation-delay: 18s; }
 
-    @keyframes fade{
-      0%   {opacity:0}
-      5%   {opacity:1}
-      30%  {opacity:1}
-      35%  {opacity:0}
-      100% {opacity:0}
+    @keyframes fade {
+      0%   { opacity: 0; }
+      5%   { opacity: 1; }
+      23%  { opacity: 1; }
+      28%  { opacity: 0; }
+      100% { opacity: 0; }
     }
 
-    @media (prefers-reduced-motion: reduce){
-      .carousel figure{animation:none;opacity:1;}
-      .carousel figure:not(:first-child){display:none;}
+    /* === Sección Habanero Fire === */
+    .habanero-home {
+      width: min(1120px, 92%);
+      margin: 20px auto 55px;
+      background:
+        radial-gradient(circle at top left, rgba(255, 208, 0, 0.16), transparent 34%),
+        linear-gradient(135deg, #240b05 0%, #7a0000 52%, #180706 100%);
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 20px 42px rgba(60, 28, 10, 0.26);
+      border: 1px solid rgba(255, 208, 0, 0.25);
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      align-items: center;
     }
 
-    @media (max-width:600px){
-      .carousel-wrapper{width:95%;}
-      .carousel{aspect-ratio:4/3;max-height:360px;}
+    .habanero-info {
+      padding: 42px 42px 42px 48px;
+      color: #fff8e8;
+    }
+
+    .habanero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #ffd000;
+      color: #7a0000;
+      font-weight: 900;
+      font-size: 13px;
+      letter-spacing: 1px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+    }
+
+    .habanero-info h2 {
+      font-size: clamp(32px, 5vw, 56px);
+      line-height: 1;
+      margin: 0 0 14px;
+      color: #ffd000;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .habanero-info h3 {
+      font-size: 22px;
+      line-height: 1.25;
+      margin: 0 0 18px;
+      color: #ffffff;
+      font-weight: 800;
+    }
+
+    .habanero-info p {
+      font-size: 17px;
+      line-height: 1.55;
+      margin: 0 0 22px;
+      color: #fff3dc;
+      max-width: 560px;
+    }
+
+    .habanero-precios {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 22px 0 24px;
+    }
+
+    .habanero-precio {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 208, 0, 0.35);
+      color: #ffffff;
+      border-radius: 16px;
+      padding: 13px 16px;
+      font-weight: 900;
+      backdrop-filter: blur(6px);
+    }
+
+    .habanero-precio span {
+      color: #ffd000;
+    }
+
+    .habanero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn-habanero {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #ffd000, #ffb700);
+      color: #7a0000;
+      text-decoration: none;
+      font-weight: 900;
+      border-radius: 999px;
+      padding: 14px 26px;
+      box-shadow: 0 10px 22px rgba(255, 183, 0, 0.28);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-habanero:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(255, 183, 0, 0.38);
+    }
+
+    .btn-habanero-secundario {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff8e8;
+      text-decoration: none;
+      font-weight: 800;
+      border-radius: 999px;
+      padding: 13px 22px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-habanero-secundario:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .habanero-img {
+      height: 100%;
+      min-height: 430px;
+      position: relative;
+      background: #130705;
+    }
+
+    .habanero-img img {
+      width: 100%;
+      height: 100%;
+      min-height: 430px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .habanero-img::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(36, 11, 5, 0.82), rgba(36, 11, 5, 0.08));
+      pointer-events: none;
+    }
+
+    /* === Reseñas y testimonios más pro === */
+    .reseña,
+    .testimonios {
+      width: min(1050px, 92%);
+      margin: 0 auto 42px;
+      background: #fffdf8;
+      border-radius: 22px;
+      padding: 34px 28px;
+      box-shadow: 0 12px 28px rgba(60, 28, 10, 0.12);
+      border: 1px solid rgba(153, 0, 0, 0.08);
+      text-align: center;
+    }
+
+    .reseña h2,
+    .testimonios h2 {
+      color: #8b0000;
+      margin-top: 0;
+      font-size: 30px;
+    }
+
+    .reseña p {
+      max-width: 780px;
+      margin: 0 auto;
+      font-size: 18px;
+      line-height: 1.6;
+      color: #2c201b;
+    }
+
+    .testi {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .testi p {
+      background: #f8efe3;
+      border-radius: 18px;
+      padding: 20px;
+      margin: 0;
+      color: #2c201b;
+      line-height: 1.5;
+      border: 1px solid rgba(153, 0, 0, 0.08);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .carousel figure {
+        animation: none;
+        opacity: 1;
+      }
+
+      .carousel figure:not(:first-child) {
+        display: none;
+      }
+    }
+
+    @media (max-width: 850px) {
+      .habanero-home {
+        grid-template-columns: 1fr;
+      }
+
+      .habanero-info {
+        padding: 34px 26px;
+        text-align: center;
+      }
+
+      .habanero-info p {
+        margin-inline: auto;
+      }
+
+      .habanero-precios,
+      .habanero-actions {
+        justify-content: center;
+      }
+
+      .habanero-img {
+        min-height: 300px;
+      }
+
+      .habanero-img img {
+        min-height: 300px;
+      }
+
+      .habanero-img::after {
+        background: linear-gradient(0deg, rgba(36, 11, 5, 0.55), rgba(36, 11, 5, 0.05));
+      }
+
+      .testi {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .carousel-wrapper {
+        width: 95%;
+        margin: 30px auto;
+      }
+
+      .carousel {
+        aspect-ratio: 4 / 3;
+        max-height: 360px;
+        border-radius: 16px;
+      }
+
+      .habanero-info h2 {
+        font-size: 36px;
+      }
+
+      .habanero-info h3 {
+        font-size: 20px;
+      }
+
+      .habanero-precio {
+        width: 100%;
+      }
+
+      .btn-habanero,
+      .btn-habanero-secundario {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -102,9 +375,11 @@
         <li><a href="/contacto.html">Contacto</a></li>
       </ul>
     </nav>
+
     <div class="hero-text">
       <h1>Gourmet 100% artesanal</h1>
       <p>Descubrí sabores únicos: tomates deshidratados, salsas caseras y más</p>
+
       <div class="btn-group">
         <a href="productos.html" class="btn">Ver Productos</a>
         <a href="assets/recetario-carlouis.pdf" download class="btn">📥 Descargar Recetario de Productos</a>
@@ -117,6 +392,7 @@
   <section class="carrusel-section">
     <div class="carousel-wrapper" aria-label="Galería de productos destacados">
       <div class="carousel">
+        <figure><img src="assets/habanero_fire1.jpeg" alt="Habanero Fire by CARLOUIS"></figure>
         <figure><img src="assets/carrusel1.jpg" alt="Producto destacado 1"></figure>
         <figure><img src="assets/carrusel2.jpg" alt="Producto destacado 2"></figure>
         <figure><img src="assets/carrusel3.jpg" alt="Producto destacado 3"></figure>
@@ -124,13 +400,51 @@
     </div>
   </section>
 
+  <!-- ===== Producto destacado Habanero Fire ===== -->
+  <section class="habanero-home">
+    <div class="habanero-info">
+      <span class="habanero-badge">🔥 NUEVO PRODUCTO</span>
+
+      <h2>Habanero Fire</h2>
+      <h3>by CARLOUIS</h3>
+
+      <p>
+        Nace una salsa creada para los amantes del verdadero picante.
+        Elaborada con habanero seleccionado e ingredientes naturales que despiertan cada bocado.
+      </p>
+
+      <div class="habanero-precios">
+        <div class="habanero-precio">160gr: <span>₡4.000</span></div>
+        <div class="habanero-precio">60gr: <span>₡2.000</span></div>
+      </div>
+
+      <div class="habanero-actions">
+        <a href="https://wa.me/50688252608?text=Hola%2C%20quiero%20pedir%20Habanero%20Fire%20by%20CARLOUIS" class="btn-habanero" target="_blank" rel="noopener">
+          Pedir por WhatsApp
+        </a>
+
+        <a href="productos.html" class="btn-habanero-secundario">
+          Ver productos
+        </a>
+      </div>
+    </div>
+
+    <div class="habanero-img">
+      <img src="assets/habanero_fire1.jpeg" alt="Salsa Habanero Fire by CARLOUIS" />
+    </div>
+  </section>
+
   <section id="resena" class="reseña">
     <h2>Reseña Destacada</h2>
-    <p>“Desde que probé el pesto de albahaca, no puedo volver a las marcas del supermercado. ¡Sabor puro!” - <em>Revista Culinaria CR</em></p>
+    <p>
+      “Desde que probé el pesto de albahaca, no puedo volver a las marcas del supermercado.
+      ¡Sabor puro!” - <em>Revista Culinaria CR</em>
+    </p>
   </section>
 
   <section id="testimonios" class="testimonios">
     <h2>Testimonios</h2>
+
     <div class="testi">
       <p>“El alioli es otra cosa... se nota que es hecho a mano.” - <strong>María, Escazú</strong></p>
       <p>“Pedí 3 frascos y llegaron al día siguiente. Todo delicioso.” - <strong>José, San Pedro</strong></p>
@@ -139,10 +453,10 @@
   </section>
 
   <footer>
-    <p>Desarrollado por <strong>HackSinCodigos</strong> |
+    <p>
+      Desarrollado por <strong>HackSinCodigos</strong> |
       <a href="https://instagram.com/hacksincodigos" target="_blank" rel="noopener">@hacksincodigos</a>
     </p>
   </footer>
 </body>
 </html>
-
