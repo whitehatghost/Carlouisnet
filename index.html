@@ -28,7 +28,7 @@
 
     /* =========================
        CARRUSEL PRO SIN ZOOM
-       Ahora con 3 imágenes
+       Ahora con 4 imágenes
     ========================= */
     .carrusel-section {
       padding: 22px 16px 10px;
@@ -92,7 +92,7 @@
       inset: 0;
       margin: 0;
       opacity: 0;
-      animation: fade 18s ease-in-out infinite;
+      animation: fade 24s ease-in-out infinite;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -118,19 +118,20 @@
     .carousel figure:nth-child(1) { animation-delay: 0s; }
     .carousel figure:nth-child(2) { animation-delay: 6s; }
     .carousel figure:nth-child(3) { animation-delay: 12s; }
+    .carousel figure:nth-child(4) { animation-delay: 18s; }
 
     @keyframes fade {
       0%   { opacity: 0; }
-      6%   { opacity: 1; }
-      30%  { opacity: 1; }
-      36%  { opacity: 0; }
+      5%   { opacity: 1; }
+      23%  { opacity: 1; }
+      28%  { opacity: 0; }
       100% { opacity: 0; }
     }
 
     /* =========================
-       BLOQUE HABANERO FIRE
+       PRODUCTOS NUEVOS HOME
     ========================= */
-    .habanero-home {
+    .nuevo-producto-home {
       width: min(1120px, 92%);
       margin: 35px auto 55px;
       background:
@@ -147,7 +148,7 @@
       position: relative;
     }
 
-    .habanero-home::before {
+    .nuevo-producto-home::before {
       content: "";
       position: absolute;
       inset: 18px;
@@ -157,14 +158,21 @@
       z-index: 2;
     }
 
-    .habanero-info {
+    .nuevo-producto-home.pina {
+      background:
+        radial-gradient(circle at top left, rgba(255, 208, 0, 0.24), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(255, 126, 0, 0.28), transparent 32%),
+        linear-gradient(135deg, #2b1304 0%, #9a3d00 48%, #5d1200 100%);
+    }
+
+    .producto-info {
       padding: 46px 44px 46px 50px;
       color: #fff8e8;
       position: relative;
       z-index: 3;
     }
 
-    .habanero-badge {
+    .producto-badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
@@ -179,7 +187,7 @@
       box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
     }
 
-    .habanero-info h2 {
+    .producto-info h2 {
       font-size: clamp(34px, 5vw, 58px);
       line-height: 1;
       margin: 0 0 10px;
@@ -188,7 +196,7 @@
       letter-spacing: 1px;
     }
 
-    .habanero-info h3 {
+    .producto-info h3 {
       font-size: 23px;
       line-height: 1.25;
       margin: 0 0 18px;
@@ -196,7 +204,7 @@
       font-weight: 800;
     }
 
-    .habanero-info p {
+    .producto-info p {
       font-size: 17px;
       line-height: 1.55;
       margin: 0 0 22px;
@@ -204,7 +212,7 @@
       max-width: 560px;
     }
 
-    .habanero-puntos {
+    .producto-puntos {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
@@ -212,7 +220,7 @@
       max-width: 570px;
     }
 
-    .habanero-punto {
+    .producto-punto {
       background: rgba(255, 255, 255, 0.1);
       border: 1px solid rgba(255, 208, 0, 0.28);
       color: #fff8e8;
@@ -223,14 +231,14 @@
       text-align: center;
     }
 
-    .habanero-precios {
+    .producto-precios {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
       margin: 22px 0 24px;
     }
 
-    .habanero-precio {
+    .producto-precio {
       background: rgba(255, 255, 255, 0.11);
       border: 1px solid rgba(255, 208, 0, 0.38);
       color: #ffffff;
@@ -240,18 +248,18 @@
       backdrop-filter: blur(6px);
     }
 
-    .habanero-precio span {
+    .producto-precio span {
       color: #ffd000;
     }
 
-    .habanero-actions {
+    .producto-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
       align-items: center;
     }
 
-    .btn-habanero {
+    .btn-producto-nuevo {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -265,12 +273,12 @@
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .btn-habanero:hover {
+    .btn-producto-nuevo:hover {
       transform: translateY(-2px);
       box-shadow: 0 14px 28px rgba(255, 183, 0, 0.38);
     }
 
-    .btn-habanero-secundario {
+    .btn-producto-secundario {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -283,12 +291,12 @@
       transition: background 0.2s ease, transform 0.2s ease;
     }
 
-    .btn-habanero-secundario:hover {
+    .btn-producto-secundario:hover {
       background: rgba(255, 255, 255, 0.1);
       transform: translateY(-2px);
     }
 
-    .habanero-img {
+    .producto-img {
       height: 100%;
       min-height: 440px;
       position: relative;
@@ -296,7 +304,7 @@
       z-index: 1;
     }
 
-    .habanero-img img {
+    .producto-img img {
       width: 100%;
       height: 100%;
       min-height: 440px;
@@ -305,12 +313,16 @@
       display: block;
     }
 
-    .habanero-img::after {
+    .producto-img::after {
       content: "";
       position: absolute;
       inset: 0;
       background: linear-gradient(90deg, rgba(36, 11, 5, 0.84), rgba(36, 11, 5, 0.08));
       pointer-events: none;
+    }
+
+    .pina .producto-img::after {
+      background: linear-gradient(90deg, rgba(43, 19, 4, 0.76), rgba(43, 19, 4, 0.05));
     }
 
     /* =========================
@@ -467,34 +479,34 @@
     }
 
     @media (max-width: 900px) {
-      .habanero-home {
+      .nuevo-producto-home {
         grid-template-columns: 1fr;
       }
 
-      .habanero-info {
+      .producto-info {
         padding: 36px 28px;
         text-align: center;
       }
 
-      .habanero-info p {
+      .producto-info p {
         margin-inline: auto;
       }
 
-      .habanero-puntos,
-      .habanero-precios,
-      .habanero-actions {
+      .producto-puntos,
+      .producto-precios,
+      .producto-actions {
         justify-content: center;
       }
 
-      .habanero-img {
+      .producto-img {
         min-height: 320px;
       }
 
-      .habanero-img img {
+      .producto-img img {
         min-height: 320px;
       }
 
-      .habanero-img::after {
+      .producto-img::after {
         background: linear-gradient(0deg, rgba(36, 11, 5, 0.55), rgba(36, 11, 5, 0.05));
       }
 
@@ -523,24 +535,24 @@
         padding: 10px;
       }
 
-      .habanero-info h2 {
+      .producto-info h2 {
         font-size: 36px;
       }
 
-      .habanero-info h3 {
+      .producto-info h3 {
         font-size: 20px;
       }
 
-      .habanero-puntos {
+      .producto-puntos {
         grid-template-columns: 1fr;
       }
 
-      .habanero-precio {
+      .producto-precio {
         width: 100%;
       }
 
-      .btn-habanero,
-      .btn-habanero-secundario,
+      .btn-producto-nuevo,
+      .btn-producto-secundario,
       .cta-final a {
         width: 100%;
       }
@@ -598,6 +610,10 @@
 
       <div class="carousel">
         <figure>
+          <img src="assets/piña_habanero.jpeg" alt="Piña Habanero CARLOUIS">
+        </figure>
+
+        <figure>
           <img src="assets/habanero_fire1.jpeg" alt="Habanero Fire by CARLOUIS">
         </figure>
 
@@ -612,10 +628,50 @@
     </div>
   </section>
 
-  <!-- ===== Producto destacado Habanero Fire ===== -->
-  <section class="habanero-home">
-    <div class="habanero-info">
-      <span class="habanero-badge">🔥 NUEVO PRODUCTO</span>
+  <!-- ===== Producto nuevo Piña Habanero ===== -->
+  <section class="nuevo-producto-home pina">
+    <div class="producto-info">
+      <span class="producto-badge">🍍 NUEVO PRODUCTO</span>
+
+      <h2>Piña Habanero</h2>
+      <h3>CARLOUIS</h3>
+
+      <p>
+        Una salsa gourmet artesanal que combina la dulzura tropical de la piña
+        con el toque intenso y aromático del habanero. Dulce, picante y perfecta
+        para darle vida a cada bocado.
+      </p>
+
+      <div class="producto-puntos">
+        <div class="producto-punto">Dulce tropical</div>
+        <div class="producto-punto">Picante equilibrado</div>
+        <div class="producto-punto">Sabor gourmet</div>
+      </div>
+
+      <div class="producto-precios">
+        <div class="producto-precio">Precio: <span>₡5.000</span></div>
+      </div>
+
+      <div class="producto-actions">
+        <a href="https://wa.me/50688252608?text=Hola%2C%20quiero%20pedir%20Pi%C3%B1a%20Habanero%20CARLOUIS" class="btn-producto-nuevo" target="_blank" rel="noopener">
+          Pedir por WhatsApp
+        </a>
+
+        <a href="productos.html" class="btn-producto-secundario">
+          Ver productos
+        </a>
+      </div>
+    </div>
+
+    <div class="producto-img">
+      <img src="assets/piña_habanero.jpeg" alt="Salsa Piña Habanero CARLOUIS" />
+    </div>
+  </section>
+
+  <!-- ===== Producto nuevo Habanero Fire ===== -->
+  <section class="nuevo-producto-home">
+    <div class="producto-info">
+      <span class="producto-badge">🔥 NUEVO PRODUCTO</span>
 
       <h2>Habanero Fire</h2>
       <h3>by CARLOUIS</h3>
@@ -625,29 +681,29 @@
         Elaborada con habanero seleccionado e ingredientes naturales que despiertan cada bocado.
       </p>
 
-      <div class="habanero-puntos">
-        <div class="habanero-punto">Picante intenso</div>
-        <div class="habanero-punto">Sabor artesanal</div>
-        <div class="habanero-punto">Ingredientes naturales</div>
+      <div class="producto-puntos">
+        <div class="producto-punto">Picante intenso</div>
+        <div class="producto-punto">Sabor artesanal</div>
+        <div class="producto-punto">Ingredientes naturales</div>
       </div>
 
-      <div class="habanero-precios">
-        <div class="habanero-precio">160gr: <span>₡4.000</span></div>
-        <div class="habanero-precio">60gr: <span>₡2.000</span></div>
+      <div class="producto-precios">
+        <div class="producto-precio">160gr: <span>₡4.000</span></div>
+        <div class="producto-precio">60gr: <span>₡2.000</span></div>
       </div>
 
-      <div class="habanero-actions">
-        <a href="https://wa.me/50688252608?text=Hola%2C%20quiero%20pedir%20Habanero%20Fire%20by%20CARLOUIS" class="btn-habanero" target="_blank" rel="noopener">
+      <div class="producto-actions">
+        <a href="https://wa.me/50688252608?text=Hola%2C%20quiero%20pedir%20Habanero%20Fire%20by%20CARLOUIS" class="btn-producto-nuevo" target="_blank" rel="noopener">
           Pedir por WhatsApp
         </a>
 
-        <a href="productos.html" class="btn-habanero-secundario">
+        <a href="productos.html" class="btn-producto-secundario">
           Ver productos
         </a>
       </div>
     </div>
 
-    <div class="habanero-img">
+    <div class="producto-img">
       <img src="assets/habanero_fire1.jpeg" alt="Salsa Habanero Fire by CARLOUIS" />
     </div>
   </section>
