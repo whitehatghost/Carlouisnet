@@ -4,41 +4,394 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none';">
+
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://www.google.com https://maps.gstatic.com; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-src https://www.google.com; frame-ancestors 'none';">
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta name="referrer" content="strict-origin" />
   <meta name="permissions-policy" content="camera=(), microphone=(), geolocation=()" />
+
   <title>Encuéntranos | Carlouis Gourmet</title>
   <link rel="stylesheet" href="style.css" />
+
   <style>
-    .imagen-feria {
-      max-width: 300px;
-      margin: 20px auto;
-      display: block;
+    body {
+      background: #f7f1e8;
     }
-    .evento-imgs {
+
+    .encuentranos-hero {
+      background:
+        radial-gradient(circle at top left, rgba(255, 208, 0, 0.18), transparent 34%),
+        linear-gradient(135deg, #7a0000 0%, #3a0b05 55%, #170604 100%);
+      color: #fff8e8;
+      padding: 70px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .encuentranos-hero::before {
+      content: "";
+      position: absolute;
+      inset: 20px;
+      border: 1px solid rgba(255, 208, 0, 0.18);
+      border-radius: 26px;
+      pointer-events: none;
+    }
+
+    .encuentranos-hero .contenido {
+      max-width: 850px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .encuentranos-hero span {
+      display: inline-block;
+      background: #ffd000;
+      color: #7a0000;
+      font-weight: 900;
+      letter-spacing: 1px;
+      font-size: 13px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+    }
+
+    .encuentranos-hero h1 {
+      color: #ffd000;
+      font-size: clamp(36px, 6vw, 62px);
+      line-height: 1;
+      margin: 0 0 18px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .encuentranos-hero p {
+      font-size: 18px;
+      line-height: 1.6;
+      max-width: 720px;
+      margin: 0 auto;
+      color: #fff3dc;
+    }
+
+    .encuentranos-main {
+      width: min(1120px, 92%);
+      margin: 45px auto 70px;
+    }
+
+    .ubicacion-card {
+      background: #fffdf8;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 18px 42px rgba(60, 28, 10, 0.16);
+      border: 1px solid rgba(139, 0, 0, 0.08);
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      margin-bottom: 38px;
+    }
+
+    .ubicacion-info {
+      padding: 42px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .ubicacion-logo {
+      width: 190px;
+      max-width: 80%;
+      margin-bottom: 22px;
+      filter: drop-shadow(0 8px 16px rgba(60, 28, 10, 0.12));
+    }
+
+    .ubicacion-info h2 {
+      color: #8b0000;
+      font-size: clamp(30px, 4vw, 44px);
+      margin: 0 0 14px;
+      line-height: 1.1;
+    }
+
+    .ubicacion-info p {
+      color: #3b2b22;
+      font-size: 17px;
+      line-height: 1.55;
+      margin: 0 0 16px;
+    }
+
+    .datos-ubicacion {
+      display: grid;
+      gap: 12px;
+      margin: 24px 0;
+    }
+
+    .dato {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      background: #f8efe3;
+      border: 1px solid rgba(139, 0, 0, 0.08);
+      border-radius: 16px;
+      padding: 15px 16px;
+      color: #3b2b22;
+    }
+
+    .dato-icono {
+      width: 34px;
+      height: 34px;
+      min-width: 34px;
+      border-radius: 50%;
+      background: #8b0000;
+      color: #ffd000;
+      display: grid;
+      place-items: center;
+      font-size: 17px;
+      font-weight: 900;
+    }
+
+    .dato strong {
+      color: #8b0000;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .acciones-ubicacion {
       display: flex;
       flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .btn-mapa,
+    .btn-whatsapp {
+      display: inline-flex;
       justify-content: center;
-      gap: 20px;
-      margin-top: 30px;
+      align-items: center;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 14px 24px;
+      font-weight: 900;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    .imagen-evento {
-      max-width: 350px;
+
+    .btn-mapa {
+      background: linear-gradient(135deg, #ffd000, #ffb700);
+      color: #7a0000;
+      box-shadow: 0 10px 22px rgba(255, 183, 0, 0.26);
+    }
+
+    .btn-whatsapp {
+      background: #8b0000;
+      color: #fff8e8;
+      box-shadow: 0 10px 22px rgba(139, 0, 0, 0.18);
+    }
+
+    .btn-mapa:hover,
+    .btn-whatsapp:hover {
+      transform: translateY(-2px);
+    }
+
+    .mapa-box {
+      min-height: 480px;
+      background: #170604;
+    }
+
+    .mapa-box iframe {
       width: 100%;
-      height: auto;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      height: 100%;
+      min-height: 480px;
+      border: 0;
+      display: block;
     }
-    .texto-seccion {
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 38px;
+    }
+
+    .info-card {
+      background: #fffdf8;
+      border-radius: 22px;
+      padding: 28px 24px;
       text-align: center;
-      margin-bottom: 10px;
+      box-shadow: 0 12px 28px rgba(60, 28, 10, 0.12);
+      border: 1px solid rgba(139, 0, 0, 0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .info-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 34px rgba(60, 28, 10, 0.16);
+    }
+
+    .info-icono {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: #8b0000;
+      color: #ffd000;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 16px;
+      font-size: 27px;
+      box-shadow: 0 10px 22px rgba(139, 0, 0, 0.18);
+    }
+
+    .info-card h3 {
+      color: #8b0000;
+      font-size: 21px;
+      margin: 0 0 10px;
+    }
+
+    .info-card p {
+      color: #3b2b22;
+      font-size: 15.5px;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .recomendacion-box {
+      background:
+        radial-gradient(circle at top left, rgba(255, 208, 0, 0.22), transparent 35%),
+        linear-gradient(135deg, #8b0000, #3a0b05);
+      color: #fff8e8;
+      border-radius: 26px;
+      padding: 38px 32px;
+      text-align: center;
+      box-shadow: 0 18px 38px rgba(60, 28, 10, 0.24);
+      border: 1px solid rgba(255, 208, 0, 0.25);
+      margin-bottom: 38px;
+    }
+
+    .recomendacion-box h2 {
+      color: #ffd000;
+      margin: 0 0 14px;
+      font-size: clamp(28px, 4vw, 42px);
+    }
+
+    .recomendacion-box p {
+      max-width: 760px;
+      margin: 0 auto 24px;
+      line-height: 1.6;
+      font-size: 17px;
+      color: #fff3dc;
+    }
+
+    .productos-mini {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .productos-mini span {
+      background: rgba(255, 255, 255, 0.11);
+      border: 1px solid rgba(255, 208, 0, 0.35);
+      border-radius: 999px;
+      padding: 10px 15px;
+      font-weight: 800;
+      color: #fff8e8;
+    }
+
+    .cta-encuentranos {
+      background: #fffdf8;
+      border-radius: 24px;
+      padding: 34px 28px;
+      text-align: center;
+      box-shadow: 0 12px 28px rgba(60, 28, 10, 0.12);
+      border: 1px solid rgba(139, 0, 0, 0.08);
+    }
+
+    .cta-encuentranos h2 {
+      color: #8b0000;
+      margin: 0 0 12px;
+      font-size: clamp(26px, 4vw, 38px);
+    }
+
+    .cta-encuentranos p {
+      color: #3b2b22;
+      margin: 0 auto 22px;
+      max-width: 680px;
+      line-height: 1.6;
+      font-size: 17px;
+    }
+
+    .cta-encuentranos a {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ffd000, #ffb700);
+      color: #7a0000;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 14px 28px;
+      font-weight: 900;
+      box-shadow: 0 10px 22px rgba(255, 183, 0, 0.26);
+    }
+
+    @media (max-width: 900px) {
+      .ubicacion-card {
+        grid-template-columns: 1fr;
+      }
+
+      .ubicacion-info {
+        padding: 34px 26px;
+        text-align: center;
+      }
+
+      .ubicacion-logo {
+        margin: 0 auto 22px;
+      }
+
+      .acciones-ubicacion {
+        justify-content: center;
+      }
+
+      .dato {
+        text-align: left;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .encuentranos-hero {
+        padding: 55px 18px;
+      }
+
+      .encuentranos-main {
+        margin: 32px auto 55px;
+      }
+
+      .ubicacion-info {
+        padding: 28px 20px;
+      }
+
+      .mapa-box,
+      .mapa-box iframe {
+        min-height: 360px;
+      }
+
+      .btn-mapa,
+      .btn-whatsapp,
+      .cta-encuentranos a {
+        width: 100%;
+      }
+
+      .recomendacion-box,
+      .cta-encuentranos {
+        padding: 30px 20px;
+      }
     }
   </style>
 </head>
 
 <body>
-  <a href="https://wa.me/50688252608" class="whatsapp-float" target="_blank">
+  <a href="https://wa.me/50688252608" class="whatsapp-float" target="_blank" rel="noopener">
     <img src="assets/whatsapp-icon.png" alt="WhatsApp" />
   </a>
 
@@ -55,49 +408,151 @@
     </nav>
   </header>
 
-  <section class="intro-productos">
+  <section class="encuentranos-hero">
     <div class="contenido">
-      <h2>Visítanos en persona</h2>
-      <p>Encontranos cada sábado en la Feria Orgánica La Verbena y en eventos especiales alrededor del país.</p>
+      <span>VISITANOS EN PERSONA</span>
+      <h1>Encuéntranos</h1>
+      <p>
+        Te esperamos cada sábado en Feria Orgánica La Verbena, en Plaza Real Alajuela,
+        con productos artesanales, salsas, conservas y sabores gourmet preparados con mucho cariño.
+      </p>
     </div>
   </section>
 
-  <section class="seccion">
-    <h2 class="titulo-seccion">Feria Orgánica La Verbena</h2>
-    <p class="texto-seccion">📍 Plaza Real Alajuela</p>
-    <p class="texto-seccion">🕒 Todos los sábados de 6 a.m. a 1 p.m.</p>
-    <img src="assets/laverbena.png" alt="La Verbena Logo" class="imagen-feria" />
-    
-    <p style="text-align: center;">
-      <a href="https://www.google.com/maps/place/10%C2%B000'39.7%22N+84%C2%B012'17.3%22W/@10.011034,-84.2073784,17z/data=!3m1!4b1!4m4!3m3!8m2!3d10.011034!4d-84.2048035?hl=en&entry=ttu" target="_blank">
-        🗺️ Ver ubicación en Google Maps
+  <main class="encuentranos-main">
+
+    <section class="ubicacion-card">
+      <div class="ubicacion-info">
+        <img src="assets/laverbena.png" alt="Logo Feria Orgánica La Verbena" class="ubicacion-logo" />
+
+        <h2>Feria Orgánica La Verbena</h2>
+
+        <p>
+          Un espacio ideal para encontrar productos frescos, artesanales y llenos de sabor.
+          Visitá nuestro puesto y conocé la variedad de productos CARLOUIS.
+        </p>
+
+        <div class="datos-ubicacion">
+          <div class="dato">
+            <div class="dato-icono">📍</div>
+            <div>
+              <strong>Ubicación</strong>
+              Plaza Real Alajuela, Costa Rica.
+            </div>
+          </div>
+
+          <div class="dato">
+            <div class="dato-icono">🕒</div>
+            <div>
+              <strong>Horario</strong>
+              Todos los sábados de 6:00 a.m. a 1:00 p.m.
+            </div>
+          </div>
+
+          <div class="dato">
+            <div class="dato-icono">📲</div>
+            <div>
+              <strong>Pedidos y consultas</strong>
+              WhatsApp: 8825 2608.
+            </div>
+          </div>
+        </div>
+
+        <div class="acciones-ubicacion">
+          <a
+            class="btn-mapa"
+            href="https://www.google.com/maps/place/10%C2%B000'39.7%22N+84%C2%B012'17.3%22W/@10.011034,-84.2073784,17z/data=!3m1!4b1!4m4!3m3!8m2!3d10.011034!4d-84.2048035?hl=en&entry=ttu"
+            target="_blank"
+            rel="noopener">
+            🗺️ Abrir en Google Maps
+          </a>
+
+          <a
+            class="btn-whatsapp"
+            href="https://wa.me/50688252608?text=Hola%2C%20quiero%20consultar%20productos%20CARLOUIS%20para%20retirar%20en%20La%20Verbena"
+            target="_blank"
+            rel="noopener">
+            Pedir por WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <div class="mapa-box">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.5666076040374!2d-84.2073784!3d10.011034!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTCKwMDAnMzkuNyJOIDg0wrAxMicxNy4zIlc!5e0!3m2!1ses-419!2scr!4v1715022942879!5m2!1ses-419!2scr"
+          allowfullscreen
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Ubicación Feria Orgánica La Verbena">
+        </iframe>
+      </div>
+    </section>
+
+    <section class="info-grid">
+      <div class="info-card">
+        <div class="info-icono">🛍️</div>
+        <h3>Compra directa</h3>
+        <p>
+          Visitá nuestro puesto para ver productos disponibles, consultar recomendaciones y llevarte tus favoritos.
+        </p>
+      </div>
+
+      <div class="info-card">
+        <div class="info-icono">🌶️</div>
+        <h3>Productos gourmet</h3>
+        <p>
+          Encontrá salsas, pestos, conservas y productos artesanales ideales para acompañar tus comidas.
+        </p>
+      </div>
+
+      <div class="info-card">
+        <div class="info-icono">📦</div>
+        <h3>Pedidos por encargo</h3>
+        <p>
+          Escribinos antes del sábado y te ayudamos a reservar productos según disponibilidad.
+        </p>
+      </div>
+    </section>
+
+    <section class="recomendacion-box">
+      <h2>¿Qué podés encontrar?</h2>
+      <p>
+        Nuestros productos son perfectos para picadas, pastas, panes, carnes, vegetales,
+        bocadillos, dips y comidas especiales. Consultá disponibilidad antes de visitarnos.
+      </p>
+
+      <div class="productos-mini">
+        <span>Habanero Fire</span>
+        <span>Tomates deshidratados</span>
+        <span>Pestos</span>
+        <span>Alioli</span>
+        <span>Chimichurri</span>
+        <span>Salsas artesanales</span>
+      </div>
+    </section>
+
+    <section class="cta-encuentranos">
+      <h2>¿Querés reservar antes de llegar?</h2>
+      <p>
+        Escribinos por WhatsApp y te confirmamos presentaciones, precios y disponibilidad
+        para que pasés directo por tus productos.
+      </p>
+
+      <a
+        href="https://wa.me/50688252608?text=Hola%2C%20quiero%20consultar%20disponibilidad%20de%20productos%20CARLOUIS"
+        target="_blank"
+        rel="noopener">
+        Consultar disponibilidad
       </a>
-    </p>
+    </section>
 
-    <iframe 
-      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.5666076040374!2d-84.2073784!3d10.011034!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTCKwMDAnMzkuNyJOIDg0wrAxMicxNy4zIlc!5e0!3m2!1ses-419!2scr!4v1715022942879!5m2!1ses-419!2scr" 
-      width="100%" 
-      height="300" 
-      style="border:0; border-radius: 12px; margin-top: 15px;" 
-      allowfullscreen="" 
-      loading="lazy" 
-      referrerpolicy="no-referrer-when-downgrade">
-    </iframe>
-  </section>
-
-  <section class="seccion">
-    <h2 class="titulo-seccion">Próximas Degustaciones</h2>
-    <div class="evento-imgs">
-      <img src="assets/terrazas.png" alt="Degustación Terrazas Lindora" class="imagen-evento" />
-      <img src="assets/encuentro.png" alt="Degustación El Encuentro San Carlos" class="imagen-evento" />
-    </div>
-  </section>
+  </main>
 
   <footer>
-    <p>Desarrollado por <strong>HackSinCodigos</strong> | 
-      <a href="https://instagram.com/hacksincodigos" target="_blank">@hacksincodigos</a>
+    <p>
+      Desarrollado por <strong>HackSinCodigos</strong> |
+      <a href="https://instagram.com/hacksincodigos" target="_blank" rel="noopener">@hacksincodigos</a>
     </p>
   </footer>
 </body>
 </html>
-
