@@ -272,20 +272,20 @@ strong, b { font-weight: 700; }
   display: flex; align-items: center; gap: var(--sp-2);
   list-style: none;
 }
-.nav__list a {
+.nav__list li:not(.nav__mobile-cta) > a {
   position: relative; display: block;
   padding: 0.55rem 0.85rem; border-radius: var(--r-sm);
   color: var(--ink); font-weight: 600; font-size: 0.97rem; text-decoration: none;
   transition: color var(--dur) var(--ease), background-color var(--dur) var(--ease);
 }
-.nav__list a::after {
+.nav__list li:not(.nav__mobile-cta) > a::after {
   content: ''; position: absolute; left: 0.85rem; right: 0.85rem; bottom: 0.3rem;
   height: 2px; border-radius: 2px; background: var(--ember-600);
   transform: scaleX(0); transform-origin: left;
   transition: transform var(--dur) var(--ease-out);
 }
-.nav__list a:hover { color: var(--ember-700); background: rgba(168, 42, 16, .06); }
-.nav__list a:hover::after,
+.nav__list li:not(.nav__mobile-cta) > a:hover { color: var(--ember-700); background: rgba(168, 42, 16, .06); }
+.nav__list li:not(.nav__mobile-cta) > a:hover::after,
 .nav__list a[aria-current="page"]::after { transform: scaleX(1); }
 .nav__list a[aria-current="page"] { color: var(--ember-700); }
 
@@ -317,16 +317,17 @@ strong, b { font-weight: 700; }
                 visibility var(--dur);
   }
   .nav__list.is-open { opacity: 1; visibility: visible; transform: none; pointer-events: auto; }
-  .nav__list a {
+  .nav__list li:not(.nav__mobile-cta) > a {
     padding: 0.95rem 0.5rem; font-size: 1.1rem;
     border-bottom: 1px solid var(--line-soft); border-radius: 0;
   }
-  .nav__list a::after { display: none; }
-  .nav__list a[aria-current="page"] {
+  .nav__list li:not(.nav__mobile-cta) > a::after { display: none; }
+  .nav__list li:not(.nav__mobile-cta) > a[aria-current="page"] {
     color: var(--ember-700); border-left: 3px solid var(--ember-600); padding-left: 0.85rem;
   }
-  .nav__list .nav__mobile-cta { border-bottom: 0; margin-top: var(--sp-4); }
-  .nav__list .nav__mobile-cta a { justify-content: center; }
+  /* El CTA conserva su forma de botón: píldora, icono alineado y color propio */
+  .nav__mobile-cta { margin-top: var(--sp-5); padding-top: var(--sp-5); border-top: 1px solid var(--line); }
+  .nav__mobile-cta .btn { width: 100%; font-size: 1rem; }
 }
 @media (min-width: 901px) { .nav__mobile-cta { display: none; } }
 
