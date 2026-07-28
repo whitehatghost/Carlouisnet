@@ -285,19 +285,17 @@
       '</form>' +
 
       '<div class="order-panel__foot">' +
-        '<p class="order-total"><span>Subtotal productos</span> <span data-total>₡0</span></p>' +
+        '<p class="order-total"><span>Total a pagar</span> <span data-total>₡0</span></p>' +
 
         '<div class="order-pay" hidden>' +
-          '<p class="order-shipping"><span>Envío a tu cantón</span> <b>lo cotizamos</b></p>' +
           '<div class="sinpe">' +
             '<span class="sinpe__icon">' + icon('phone') + '</span>' +
             '<span>' +
-              '<span class="sinpe__label">SINPE Móvil</span>' +
+              '<span class="sinpe__label">Pagá por SINPE Móvil</span>' +
               '<span class="sinpe__num">' + SINPE_NUM + '</span>' +
               '<span class="sinpe__name">' + SINPE_NAME + '</span>' +
             '</span>' +
           '</div>' +
-          '<p class="order-warn">No pagués todavía: primero te confirmamos el <b>total con envío</b> por WhatsApp.</p>' +
         '</div>' +
 
         '<button class="btn btn--primary btn--block" type="button" data-next>' +
@@ -378,8 +376,7 @@
         return '• ' + i.qty + ' x ' + i.name + ' — ' + money(i.price * i.qty);
       });
       var msg = 'Hola CARLOUIS, quiero hacer este pedido:\n\n' + lines.join('\n') +
-                '\n\nSubtotal productos: ' + money(total()) +
-                '\n(falta el envío, que me lo cotizan según mi cantón)';
+                '\n\nTotal a pagar: ' + money(total());
 
       var c = readForm();
       if (c.nombre || c.telefono) {
@@ -392,8 +389,7 @@
         if (c.email) msg += '\nCorreo: ' + c.email;
       }
 
-      msg += '\n\nQuedo pendiente de que me confirmen el total con envío para ' +
-             'pagar por SINPE Móvil al ' + SINPE_NUM + ' (' + SINPE_NAME + ').';
+      msg += '\n\nVoy a pagar por SINPE Móvil al ' + SINPE_NUM + ' (' + SINPE_NAME + ').';
       return msg;
     };
 
@@ -451,7 +447,7 @@
       payEl.hidden = !datos;
       noteEl.textContent = datos
         ? 'Al enviar se abre WhatsApp con el pedido y tus datos ya escritos.'
-        : 'El subtotal no incluye el envío.';
+        : 'Mismo precio para cualquier parte del país.';
       backEl.classList.toggle('is-shown', datos);
       titleEl.textContent = datos ? 'Tus datos y pago' : 'Tu pedido';
       if (datos && focusField) formEl.elements.nombre.focus();
