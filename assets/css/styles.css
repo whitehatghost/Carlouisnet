@@ -459,6 +459,9 @@ strong, b { font-weight: 700; }
 .product-grid {
   display: grid; gap: var(--sp-5);
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  /* Todas las filas de la misma altura: si no, cada fila se ajusta a su
+     descripción más larga y el catálogo se ve escalonado. */
+  grid-auto-rows: 1fr;
 }
 .card {
   display: flex; flex-direction: column;
@@ -484,7 +487,12 @@ strong, b { font-weight: 700; }
   box-shadow: 0 4px 12px rgba(74, 18, 6, .22);
 }
 .card__body { display: flex; flex-direction: column; flex: 1; padding: var(--sp-5); }
-.card__body h3 { font-size: var(--step-1); margin-bottom: var(--sp-2); color: var(--ember-800); }
+.card__body h3 {
+  font-size: var(--step-1); margin-bottom: var(--sp-2); color: var(--ember-800);
+  /* Dos líneas reservadas: si no, los nombres cortos ("Alioli") suben la
+     descripción y los largos la bajan, y el catálogo se ve desparejo. */
+  min-height: 2.16em;
+}
 .card__desc { color: var(--ink-soft); font-size: 0.96rem; margin-bottom: var(--sp-4); flex: 1; }
 .card__foot {
   display: flex; align-items: center; justify-content: space-between;
@@ -494,15 +502,29 @@ strong, b { font-weight: 700; }
 .price { font-family: var(--font-display); font-size: var(--step-1); font-weight: 700; color: var(--ember-700); }
 .price small { font-family: var(--font-body); font-size: .78rem; font-weight: 600; color: var(--ink-mute); display: block; letter-spacing: .04em; }
 
-/* Escala de picante — comunica con icono + texto, no solo con color */
-.heat { display: flex; align-items: center; gap: 0.2rem; margin-bottom: var(--sp-4); }
-.heat svg { width: 17px; height: 17px; color: var(--line); }
+/* Escala de picante — comunica con icono + texto, no solo con color.
+   Va sobre la foto y no en el flujo del texto: así las tarjetas con chile y
+   sin chile conservan exactamente la misma estructura y no se desalinean. */
+.heat {
+  position: absolute; left: 0.85rem; bottom: 0.85rem; z-index: 2;
+  display: inline-flex; align-items: center; gap: 0.1rem;
+  margin: 0; padding: 0.4rem 0.75rem;
+  background: rgba(28, 6, 3, .8);
+  backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 246, 232, .18);
+  border-radius: var(--r-pill);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .28);
+}
+.heat svg { width: 14px; height: 14px; color: rgba(255, 246, 232, .3); }
 .heat[data-level="1"] svg:nth-child(-n+1),
 .heat[data-level="2"] svg:nth-child(-n+2),
 .heat[data-level="3"] svg:nth-child(-n+3),
 .heat[data-level="4"] svg:nth-child(-n+4),
 .heat[data-level="5"] svg:nth-child(-n+5) { color: var(--chili); }
-.heat span { margin-left: 0.45rem; font-size: 0.78rem; font-weight: 700; color: var(--ink-mute); letter-spacing: .06em; text-transform: uppercase; }
+.heat span {
+  margin-left: 0.4rem; font-size: 0.72rem; font-weight: 700;
+  color: #FFF6E8; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap;
+}
 
 /* Filtros del catálogo */
 .filters { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-bottom: var(--sp-6); }
