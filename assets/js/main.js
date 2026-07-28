@@ -196,6 +196,9 @@
      Sin JS, los botones siguen funcionando como enlace directo.
      ========================================================= */
   var WA_NUMBER = '50688252608';
+  // Datos de pago que ve el cliente. Cambialos acá y se actualizan en todo el sitio.
+  var SINPE_NUM = '8825 2608';
+  var SINPE_NAME = 'CARLOUIS Gourmet';
   var STORE_KEY = 'carlouis:pedido';
   var addButtons = document.querySelectorAll('[data-add]');
 
@@ -282,12 +285,26 @@
       '</form>' +
 
       '<div class="order-panel__foot">' +
-        '<p class="order-total"><span>Total estimado</span> <span data-total>₡0</span></p>' +
+        '<p class="order-total"><span>Subtotal productos</span> <span data-total>₡0</span></p>' +
+
+        '<div class="order-pay" hidden>' +
+          '<p class="order-shipping"><span>Envío a tu cantón</span> <b>lo cotizamos</b></p>' +
+          '<div class="sinpe">' +
+            '<span class="sinpe__icon">' + icon('phone') + '</span>' +
+            '<span>' +
+              '<span class="sinpe__label">SINPE Móvil</span>' +
+              '<span class="sinpe__num">' + SINPE_NUM + '</span>' +
+              '<span class="sinpe__name">' + SINPE_NAME + '</span>' +
+            '</span>' +
+          '</div>' +
+          '<p class="order-warn">No pagués todavía: primero te confirmamos el <b>total con envío</b> por WhatsApp.</p>' +
+        '</div>' +
+
         '<button class="btn btn--primary btn--block" type="button" data-next>' +
           'Continuar con mis datos ' + icon('arrow') + '</button>' +
         '<a class="btn btn--wa btn--block" data-send target="_blank" rel="noopener" href="#" hidden>' +
           icon('wa') + ' Enviar pedido por WhatsApp</a>' +
-        '<p class="order-note">Te confirmamos disponibilidad y costo de envío antes de que pagués.</p>' +
+        '<p class="order-note" data-foot-note>El subtotal no incluye el envío.</p>' +
       '</div>';
 
     var toast = document.createElement('div');
@@ -306,6 +323,8 @@
     var sendEl = panel.querySelector('[data-send]');
     var nextEl = panel.querySelector('[data-next]');
     var backEl = panel.querySelector('.order-back');
+    var payEl = panel.querySelector('.order-pay');
+    var noteEl = panel.querySelector('[data-foot-note]');
     var titleEl = panel.querySelector('[data-panel-title]');
     var countEl = fab.querySelector('.order-fab__count');
     var lastFocus = null;
@@ -359,7 +378,8 @@
         return '• ' + i.qty + ' x ' + i.name + ' — ' + money(i.price * i.qty);
       });
       var msg = 'Hola CARLOUIS, quiero hacer este pedido:\n\n' + lines.join('\n') +
-                '\n\nTotal estimado: ' + money(total());
+                '\n\nSubtotal productos: ' + money(total()) +
+                '\n(falta el envío, que me lo cotizan según mi cantón)';
 
       var c = readForm();
       if (c.nombre || c.telefono) {
@@ -371,6 +391,9 @@
                '\nDirección: ' + c.direccion;
         if (c.email) msg += '\nCorreo: ' + c.email;
       }
+
+      msg += '\n\nQuedo pendiente de que me confirmen el total con envío para ' +
+             'pagar por SINPE Móvil al ' + SINPE_NUM + ' (' + SINPE_NAME + ').';
       return msg;
     };
 
@@ -417,7 +440,7 @@
       toastTimer = setTimeout(function () { toast.classList.remove('is-visible'); }, 2200);
     };
 
-    // Paso 1 = productos, paso 2 = datos del cliente
+    // Paso 1 = productos, paso 2 = datos del cliente + cómo se paga
     var goStep = function (n, focusField) {
       step = n;
       var datos = n === 2;
@@ -425,8 +448,12 @@
       formEl.hidden = !datos;
       nextEl.hidden = datos;
       sendEl.hidden = !datos;
+      payEl.hidden = !datos;
+      noteEl.textContent = datos
+        ? 'Al enviar se abre WhatsApp con el pedido y tus datos ya escritos.'
+        : 'El subtotal no incluye el envío.';
       backEl.classList.toggle('is-shown', datos);
-      titleEl.textContent = datos ? 'Tus datos' : 'Tu pedido';
+      titleEl.textContent = datos ? 'Tus datos y pago' : 'Tu pedido';
       if (datos && focusField) formEl.elements.nombre.focus();
     };
 
