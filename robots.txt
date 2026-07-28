@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Páginas sin valor de búsqueda
+Disallow: /gracias.html
+
+Sitemap: https://www.carlouis.net/sitemap.xml

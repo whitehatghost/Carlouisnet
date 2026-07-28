@@ -1,769 +1,753 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-CR" class="no-js">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none';">
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-  <meta name="referrer" content="strict-origin" />
-  <meta name="permissions-policy" content="camera=(), microphone=(), geolocation=()" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
 
-  <title>Sabor Artesanal</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Salsas Artesanales Gourmet en Costa Rica | CARLOUIS</title>
+  <meta name="description" content="Salsas artesanales de habanero, pestos, alioli y conservas gourmet hechas en Costa Rica. Pedí por WhatsApp con envío a todas las provincias." />
+  <link rel="canonical" href="https://www.carlouis.net/" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+  <meta name="author" content="CARLOUIS Gourmet" />
+  <meta name="geo.region" content="CR-A" />
+  <meta name="geo.placename" content="Alajuela, Costa Rica" />
+  <meta name="geo.position" content="10.011034;-84.2048035" />
+  <meta name="ICBM" content="10.011034, -84.2048035" />
 
-  <style>
-    body {
-      background: #f7f1e8;
-    }
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CARLOUIS Gourmet" />
+  <meta property="og:locale" content="es_CR" />
+  <meta property="og:title" content="Salsas Artesanales Gourmet en Costa Rica | CARLOUIS" />
+  <meta property="og:description" content="Salsas artesanales, picantes de habanero, pestos y conservas gourmet hechas en Costa Rica. Pedí por WhatsApp." />
+  <meta property="og:url" content="https://www.carlouis.net/" />
+  <meta property="og:image" content="https://www.carlouis.net/assets/img/og-carlouis.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Salsa Piña Habanero artesanal de CARLOUIS" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Salsas Artesanales Gourmet en Costa Rica | CARLOUIS" />
+  <meta name="twitter:description" content="Salsas artesanales, picantes de habanero, pestos y conservas gourmet hechas en Costa Rica." />
+  <meta name="twitter:image" content="https://www.carlouis.net/assets/img/og-carlouis.jpg" />
 
-    .btn-group {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      margin-top: 20px;
-    }
+  <meta name="theme-color" content="#4A1206" />
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" href="assets/img/icon-192.png" type="image/png" />
+  <link rel="apple-touch-icon" href="assets/img/icon-180.png" />
+  <link rel="manifest" href="site.webmanifest" />
 
-    /* =========================
-       CARRUSEL PRO SIN ZOOM
-       Ahora con 4 imágenes
-    ========================= */
-    .carrusel-section {
-      padding: 22px 16px 10px;
-      background:
-        radial-gradient(circle at top, rgba(255, 208, 0, 0.13), transparent 38%),
-        #f7f1e8;
-    }
+  <link rel="preload" href="assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/karla-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <script src="assets/js/main.js" defer></script>
 
-    .carousel-wrapper {
-      width: min(100%, 880px);
-      margin: 28px auto 35px;
-      position: relative;
-    }
-
-    .carousel-title {
-      text-align: center;
-      margin-bottom: 18px;
-    }
-
-    .carousel-title span {
-      display: inline-block;
-      background: #8b0000;
-      color: #ffd000;
-      font-weight: 900;
-      letter-spacing: 1px;
-      font-size: 13px;
-      padding: 8px 16px;
-      border-radius: 999px;
-      margin-bottom: 10px;
-    }
-
-    .carousel-title h2 {
-      margin: 0;
-      color: #8b0000;
-      font-size: clamp(28px, 4vw, 42px);
-      line-height: 1.1;
-    }
-
-    .carousel-title p {
-      color: #3b2b22;
-      max-width: 620px;
-      margin: 10px auto 0;
-      font-size: 16px;
-      line-height: 1.5;
-    }
-
-    .carousel {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      max-height: 500px;
-      overflow: hidden;
-      border-radius: 22px;
-      box-shadow: 0 18px 42px rgba(60, 28, 10, 0.26);
-      background: linear-gradient(135deg, #fff7ea, #210b06);
-      border: 1px solid rgba(139, 0, 0, 0.16);
-    }
-
-    .carousel figure {
-      position: absolute;
-      inset: 0;
-      margin: 0;
-      opacity: 0;
-      animation: fade 24s ease-in-out infinite;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 14px;
-      background: linear-gradient(135deg, #fffaf1, #1a0805);
-    }
-
-    .carousel img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      object-position: center;
-      display: block;
-      border-radius: 14px;
-      user-select: none;
-      -webkit-user-drag: none;
-    }
-
-    .carousel:hover img {
-      transform: none;
-    }
-
-    .carousel figure:nth-child(1) { animation-delay: 0s; }
-    .carousel figure:nth-child(2) { animation-delay: 6s; }
-    .carousel figure:nth-child(3) { animation-delay: 12s; }
-    .carousel figure:nth-child(4) { animation-delay: 18s; }
-
-    @keyframes fade {
-      0%   { opacity: 0; }
-      5%   { opacity: 1; }
-      23%  { opacity: 1; }
-      28%  { opacity: 0; }
-      100% { opacity: 0; }
-    }
-
-    /* =========================
-       PRODUCTOS NUEVOS HOME
-    ========================= */
-    .nuevo-producto-home {
-      width: min(1120px, 92%);
-      margin: 35px auto 55px;
-      background:
-        radial-gradient(circle at top left, rgba(255, 208, 0, 0.18), transparent 34%),
-        radial-gradient(circle at bottom right, rgba(255, 90, 0, 0.22), transparent 30%),
-        linear-gradient(135deg, #260b05 0%, #8b0000 52%, #170604 100%);
-      border-radius: 28px;
-      overflow: hidden;
-      box-shadow: 0 22px 48px rgba(60, 28, 10, 0.28);
-      border: 1px solid rgba(255, 208, 0, 0.26);
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      align-items: center;
-      position: relative;
-    }
-
-    .nuevo-producto-home::before {
-      content: "";
-      position: absolute;
-      inset: 18px;
-      border: 1px solid rgba(255, 208, 0, 0.18);
-      border-radius: 22px;
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    .nuevo-producto-home.pina {
-      background:
-        radial-gradient(circle at top left, rgba(255, 208, 0, 0.24), transparent 35%),
-        radial-gradient(circle at bottom right, rgba(255, 126, 0, 0.28), transparent 32%),
-        linear-gradient(135deg, #2b1304 0%, #9a3d00 48%, #5d1200 100%);
-    }
-
-    .producto-info {
-      padding: 46px 44px 46px 50px;
-      color: #fff8e8;
-      position: relative;
-      z-index: 3;
-    }
-
-    .producto-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: #ffd000;
-      color: #7a0000;
-      font-weight: 900;
-      font-size: 13px;
-      letter-spacing: 1px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      margin-bottom: 18px;
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
-    }
-
-    .producto-info h2 {
-      font-size: clamp(34px, 5vw, 58px);
-      line-height: 1;
-      margin: 0 0 10px;
-      color: #ffd000;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .producto-info h3 {
-      font-size: 23px;
-      line-height: 1.25;
-      margin: 0 0 18px;
-      color: #ffffff;
-      font-weight: 800;
-    }
-
-    .producto-info p {
-      font-size: 17px;
-      line-height: 1.55;
-      margin: 0 0 22px;
-      color: #fff3dc;
-      max-width: 560px;
-    }
-
-    .producto-puntos {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin: 22px 0;
-      max-width: 570px;
-    }
-
-    .producto-punto {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 208, 0, 0.28);
-      color: #fff8e8;
-      border-radius: 16px;
-      padding: 13px 12px;
-      font-weight: 800;
-      font-size: 14px;
-      text-align: center;
-    }
-
-    .producto-precios {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin: 22px 0 24px;
-    }
-
-    .producto-precio {
-      background: rgba(255, 255, 255, 0.11);
-      border: 1px solid rgba(255, 208, 0, 0.38);
-      color: #ffffff;
-      border-radius: 16px;
-      padding: 13px 16px;
-      font-weight: 900;
-      backdrop-filter: blur(6px);
-    }
-
-    .producto-precio span {
-      color: #ffd000;
-    }
-
-    .producto-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .btn-producto-nuevo {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #ffd000, #ffb700);
-      color: #7a0000;
-      text-decoration: none;
-      font-weight: 900;
-      border-radius: 999px;
-      padding: 14px 26px;
-      box-shadow: 0 10px 22px rgba(255, 183, 0, 0.28);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .btn-producto-nuevo:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 28px rgba(255, 183, 0, 0.38);
-    }
-
-    .btn-producto-secundario {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff8e8;
-      text-decoration: none;
-      font-weight: 800;
-      border-radius: 999px;
-      padding: 13px 22px;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      transition: background 0.2s ease, transform 0.2s ease;
-    }
-
-    .btn-producto-secundario:hover {
-      background: rgba(255, 255, 255, 0.1);
-      transform: translateY(-2px);
-    }
-
-    .producto-img {
-      height: 100%;
-      min-height: 440px;
-      position: relative;
-      background: #130705;
-      z-index: 1;
-    }
-
-    .producto-img img {
-      width: 100%;
-      height: 100%;
-      min-height: 440px;
-      object-fit: cover;
-      object-position: center;
-      display: block;
-    }
-
-    .producto-img::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, rgba(36, 11, 5, 0.84), rgba(36, 11, 5, 0.08));
-      pointer-events: none;
-    }
-
-    .pina .producto-img::after {
-      background: linear-gradient(90deg, rgba(43, 19, 4, 0.76), rgba(43, 19, 4, 0.05));
-    }
-
-    /* =========================
-       BENEFICIOS
-    ========================= */
-    .beneficios-home {
-      width: min(1120px, 92%);
-      margin: 0 auto 50px;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-
-    .beneficio-card {
-      background: #fffdf8;
-      border-radius: 22px;
-      padding: 28px 24px;
-      text-align: center;
-      box-shadow: 0 12px 28px rgba(60, 28, 10, 0.12);
-      border: 1px solid rgba(139, 0, 0, 0.08);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .beneficio-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 18px 34px rgba(60, 28, 10, 0.16);
-    }
-
-    .beneficio-icono {
-      width: 56px;
-      height: 56px;
-      margin: 0 auto 14px;
-      border-radius: 50%;
-      background: #8b0000;
-      color: #ffd000;
-      display: grid;
-      place-items: center;
-      font-size: 26px;
-      box-shadow: 0 10px 20px rgba(139, 0, 0, 0.18);
-    }
-
-    .beneficio-card h3 {
-      color: #8b0000;
-      margin: 0 0 10px;
-      font-size: 20px;
-    }
-
-    .beneficio-card p {
-      color: #3b2b22;
-      margin: 0;
-      line-height: 1.5;
-      font-size: 15px;
-    }
-
-    /* =========================
-       RESEÑAS Y TESTIMONIOS
-    ========================= */
-    .reseña,
-    .testimonios {
-      width: min(1050px, 92%);
-      margin: 0 auto 42px;
-      background: #fffdf8;
-      border-radius: 22px;
-      padding: 34px 28px;
-      box-shadow: 0 12px 28px rgba(60, 28, 10, 0.12);
-      border: 1px solid rgba(153, 0, 0, 0.08);
-      text-align: center;
-    }
-
-    .reseña h2,
-    .testimonios h2 {
-      color: #8b0000;
-      margin-top: 0;
-      font-size: 30px;
-    }
-
-    .reseña p {
-      max-width: 780px;
-      margin: 0 auto;
-      font-size: 18px;
-      line-height: 1.6;
-      color: #2c201b;
-    }
-
-    .testi {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-      margin-top: 22px;
-    }
-
-    .testi p {
-      background: #f8efe3;
-      border-radius: 18px;
-      padding: 20px;
-      margin: 0;
-      color: #2c201b;
-      line-height: 1.5;
-      border: 1px solid rgba(153, 0, 0, 0.08);
-    }
-
-    /* =========================
-       CTA FINAL
-    ========================= */
-    .cta-final {
-      width: min(1050px, 92%);
-      margin: 0 auto 55px;
-      padding: 38px 28px;
-      border-radius: 26px;
-      text-align: center;
-      background:
-        radial-gradient(circle at top left, rgba(255, 208, 0, 0.22), transparent 35%),
-        linear-gradient(135deg, #8b0000, #3a0b05);
-      color: #fff8e8;
-      box-shadow: 0 18px 38px rgba(60, 28, 10, 0.24);
-      border: 1px solid rgba(255, 208, 0, 0.25);
-    }
-
-    .cta-final h2 {
-      margin: 0 0 12px;
-      color: #ffd000;
-      font-size: clamp(28px, 4vw, 42px);
-    }
-
-    .cta-final p {
-      margin: 0 auto 22px;
-      max-width: 650px;
-      line-height: 1.6;
-      font-size: 17px;
-    }
-
-    .cta-final a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: #ffd000;
-      color: #7a0000;
-      text-decoration: none;
-      font-weight: 900;
-      border-radius: 999px;
-      padding: 14px 28px;
-      box-shadow: 0 10px 22px rgba(255, 183, 0, 0.25);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .carousel figure {
-        animation: none;
-        opacity: 1;
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://www.carlouis.net/#organization",
+        "name": "CARLOUIS Gourmet",
+        "alternateName": "Carlouis Sabor Artesanal",
+        "url": "https://www.carlouis.net/",
+        "logo": "https://www.carlouis.net/assets/img/logo.png",
+        "image": "https://www.carlouis.net/assets/img/og-carlouis.jpg",
+        "description": "Productor artesanal costarricense de salsas picantes de habanero, pestos, alioli, mayonesas saborizadas y conservas gourmet.",
+        "email": "luiro90@gmail.com",
+        "telephone": "+506-8825-2608",
+        "sameAs": ["https://instagram.com/carlouis_cr"],
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Alajuela",
+          "addressRegion": "Alajuela",
+          "addressCountry": "CR"
+        }
+      },
+      {
+        "@type": ["LocalBusiness", "FoodEstablishment"],
+        "@id": "https://www.carlouis.net/#localbusiness",
+        "name": "CARLOUIS Gourmet",
+        "url": "https://www.carlouis.net/",
+        "image": "https://www.carlouis.net/assets/img/og-carlouis.jpg",
+        "telephone": "+506-8825-2608",
+        "priceRange": "₡2.000 - ₡6.000",
+        "currenciesAccepted": "CRC",
+        "paymentAccepted": "Efectivo, SINPE Móvil, Transferencia",
+        "servesCuisine": "Gourmet artesanal costarricense",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Feria Orgánica La Verbena, Plaza Real Alajuela",
+          "addressLocality": "Alajuela",
+          "addressRegion": "Alajuela",
+          "postalCode": "20101",
+          "addressCountry": "CR"
+        },
+        "geo": { "@type": "GeoCoordinates", "latitude": 10.011034, "longitude": -84.2048035 },
+        "hasMap": "https://www.google.com/maps/place/10%C2%B000'39.7%22N+84%C2%B012'17.3%22W/@10.011034,-84.2073784,17z",
+        "openingHoursSpecification": [{
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Saturday",
+          "opens": "06:00",
+          "closes": "13:00"
+        }],
+        "areaServed": [
+          { "@type": "State", "name": "Provincia de Alajuela" },
+          { "@type": "State", "name": "Provincia de San José" },
+          { "@type": "State", "name": "Provincia de Heredia" },
+          { "@type": "State", "name": "Provincia de Cartago" },
+          { "@type": "State", "name": "Provincia de Puntarenas" },
+          { "@type": "State", "name": "Provincia de Guanacaste" },
+          { "@type": "State", "name": "Provincia de Limón" },
+          { "@type": "Country", "name": "Costa Rica" }
+        ],
+        "parentOrganization": { "@id": "https://www.carlouis.net/#organization" }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://www.carlouis.net/#website",
+        "url": "https://www.carlouis.net/",
+        "name": "CARLOUIS Gourmet",
+        "inLanguage": "es-CR",
+        "publisher": { "@id": "https://www.carlouis.net/#organization" }
+      },
+      {
+        "@type": "Product",
+        "name": "Salsa Piña Habanero CARLOUIS",
+        "image": "https://www.carlouis.net/assets/img/pina-habanero.jpg",
+        "description": "Salsa gourmet artesanal que combina la dulzura tropical de la piña con el picante aromático del habanero. Hecha en Costa Rica.",
+        "brand": { "@type": "Brand", "name": "CARLOUIS" },
+        "category": "Salsas picantes artesanales",
+        "offers": {
+          "@type": "Offer",
+          "price": "5000",
+          "priceCurrency": "CRC",
+          "availability": "https://schema.org/InStock",
+          "url": "https://www.carlouis.net/productos.html",
+          "seller": { "@id": "https://www.carlouis.net/#organization" }
+        }
+      },
+      {
+        "@type": "Product",
+        "name": "Salsa Habanero Fire by CARLOUIS",
+        "image": "https://www.carlouis.net/assets/img/habanero-fire-160.jpg",
+        "description": "Salsa de chile habanero artesanal para amantes del picante intenso, elaborada con ingredientes naturales en Costa Rica.",
+        "brand": { "@type": "Brand", "name": "CARLOUIS" },
+        "category": "Salsas picantes artesanales",
+        "offers": [
+          { "@type": "Offer", "name": "Presentación 160 gr", "price": "4000", "priceCurrency": "CRC", "availability": "https://schema.org/InStock", "url": "https://www.carlouis.net/productos.html" },
+          { "@type": "Offer", "name": "Presentación 60 gr", "price": "2000", "priceCurrency": "CRC", "availability": "https://schema.org/InStock", "url": "https://www.carlouis.net/productos.html" }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "¿Hacen envíos a todo Costa Rica?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Sí. Coordinamos envíos a las siete provincias de Costa Rica: San José, Alajuela, Cartago, Heredia, Guanacaste, Puntarenas y Limón, a través de servicios de encomienda y mensajería. En el Gran Área Metropolitana también podés coordinar entrega directa. Escribinos por WhatsApp al 8825 2608 para confirmar costo y tiempo de entrega a tu cantón." }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Dónde puedo comprar las salsas CARLOUIS en persona?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Nos encontrás todos los sábados de 6:00 a.m. a 1:00 p.m. en la Feria Orgánica La Verbena, en Plaza Real Alajuela. Ahí podés probar los productos antes de comprar." }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Qué tan picante es la salsa Habanero Fire?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Habanero Fire es nuestra salsa más intensa, de nivel 5 sobre 5 en nuestra escala. Está hecha con chile habanero seleccionado. Si preferís algo más suave pero con carácter, la Piña Habanero es nivel 3 y la Mayonesa Chipotle nivel 2." }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Los productos llevan preservantes o aditivos artificiales?",
+            "acceptedAnswer": { "@type": "Answer", "text": "No. Elaboramos en lotes pequeños con ingredientes naturales seleccionados, aceite de oliva de primera calidad y sin aditivos artificiales. Por eso recomendamos refrigerar después de abrir." }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Cómo hago un pedido?",
+            "acceptedAnswer": { "@type": "Answer", "text": "El pedido se hace por WhatsApp al +506 8825 2608. Nos escribís qué productos querés, te confirmamos disponibilidad y precio, y coordinamos la entrega o el retiro en feria. También podés usar el formulario de la página de contacto." }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Venden al por mayor para restaurantes y tiendas?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Sí. Trabajamos con restaurantes, sodas, tiendas gourmet y carnicerías en todo el país. Escribinos por WhatsApp para conocer precios de mayoreo y volúmenes mínimos." }
+          }
+        ]
       }
-
-      .carousel figure:not(:first-child) {
-        display: none;
-      }
-    }
-
-    @media (max-width: 900px) {
-      .nuevo-producto-home {
-        grid-template-columns: 1fr;
-      }
-
-      .producto-info {
-        padding: 36px 28px;
-        text-align: center;
-      }
-
-      .producto-info p {
-        margin-inline: auto;
-      }
-
-      .producto-puntos,
-      .producto-precios,
-      .producto-actions {
-        justify-content: center;
-      }
-
-      .producto-img {
-        min-height: 320px;
-      }
-
-      .producto-img img {
-        min-height: 320px;
-      }
-
-      .producto-img::after {
-        background: linear-gradient(0deg, rgba(36, 11, 5, 0.55), rgba(36, 11, 5, 0.05));
-      }
-
-      .beneficios-home {
-        grid-template-columns: 1fr;
-      }
-
-      .testi {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 600px) {
-      .carousel-wrapper {
-        width: 95%;
-        margin: 25px auto 30px;
-      }
-
-      .carousel {
-        aspect-ratio: 4 / 3;
-        max-height: 360px;
-        border-radius: 16px;
-      }
-
-      .carousel figure {
-        padding: 10px;
-      }
-
-      .producto-info h2 {
-        font-size: 36px;
-      }
-
-      .producto-info h3 {
-        font-size: 20px;
-      }
-
-      .producto-puntos {
-        grid-template-columns: 1fr;
-      }
-
-      .producto-precio {
-        width: 100%;
-      }
-
-      .btn-producto-nuevo,
-      .btn-producto-secundario,
-      .cta-final a {
-        width: 100%;
-      }
-
-      .reseña,
-      .testimonios,
-      .cta-final {
-        padding: 28px 20px;
-      }
-    }
-  </style>
+    ]
+  }
+  </script>
 </head>
 
 <body>
-  <a href="https://wa.me/50688252608" class="whatsapp-float" target="_blank" rel="noopener">
-    <img src="assets/whatsapp-icon.png" alt="WhatsApp" />
+  <a class="skip-link" href="#main">Saltar al contenido principal</a>
+
+  <!-- Sprite de iconos SVG (reemplaza los emoji del diseño anterior) -->
+  <svg class="icon-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.15h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.24-8.23a8.18 8.18 0 0 1 5.82 2.42 8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.7 8.23-8.24 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.15.16-.29.18-.53.06-.25-.13-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.16.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.16 0-.43.06-.65.31-.22.25-.85.84-.85 2.04s.87 2.37.99 2.53c.12.16 1.71 2.61 4.15 3.66.58.25 1.03.4 1.39.51.58.19 1.11.16 1.53.1.47-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.11-.22-.17-.47-.29Z"/></symbol>
+    <symbol id="i-instagram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></symbol>
+    <symbol id="i-hand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 14V5.5a1.5 1.5 0 0 1 3 0V12"/><path d="M14 11.5V4a1.5 1.5 0 0 1 3 0v8"/><path d="M17 12V6.5a1.5 1.5 0 0 1 3 0V16a6 6 0 0 1-6 6h-2a6 6 0 0 1-6-6v-1.5a1.5 1.5 0 0 1 3 0"/><path d="M8 14.5V9a1.5 1.5 0 0 0-3 0v5"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2s4.5 4.3 4.5 8.5a4.5 4.5 0 0 1-1.3 3.2c.2-1.6-.5-3.2-1.8-4.2.3 2.4-1.1 3.6-2.2 4.7-1 1-1.7 2-1.7 3.3 0 .8.3 1.6.8 2.2A5.9 5.9 0 0 1 6 14.6C6 9.5 12 8 12 2Z"/><path fill="currentColor" d="M13.4 22a5 5 0 0 0 3.3-4.6c0-1.6-.8-2.6-1.6-3.5.1 1.6-.7 2.6-1.6 3.4-.7.7-1.2 1.4-1.2 2.3 0 .9.4 1.7 1.1 2.4Z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path fill="currentColor" d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01L12 2Z"/></symbol>
+    <symbol id="i-truck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 17V5a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h1"/><path d="M14 9h4l3 3v4a1 1 0 0 1-1 1h-1"/><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></symbol>
+    <symbol id="i-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></symbol>
+    <symbol id="i-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M1 1h3l2.7 12.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 6H5"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M10 11v6M14 11v6"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></symbol>
+    <symbol id="i-zoom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  </svg>
+
+  <a class="wa-float" href="https://wa.me/50688252608?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20los%20productos%20CARLOUIS"
+     target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp al 8825 2608">
+    <svg aria-hidden="true"><use href="#i-wa"/></svg>
+    <span>Pedí por WhatsApp</span>
   </a>
 
-  <header>
-    <nav>
-      <img src="assets/logo.png" alt="Logo Sabor Artesanal" class="logo" />
-      <ul>
-        <li><a href="/index.html" class="activo">Inicio</a></li>
-        <li><a href="/productos.html">Productos</a></li>
-        <li><a href="/testimonios.html">Testimonios</a></li>
-        <li><a href="/encuentranos.html">Encuéntranos</a></li>
-        <li><a href="/contacto.html">Contacto</a></li>
+  <header class="site-header">
+    <nav class="nav container" aria-label="Navegación principal">
+      <a class="nav__brand" href="index.html" aria-label="CARLOUIS Gourmet, ir al inicio">
+        <img src="assets/img/logo.png" alt="CARLOUIS Gourmet" width="146" height="42" />
+      </a>
+
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Abrir menú de navegación">
+        <svg class="icon-menu" aria-hidden="true"><use href="#i-menu"/></svg>
+        <svg class="icon-close" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+
+      <ul class="nav__list" id="nav-menu">
+        <li><a href="index.html" aria-current="page">Inicio</a></li>
+        <li><a href="productos.html">Productos</a></li>
+        <li><a href="testimonios.html">Testimonios</a></li>
+        <li><a href="encuentranos.html">Encuéntranos</a></li>
+        <li><a href="cobertura.html">Envíos</a></li>
+        <li><a href="contacto.html">Contacto</a></li>
+        <li class="nav__mobile-cta">
+          <a class="btn btn--wa" href="https://wa.me/50688252608" target="_blank" rel="noopener">
+            <svg aria-hidden="true"><use href="#i-wa"/></svg> Pedir por WhatsApp
+          </a>
+        </li>
       </ul>
+
+      <a class="btn btn--primary btn--sm nav__cta" href="https://wa.me/50688252608?text=Hola%2C%20quiero%20hacer%20un%20pedido%20CARLOUIS" target="_blank" rel="noopener">
+        <svg aria-hidden="true"><use href="#i-wa"/></svg> Hacer pedido
+      </a>
     </nav>
-
-    <div class="hero-text">
-      <h1>Gourmet 100% artesanal</h1>
-      <p>Descubrí sabores únicos: tomates deshidratados, salsas caseras y más</p>
-
-      <div class="btn-group">
-        <a href="productos.html" class="btn">Ver Productos</a>
-        <a href="assets/recetario-carlouis.pdf" download class="btn">📥 Descargar Recetario de Productos</a>
-        <a href="https://raw.githubusercontent.com/whitehatghost/Carlouisnet/main/assets/Recetario%20de%20Bocadillos%20CARLOUIS.pdf" download class="btn">📥 Descargar Recetario de Bocadillos</a>
-      </div>
-    </div>
   </header>
 
-  <!-- ===== Carrusel de productos destacados ===== -->
-  <section class="carrusel-section">
-    <div class="carousel-wrapper" aria-label="Galería de productos destacados">
+  <main id="main">
 
-      <div class="carousel-title">
-        <span>PRODUCTOS DESTACADOS</span>
-        <h2>Sabores artesanales que se antojan</h2>
-        <p>
-          Conocé nuestras salsas, conservas y productos gourmet preparados con pasión,
-          ingredientes seleccionados y mucho sabor.
-        </p>
+    <!-- ================= HERO ================= -->
+    <section class="hero on-dark">
+      <div class="container hero__grid">
+        <div class="hero__content">
+          <span class="eyebrow"><svg aria-hidden="true"><use href="#i-flame"/></svg> Hecho en Costa Rica</span>
+          <h1>Salsas artesanales con <em>sabor de verdad</em></h1>
+          <p class="hero__lede">
+            Picantes de habanero, pestos, alioli y conservas gourmet elaboradas en lotes pequeños,
+            con ingredientes seleccionados y sin aditivos artificiales. Pedí por WhatsApp y te llega
+            a cualquier provincia del país.
+          </p>
+
+          <div class="btn-row">
+            <a class="btn btn--gold" href="productos.html">
+              <svg aria-hidden="true"><use href="#i-bag"/></svg> Ver los productos
+            </a>
+            <a class="btn btn--ghost" href="https://wa.me/50688252608?text=Hola%2C%20quiero%20hacer%20un%20pedido%20CARLOUIS" target="_blank" rel="noopener">
+              <svg aria-hidden="true"><use href="#i-wa"/></svg> Pedir ahora
+            </a>
+          </div>
+
+          <ul class="trust-strip">
+            <li><svg aria-hidden="true"><use href="#i-check"/></svg> Sin aditivos artificiales</li>
+            <li><svg aria-hidden="true"><use href="#i-truck"/></svg> Envíos a las 7 provincias</li>
+            <li><svg aria-hidden="true"><use href="#i-pin"/></svg> Feria La Verbena, Alajuela</li>
+          </ul>
+        </div>
+
+        <div class="hero__media">
+          <picture>
+            <source srcset="assets/img/pina-habanero.webp" type="image/webp" />
+            <img src="assets/img/pina-habanero.jpg" width="1024" height="1280" fetchpriority="high"
+                 alt="Frasco de salsa Piña Habanero artesanal de CARLOUIS sobre fondo cálido" />
+          </picture>
+          <div class="hero__badge">
+            <strong>13</strong>
+            <span>Productos artesanales</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= DESTACADOS ================= -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head section-head--center" data-reveal>
+          <span class="eyebrow"><svg aria-hidden="true"><use href="#i-star"/></svg> Los más pedidos</span>
+          <h2>Sabores que se antojan</h2>
+          <p>Nuestras salsas y conservas más buscadas, listas para acompañar comidas, picadas, panes y pastas.</p>
+        </div>
+
+        <div class="carousel" data-carousel>
+          <div class="carousel__viewport product-grid" tabindex="0" role="group" aria-label="Productos destacados, usá las flechas del teclado para navegar">
+
+            <article class="card carousel__slide" data-reveal>
+              <div class="card__media">
+                <span class="card__tag">Nuevo</span>
+                <picture>
+                  <source srcset="assets/img/pina-habanero.webp" type="image/webp" />
+                  <img src="assets/img/pina-habanero.jpg" width="1024" height="768" loading="lazy" decoding="async"
+                       alt="Salsa Piña Habanero CARLOUIS" />
+                </picture>
+              </div>
+              <div class="card__body">
+                <h3>Piña Habanero</h3>
+                <div class="heat" data-level="3">
+                  <svg aria-hidden="true"><use href="#i-flame"/></svg><svg aria-hidden="true"><use href="#i-flame"/></svg><svg aria-hidden="true"><use href="#i-flame"/></svg><svg aria-hidden="true"><use href="#i-flame"/></svg><svg aria-hidden="true"><use href="#i-flame"/></svg>
+                  <span>Picante medio</span>
+                </div>
+                <p class="card__desc">Dulzura tropical de la piña con el toque aromático del habanero. Va perfecta con cerdo, pollo y tacos.</p>
+                <div class="card__foot">
+                  <p class="price">₡5.000 <small>Frasco</small></p>
+                  <a class="btn btn--primary btn--sm" href="https://wa.me/50688252608?text=Hola%2C%20quiero%20pedir%20Pi%C3%B1a%20Habanero%20CARLOUIS" target="_blank" rel="noopener"
+                 data-add data-name="Piña Habanero" data-price="5000">
+                    <svg aria-hidden="true"><use href="#i-plus"/></svg> Agregar
+                  </a>
+                </div>
+              </div>
+            </article>
+
+            <article class="card carousel__slide" data-reveal>
+              <div class="card__media">
+                <span class="card__tag">Nuevo</span>
+                <picture>
+                  <source srcset="assets/img/habanero-fire-160.webp" type="image/webp" />
+                  <img src="assets/img/habanero-fire-160.jpg" width="1086" height="815" loading="lazy" decoding="async"
+                       alt="Salsa Habanero Fire by CARLOUIS presentación de 160 gramos" />
+                </picture>
+              </div>
+              <div class="card__body">
+                <h3>Habanero Fire</h3>
+                <div class="heat" data-level="5">
+                  <svg aria-hidden="true"><use href="#i-flame"/></svg><svg aria-hidden="true"><use href="#i-flame"/></svg><svg aria-hidden="true"><use href="#i-flame"/></svg><svg aria-hidden="true"><use href="#i-flame"/></svg><svg aria-hidden="true"><use href="#i-flame"/></svg>
+                  <span>Muy picante</span>
+                </div>
+                <p class="card__desc">Para los que de verdad aguantan. Habanero seleccionado e ingredientes naturales, sin rodeos.</p>
+                <div class="card__foot">
+                  <p class="price">₡4.000 <small>160 gr · 60 gr a ₡2.000</small></p>
+                  <a class="btn btn--primary btn--sm" href="https://wa.me/50688252608?text=Hola%2C%20quiero%20pedir%20Habanero%20Fire%20by%20CARLOUIS" target="_blank" rel="noopener"
+                 data-add data-name="Habanero Fire 160 gr" data-price="4000">
+                    <svg aria-hidden="true"><use href="#i-plus"/></svg> Agregar
+                  </a>
+                </div>
+              </div>
+            </article>
+
+            <article class="card carousel__slide" data-reveal>
+              <div class="card__media">
+                <picture>
+                  <source srcset="assets/img/pesto-albahaca.webp" type="image/webp" />
+                  <img src="assets/img/pesto-albahaca.jpg" width="820" height="615" loading="lazy" decoding="async"
+                       alt="Pesto de albahaca artesanal CARLOUIS" />
+                </picture>
+              </div>
+              <div class="card__body">
+                <h3>Pesto de Albahaca</h3>
+                <div class="heat" data-level="0">
+                  <svg aria-hidden="true"><use href="#i-flame"/></svg><svg aria-hidden="true"><use href="#i-flame"/></svg><svg aria-hidden="true"><use href="#i-flame"/></svg><svg aria-hidden="true"><use href="#i-flame"/></svg><svg aria-hidden="true"><use href="#i-flame"/></svg>
+                  <span>Sin picante</span>
+                </div>
+                <p class="card__desc">Clásico, aromático y 100% artesanal. El favorito para pastas, bruschettas y sándwiches.</p>
+                <div class="card__foot">
+                  <p class="price">₡6.000 <small>Frasco</small></p>
+                  <a class="btn btn--primary btn--sm" href="https://wa.me/50688252608?text=Hola%2C%20quiero%20pedir%20Pesto%20de%20Albahaca%20CARLOUIS" target="_blank" rel="noopener"
+                 data-add data-name="Pesto de Albahaca" data-price="6000">
+                    <svg aria-hidden="true"><use href="#i-plus"/></svg> Agregar
+                  </a>
+                </div>
+              </div>
+            </article>
+
+            <article class="card carousel__slide" data-reveal>
+              <div class="card__media">
+                <picture>
+                  <source srcset="assets/img/tomates.webp" type="image/webp" />
+                  <img src="assets/img/tomates.jpg" width="800" height="600" loading="lazy" decoding="async"
+                       alt="Tomates deshidratados en aceite de oliva CARLOUIS" />
+                </picture>
+              </div>
+              <div class="card__body">
+                <h3>Tomates Deshidratados</h3>
+                <div class="heat" data-level="0">
+                  <svg aria-hidden="true"><use href="#i-flame"/></svg><svg aria-hidden="true"><use href="#i-flame"/></svg><svg aria-hidden="true"><use href="#i-flame"/></svg><svg aria-hidden="true"><use href="#i-flame"/></svg><svg aria-hidden="true"><use href="#i-flame"/></svg>
+                  <span>Sin picante</span>
+                </div>
+                <p class="card__desc">Intensos y dulces, en aceite de oliva. Perfectos para pastas, tablas de picar y snacks.</p>
+                <div class="card__foot">
+                  <p class="price">₡6.000 <small>Frasco</small></p>
+                  <a class="btn btn--primary btn--sm" href="https://wa.me/50688252608?text=Hola%2C%20quiero%20pedir%20Tomates%20Deshidratados%20CARLOUIS" target="_blank" rel="noopener"
+                 data-add data-name="Tomates Deshidratados" data-price="6000">
+                    <svg aria-hidden="true"><use href="#i-plus"/></svg> Agregar
+                  </a>
+                </div>
+              </div>
+            </article>
+
+          </div>
+
+          <div class="carousel__controls">
+            <button class="carousel__btn" type="button" data-carousel-prev aria-label="Producto anterior">
+              <svg aria-hidden="true"><use href="#i-left"/></svg>
+            </button>
+            <ul class="carousel__dots"></ul>
+            <button class="carousel__btn" type="button" data-carousel-next aria-label="Producto siguiente">
+              <svg aria-hidden="true"><use href="#i-right"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="btn-row" style="justify-content:center;margin-top:2rem" data-reveal>
+          <a class="btn btn--ghost" href="productos.html">Ver el catálogo completo <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PRODUCTO DESTACADO 1 ================= -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="feature on-dark" data-reveal>
+          <div class="feature__body">
+            <span class="eyebrow"><svg aria-hidden="true"><use href="#i-flame"/></svg> Nuevo producto</span>
+            <h2>Piña Habanero</h2>
+            <p class="feature__sub">by CARLOUIS</p>
+            <p>
+              Una salsa gourmet artesanal que combina la dulzura tropical de la piña con el toque
+              intenso y aromático del habanero. Dulce, picante y perfecta para darle vida a
+              costillas, cerdo, pollo, tacos y hasta un queso maduro.
+            </p>
+            <ul class="pills">
+              <li>Dulce tropical</li>
+              <li>Picante equilibrado</li>
+              <li>Sabor gourmet</li>
+            </ul>
+            <div class="price-row">
+              <p class="price-tag">Frasco <b>₡5.000</b></p>
+            </div>
+            <div class="btn-row">
+              <a class="btn btn--gold" href="https://wa.me/50688252608?text=Hola%2C%20quiero%20pedir%20Pi%C3%B1a%20Habanero%20CARLOUIS" target="_blank" rel="noopener">
+                <svg aria-hidden="true"><use href="#i-wa"/></svg> Pedir por WhatsApp
+              </a>
+              <a class="btn btn--ghost" href="productos.html">Ver productos</a>
+            </div>
+          </div>
+          <div class="feature__media">
+            <picture>
+              <source srcset="assets/img/pina-habanero.webp" type="image/webp" />
+              <img src="assets/img/pina-habanero.jpg" width="1024" height="1536" loading="lazy" decoding="async"
+                   alt="Salsa Piña Habanero artesanal CARLOUIS" />
+            </picture>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= PRODUCTO DESTACADO 2 ================= -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="feature feature--flip on-dark" data-reveal>
+          <div class="feature__body">
+            <span class="eyebrow"><svg aria-hidden="true"><use href="#i-flame"/></svg> Nuevo producto</span>
+            <h2>Habanero Fire</h2>
+            <p class="feature__sub">by CARLOUIS</p>
+            <p>
+              Nace una salsa creada para los amantes del verdadero picante. Elaborada con habanero
+              seleccionado e ingredientes naturales que despiertan cada bocado. Nivel 5 de 5 en
+              nuestra escala: avisado quedás.
+            </p>
+            <ul class="pills">
+              <li>Picante intenso</li>
+              <li>Sabor artesanal</li>
+              <li>Ingredientes naturales</li>
+            </ul>
+            <div class="price-row">
+              <p class="price-tag">160 gr <b>₡4.000</b></p>
+              <p class="price-tag">60 gr <b>₡2.000</b></p>
+            </div>
+            <div class="btn-row">
+              <a class="btn btn--gold" href="https://wa.me/50688252608?text=Hola%2C%20quiero%20pedir%20Habanero%20Fire%20by%20CARLOUIS" target="_blank" rel="noopener">
+                <svg aria-hidden="true"><use href="#i-wa"/></svg> Pedir por WhatsApp
+              </a>
+              <a class="btn btn--ghost" href="productos.html">Ver productos</a>
+            </div>
+          </div>
+          <div class="feature__media">
+            <picture>
+              <source srcset="assets/img/habanero-fire-160.webp" type="image/webp" />
+              <img src="assets/img/habanero-fire-160.jpg" width="1086" height="1448" loading="lazy" decoding="async"
+                   alt="Salsa Habanero Fire by CARLOUIS" />
+            </picture>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= HISTORIA ================= -->
+    <section class="section section--alt">
+      <div class="container split">
+        <div data-reveal>
+          <span class="eyebrow"><svg aria-hidden="true"><use href="#i-leaf"/></svg> Nuestra historia</span>
+          <h2>De la cocina de casa a tu mesa</h2>
+          <p>
+            CARLOUIS nació en Alajuela con una idea simple: que una salsa de verdad no necesita
+            colorantes, espesantes ni nombres impronunciables en la etiqueta. Solo chile bueno,
+            tiempo y manos que saben lo que hacen.
+          </p>
+          <p>
+            Preparamos cada receta en lotes pequeños. Eso significa que el pesto huele a albahaca
+            recién cortada, que el tomate deshidratado todavía sabe a tomate, y que el habanero
+            pica como debe picar.
+          </p>
+          <div class="btn-row">
+            <a class="btn btn--primary" href="encuentranos.html">
+              <svg aria-hidden="true"><use href="#i-pin"/></svg> Visitanos en la feria
+            </a>
+          </div>
+        </div>
+        <div data-reveal>
+          <picture>
+            <source srcset="assets/img/carrusel3.webp" type="image/webp" />
+            <img src="assets/img/carrusel3.jpg" width="1536" height="1024" loading="lazy" decoding="async"
+                 alt="Productos artesanales CARLOUIS exhibidos en la feria"
+                 style="border-radius:var(--r-xl);box-shadow:var(--sh-3);aspect-ratio:4/3;object-fit:cover;width:100%" />
+          </picture>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VALORES ================= -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head section-head--center" data-reveal>
+          <h2>Por qué la gente repite</h2>
+          <p>No es marketing: es cómo hacemos las cosas desde el primer frasco.</p>
+        </div>
+
+        <div class="value-grid">
+          <div class="value" data-reveal>
+            <div class="icon-badge"><svg aria-hidden="true"><use href="#i-leaf"/></svg></div>
+            <h3>Ingredientes seleccionados</h3>
+            <p>Chiles, hierbas y aceite de oliva de primera. Sin preservantes ni aditivos artificiales.</p>
+          </div>
+          <div class="value" data-reveal>
+            <div class="icon-badge"><svg aria-hidden="true"><use href="#i-hand"/></svg></div>
+            <h3>Hecho artesanalmente</h3>
+            <p>Lotes pequeños, receta por receta, cuidando textura, aroma y sabor en cada frasco.</p>
+          </div>
+          <div class="value" data-reveal>
+            <div class="icon-badge"><svg aria-hidden="true"><use href="#i-chat"/></svg></div>
+            <h3>Pedidos sin vueltas</h3>
+            <p>Un mensaje de WhatsApp y listo. Te confirmamos disponibilidad, precio y entrega.</p>
+          </div>
+          <div class="value" data-reveal>
+            <div class="icon-badge"><svg aria-hidden="true"><use href="#i-truck"/></svg></div>
+            <h3>Llegamos a todo el país</h3>
+            <p>Coordinamos envíos a las siete provincias y entrega directa en el Gran Área Metropolitana.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TESTIMONIOS ================= -->
+    <section class="section section--alt">
+      <div class="container">
+        <div class="section-head section-head--center" data-reveal>
+          <span class="eyebrow"><svg aria-hidden="true"><use href="#i-star"/></svg> Clientes reales</span>
+          <h2>Lo que dicen quienes ya probaron</h2>
+        </div>
+
+        <div class="quote-grid">
+          <figure class="quote" data-reveal>
+            <div class="stars" role="img" aria-label="5 de 5 estrellas">
+              <svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg>
+            </div>
+            <blockquote>El alioli es otra cosa… se nota que es hecho a mano.</blockquote>
+            <figcaption><span class="avatar" aria-hidden="true">M</span> <span><b>María</b> · Escazú</span></figcaption>
+          </figure>
+
+          <figure class="quote" data-reveal>
+            <div class="stars" role="img" aria-label="5 de 5 estrellas">
+              <svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg>
+            </div>
+            <blockquote>Pedí 3 frascos y llegaron al día siguiente. Todo delicioso.</blockquote>
+            <figcaption><span class="avatar" aria-hidden="true">J</span> <span><b>José</b> · San Pedro</span></figcaption>
+          </figure>
+
+          <figure class="quote" data-reveal>
+            <div class="stars" role="img" aria-label="5 de 5 estrellas">
+              <svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg><svg aria-hidden="true"><use href="#i-star"/></svg>
+            </div>
+            <blockquote>La mayonesa chipotle está a otro nivel. La uso con todo.</blockquote>
+            <figcaption><span class="avatar" aria-hidden="true">A</span> <span><b>Andrea</b> · Santa Ana</span></figcaption>
+          </figure>
+        </div>
+
+        <div class="btn-row" style="justify-content:center;margin-top:2.5rem" data-reveal>
+          <a class="btn btn--ghost" href="testimonios.html">Leer los 29 testimonios <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FAQ ================= -->
+    <section class="section">
+      <div class="container container--narrow">
+        <div class="section-head section-head--center" data-reveal>
+          <h2>Preguntas frecuentes</h2>
+          <p>Lo que más nos consultan por WhatsApp.</p>
+        </div>
+
+        <div class="faq" data-reveal>
+          <details>
+            <summary>¿Hacen envíos a todo Costa Rica?</summary>
+            <div class="faq__answer">
+              <p>Sí. Coordinamos envíos a las siete provincias —San José, Alajuela, Cartago, Heredia,
+              Guanacaste, Puntarenas y Limón— por medio de servicios de encomienda y mensajería.
+              En el Gran Área Metropolitana también podés coordinar entrega directa.
+              <a href="cobertura.html">Mirá la cobertura por provincia</a> o escribinos por WhatsApp
+              al 8825 2608 para confirmar costo y tiempo de entrega a tu cantón.</p>
+            </div>
+          </details>
+          <details>
+            <summary>¿Dónde puedo comprarlas en persona?</summary>
+            <div class="faq__answer">
+              <p>Nos encontrás todos los sábados de 6:00 a.m. a 1:00 p.m. en la
+              <a href="encuentranos.html">Feria Orgánica La Verbena</a>, en Plaza Real Alajuela.
+              Ahí podés probar los productos antes de comprar.</p>
+            </div>
+          </details>
+          <details>
+            <summary>¿Qué tan picante es la Habanero Fire?</summary>
+            <div class="faq__answer">
+              <p>Es nuestra salsa más intensa: nivel 5 de 5, hecha con chile habanero seleccionado.
+              Si preferís algo con carácter pero más manejable, la Piña Habanero es nivel 3 y la
+              Mayonesa Chipotle nivel 2.</p>
+            </div>
+          </details>
+          <details>
+            <summary>¿Llevan preservantes o aditivos artificiales?</summary>
+            <div class="faq__answer">
+              <p>No. Elaboramos en lotes pequeños con ingredientes naturales seleccionados y aceite de
+              oliva de primera calidad. Por eso recomendamos refrigerar después de abrir.</p>
+            </div>
+          </details>
+          <details>
+            <summary>¿Cómo hago un pedido?</summary>
+            <div class="faq__answer">
+              <p>Por WhatsApp al +506 8825 2608: nos escribís qué querés, te confirmamos disponibilidad
+              y precio, y coordinamos entrega o retiro en feria. También podés usar el
+              <a href="contacto.html">formulario de contacto</a>.</p>
+            </div>
+          </details>
+          <details>
+            <summary>¿Venden al por mayor para restaurantes y tiendas?</summary>
+            <div class="faq__answer">
+              <p>Sí. Trabajamos con restaurantes, sodas, tiendas gourmet y carnicerías en todo el país.
+              Escribinos por WhatsApp para conocer precios de mayoreo y volúmenes mínimos.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CTA FINAL ================= -->
+    <section class="section section--tight">
+      <div class="container">
+        <div class="cta on-dark" data-reveal>
+          <h2>¿Listo para probarlas?</h2>
+          <p>
+            Escribinos por WhatsApp y te ayudamos con precios, presentaciones y disponibilidad.
+            Ideales para acompañar comidas, picadas, panes, pastas y bocadillos.
+          </p>
+          <div class="btn-row">
+            <a class="btn btn--gold" href="https://wa.me/50688252608?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20los%20productos%20CARLOUIS" target="_blank" rel="noopener">
+              <svg aria-hidden="true"><use href="#i-wa"/></svg> Hacer pedido por WhatsApp
+            </a>
+            <a class="btn btn--ghost" href="assets/recetario-carlouis.pdf" download>
+              Recetario de productos (PDF)
+            </a>
+            <a class="btn btn--ghost" href="assets/recetario-bocadillos-carlouis.pdf" download>
+              Recetario de bocadillos (PDF)
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <img src="assets/img/logo.png" alt="CARLOUIS Gourmet" width="146" height="42" loading="lazy" />
+          <p>
+            Salsas artesanales, picantes de habanero, pestos y conservas gourmet hechas en
+            Alajuela, Costa Rica. Lotes pequeños, ingredientes de verdad.
+          </p>
+          <div class="footer-social">
+            <a href="https://instagram.com/carlouis_cr" target="_blank" rel="noopener" aria-label="Seguinos en Instagram">
+              <svg aria-hidden="true"><use href="#i-instagram"/></svg>
+            </a>
+            <a href="https://wa.me/50688252608" target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp">
+              <svg aria-hidden="true"><use href="#i-wa"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <nav aria-label="Enlaces del sitio">
+          <h4>Navegación</h4>
+          <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="productos.html">Productos</a></li>
+            <li><a href="testimonios.html">Testimonios</a></li>
+            <li><a href="encuentranos.html">Encuéntranos</a></li>
+            <li><a href="cobertura.html">Envíos y cobertura</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+          </ul>
+        </nav>
+
+        <div>
+          <h4>Contacto</h4>
+          <ul>
+            <li><a href="https://wa.me/50688252608" target="_blank" rel="noopener">WhatsApp: 8825 2608</a></li>
+            <li><a href="tel:+50688252608">Teléfono: +506 8825 2608</a></li>
+            <li><a href="https://instagram.com/carlouis_cr" target="_blank" rel="noopener">Instagram: @carlouis_cr</a></li>
+            <li>Feria La Verbena, Plaza Real Alajuela</li>
+            <li>Sábados de 6:00 a.m. a 1:00 p.m.</li>
+          </ul>
+        </div>
       </div>
 
-      <div class="carousel">
-        <figure>
-          <img src="assets/piña_habanero.jpeg" alt="Piña Habanero CARLOUIS">
-        </figure>
-
-        <figure>
-          <img src="assets/habanero_fire1.jpeg" alt="Habanero Fire by CARLOUIS">
-        </figure>
-
-        <figure>
-          <img src="assets/carrusel1.jpg" alt="Producto destacado 1">
-        </figure>
-
-        <figure>
-          <img src="assets/carrusel2.jpg" alt="Producto destacado 2">
-        </figure>
+      <div class="footer-bottom">
+        <p>© <span data-year>2026</span> CARLOUIS Gourmet · Alajuela, Costa Rica</p>
+        <p>Desarrollado por <a href="https://instagram.com/hacksincodigos" target="_blank" rel="noopener">HackSinCodigos</a></p>
       </div>
     </div>
-  </section>
-
-  <!-- ===== Producto nuevo Piña Habanero ===== -->
-  <section class="nuevo-producto-home pina">
-    <div class="producto-info">
-      <span class="producto-badge">🍍 NUEVO PRODUCTO</span>
-
-      <h2>Piña Habanero</h2>
-      <h3>CARLOUIS</h3>
-
-      <p>
-        Una salsa gourmet artesanal que combina la dulzura tropical de la piña
-        con el toque intenso y aromático del habanero. Dulce, picante y perfecta
-        para darle vida a cada bocado.
-      </p>
-
-      <div class="producto-puntos">
-        <div class="producto-punto">Dulce tropical</div>
-        <div class="producto-punto">Picante equilibrado</div>
-        <div class="producto-punto">Sabor gourmet</div>
-      </div>
-
-      <div class="producto-precios">
-        <div class="producto-precio">Precio: <span>₡5.000</span></div>
-      </div>
-
-      <div class="producto-actions">
-        <a href="https://wa.me/50688252608?text=Hola%2C%20quiero%20pedir%20Pi%C3%B1a%20Habanero%20CARLOUIS" class="btn-producto-nuevo" target="_blank" rel="noopener">
-          Pedir por WhatsApp
-        </a>
-
-        <a href="productos.html" class="btn-producto-secundario">
-          Ver productos
-        </a>
-      </div>
-    </div>
-
-    <div class="producto-img">
-      <img src="assets/piña_habanero.jpeg" alt="Salsa Piña Habanero CARLOUIS" />
-    </div>
-  </section>
-
-  <!-- ===== Producto nuevo Habanero Fire ===== -->
-  <section class="nuevo-producto-home">
-    <div class="producto-info">
-      <span class="producto-badge">🔥 NUEVO PRODUCTO</span>
-
-      <h2>Habanero Fire</h2>
-      <h3>by CARLOUIS</h3>
-
-      <p>
-        Nace una salsa creada para los amantes del verdadero picante.
-        Elaborada con habanero seleccionado e ingredientes naturales que despiertan cada bocado.
-      </p>
-
-      <div class="producto-puntos">
-        <div class="producto-punto">Picante intenso</div>
-        <div class="producto-punto">Sabor artesanal</div>
-        <div class="producto-punto">Ingredientes naturales</div>
-      </div>
-
-      <div class="producto-precios">
-        <div class="producto-precio">160gr: <span>₡4.000</span></div>
-        <div class="producto-precio">60gr: <span>₡2.000</span></div>
-      </div>
-
-      <div class="producto-actions">
-        <a href="https://wa.me/50688252608?text=Hola%2C%20quiero%20pedir%20Habanero%20Fire%20by%20CARLOUIS" class="btn-producto-nuevo" target="_blank" rel="noopener">
-          Pedir por WhatsApp
-        </a>
-
-        <a href="productos.html" class="btn-producto-secundario">
-          Ver productos
-        </a>
-      </div>
-    </div>
-
-    <div class="producto-img">
-      <img src="assets/habanero_fire1.jpeg" alt="Salsa Habanero Fire by CARLOUIS" />
-    </div>
-  </section>
-
-  <!-- ===== Beneficios ===== -->
-  <section class="beneficios-home">
-    <div class="beneficio-card">
-      <div class="beneficio-icono">🌿</div>
-      <h3>Ingredientes seleccionados</h3>
-      <p>Productos elaborados con ingredientes de calidad y sabor auténtico.</p>
-    </div>
-
-    <div class="beneficio-card">
-      <div class="beneficio-icono">👨‍🍳</div>
-      <h3>Hecho artesanalmente</h3>
-      <p>Cada receta se prepara con cuidado para conservar textura, aroma y sabor.</p>
-    </div>
-
-    <div class="beneficio-card">
-      <div class="beneficio-icono">📲</div>
-      <h3>Pedidos fáciles</h3>
-      <p>Pedí directo por WhatsApp y consultá disponibilidad de productos.</p>
-    </div>
-  </section>
-
-  <section id="resena" class="reseña">
-    <h2>Reseña Destacada</h2>
-    <p>
-      “Desde que probé el pesto de albahaca, no puedo volver a las marcas del supermercado.
-      ¡Sabor puro!” - <em>Revista Culinaria CR</em>
-    </p>
-  </section>
-
-  <section id="testimonios" class="testimonios">
-    <h2>Testimonios</h2>
-
-    <div class="testi">
-      <p>“El alioli es otra cosa... se nota que es hecho a mano.” - <strong>María, Escazú</strong></p>
-      <p>“Pedí 3 frascos y llegaron al día siguiente. Todo delicioso.” - <strong>José, San Pedro</strong></p>
-      <p>“La mayonesa chipotle está a otro nivel. La uso con todo.” - <strong>Andrea, Santa Ana</strong></p>
-    </div>
-  </section>
-
-  <section class="cta-final">
-    <h2>¿Querés probar nuestros productos?</h2>
-    <p>
-      Escribinos por WhatsApp y te ayudamos con precios, presentaciones y disponibilidad.
-      Ideal para acompañar comidas, picadas, panes, pastas y bocadillos.
-    </p>
-
-    <a href="https://wa.me/50688252608?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20los%20productos%20CARLOUIS" target="_blank" rel="noopener">
-      Hacer pedido por WhatsApp
-    </a>
-  </section>
-
-  <footer>
-    <p>
-      Desarrollado por <strong>HackSinCodigos</strong> |
-      <a href="https://instagram.com/hacksincodigos" target="_blank" rel="noopener">@hacksincodigos</a>
-    </p>
   </footer>
 </body>
 </html>

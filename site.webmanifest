@@ -1,0 +1,15 @@
+{
+  "name": "CARLOUIS Gourmet",
+  "short_name": "CARLOUIS",
+  "description": "Salsas artesanales, picantes de habanero, pestos y conservas gourmet hechas en Costa Rica.",
+  "lang": "es-CR",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FBF7F0",
+  "theme_color": "#4A1206",
+  "icons": [
+    { "src": "/assets/img/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
