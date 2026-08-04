@@ -430,8 +430,24 @@ strong, b { font-weight: 700; }
   scrollbar-width: none;
 }
 .carousel__viewport::-webkit-scrollbar { display: none; }
-.carousel__slide { scroll-snap-align: center; }
-@media (min-width: 720px) { .carousel__viewport { grid-auto-columns: minmax(0, 1fr); overflow: visible; } }
+/* Alineado al inicio, no al centro: el JS desplaza a slide.offsetLeft, y con
+   snap "center" el navegador corregía a otro punto de anclaje y el scroll
+   rebotaba a cero, dejando las flechas sin efecto. */
+.carousel__slide { scroll-snap-align: start; }
+/* Desde 720px deja de ser carrusel y pasa a grilla normal, con filas de la
+   misma altura. Antes compartía la clase .product-grid y las dos definiciones
+   de grid chocaban: se mezclaba el flujo por columnas con las columnas
+   explícitas y las tarjetas se estiraban a más de 1500px. */
+@media (min-width: 720px) {
+  .carousel__viewport {
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-auto-rows: 1fr;
+    gap: var(--sp-5);
+    overflow: visible;
+  }
+}
 
 .carousel__controls {
   display: flex; align-items: center; justify-content: center; gap: var(--sp-4);
@@ -1029,3 +1045,129 @@ strong, b { font-weight: 700; }
   .on-dark h1, .on-dark h2, .on-dark h3, .on-dark p { color: #000 !important; }
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .8em; }
 }
+
+/* ---------- 28. Eventos y ferias ----------------------------------------- */
+
+/* Barra de anuncio: va arriba de todo, en todas las páginas.
+   Para quitarla cuando termine el evento, borrá el bloque <a class="announce">. */
+.announce {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0.5rem 0.85rem; flex-wrap: wrap;
+  padding: 0.7rem 1.25rem;
+  background: linear-gradient(100deg, var(--ember-700), var(--ember-900) 60%, #2A0A03);
+  color: #FFF6E8; text-decoration: none;
+  font-size: 0.92rem; font-weight: 600; text-align: center;
+  border-bottom: 1px solid rgba(224, 160, 46, .3);
+}
+.announce:hover { color: #fff; }
+.announce b { color: var(--gold-400); font-weight: 700; }
+.announce .announce__cta {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  padding: 0.2rem 0.7rem; border-radius: var(--r-pill);
+  background: rgba(255, 246, 232, .14); border: 1px solid rgba(255, 246, 232, .3);
+  font-weight: 700; white-space: nowrap;
+}
+.announce svg { width: 14px; height: 14px; }
+.live-dot {
+  width: 9px; height: 9px; flex: none; border-radius: 50%;
+  background: #4ADE80; box-shadow: 0 0 0 0 rgba(74, 222, 128, .7);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  70% { box-shadow: 0 0 0 9px rgba(74, 222, 128, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+}
+@media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
+@media (max-width: 560px) { .announce { font-size: 0.85rem; padding: 0.6rem 1rem; } }
+
+/* Aviso de evento en el menú */
+.nav__list a .live-dot { display: inline-block; margin-left: 0.4rem; vertical-align: middle; }
+
+/* Tarjeta de evento */
+.event-card {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  border-radius: var(--r-xl); overflow: hidden; box-shadow: var(--sh-3);
+}
+.event-card__body { padding: clamp(1.75rem, 1.2rem + 2.5vw, 3rem); align-self: center; }
+.event-card__aside {
+  display: grid; place-items: center; padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  background: #0B4C7C; /* azul del parque Forum 2 */
+}
+.event-card__aside img { width: min(100%, 300px); height: auto; }
+@media (max-width: 820px) {
+  .event-card { grid-template-columns: 1fr; }
+  .event-card__aside { order: -1; }
+}
+
+/* Chips de fecha */
+.event-days { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: var(--sp-5) 0; list-style: none; }
+.event-days li {
+  display: grid; place-items: center; gap: 0.1rem;
+  min-width: 76px; padding: 0.6rem 0.9rem;
+  background: rgba(255, 246, 232, .1); border: 1px solid rgba(224, 160, 46, .4);
+  border-radius: var(--r-md); color: #FFF6E8;
+}
+.event-days .dia { font-size: 0.72rem; letter-spacing: .1em; text-transform: uppercase; color: #EBD9C4; }
+.event-days .num { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--gold-400); line-height: 1; }
+.event-days li.hoy { background: var(--gold-500); border-color: var(--gold-500); }
+.event-days li.hoy .dia { color: #7A4A00; }
+.event-days li.hoy .num { color: var(--ember-900); }
+
+/* Datos del lugar */
+.venue { display: grid; gap: var(--sp-3); margin: var(--sp-5) 0; }
+.venue__row { display: flex; gap: var(--sp-3); align-items: flex-start; }
+.venue__row svg { width: 19px; height: 19px; flex: none; margin-top: 2px; color: var(--gold-400); }
+.venue__row b { display: block; color: #fff; font-size: 0.93rem; }
+.venue__row span { color: #F0DFC9; font-size: 0.95rem; line-height: 1.5; }
+
+/* Botones de navegación GPS */
+.btn--waze { --btn-bg: #33CCFF; --btn-fg: #05384A; box-shadow: 0 10px 24px rgba(51, 204, 255, .28); }
+.btn--waze:hover { --btn-bg: #1FC0F5; }
+.btn--maps { --btn-bg: #FFF6E8; --btn-fg: var(--ember-800); box-shadow: 0 10px 24px rgba(0, 0, 0, .18); }
+.btn--maps:hover { --btn-bg: #fff; }
+
+/* Listado de eventos */
+.event-list { display: grid; gap: var(--sp-5); }
+.event-item {
+  display: grid; grid-template-columns: auto 1fr auto; gap: var(--sp-5); align-items: center;
+  padding: var(--sp-5); background: var(--card);
+  border: 1px solid var(--line-soft); border-left: 4px solid var(--line);
+  border-radius: var(--r-lg); box-shadow: var(--sh-1);
+  transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+}
+.event-item:hover { transform: translateY(-3px); box-shadow: var(--sh-2); }
+.event-item.is-live { border-left-color: var(--ember-600); }
+.event-item__when {
+  display: grid; place-items: center; min-width: 84px; padding: var(--sp-3);
+  background: var(--paper-2); border-radius: var(--r-md); text-align: center;
+}
+.event-item__when .mes { font-size: 0.72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ember-700); }
+.event-item__when .dias { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; color: var(--ember-800); line-height: 1.1; }
+.event-item h3 { font-size: var(--step-1); margin-bottom: 0.3rem; color: var(--ember-800); }
+.event-item p { margin: 0; color: var(--ink-soft); font-size: 0.94rem; }
+.badge-live {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.25rem 0.7rem; margin-bottom: 0.4rem; border-radius: var(--r-pill);
+  background: rgba(168, 42, 16, .1); border: 1px solid rgba(168, 42, 16, .3);
+  font-size: 0.72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ember-700);
+}
+@media (max-width: 700px) {
+  .event-item { grid-template-columns: 1fr; gap: var(--sp-4); }
+  .event-item__when { justify-self: start; min-width: 0; padding: 0.5rem 0.9rem; }
+  .event-item .btn { width: 100%; }
+}
+
+/* Cuerpo del artículo */
+.article-body { font-size: 1.05rem; line-height: 1.75; }
+.article-body h2 { font-size: var(--step-2); margin-top: var(--sp-7); }
+.article-body h3 { font-size: var(--step-1); margin-top: var(--sp-6); }
+.article-body ul { margin: 0 0 var(--sp-4) 1.25rem; list-style: disc; }
+.article-body li { margin-bottom: 0.5rem; }
+.article-meta {
+  display: flex; flex-wrap: wrap; gap: var(--sp-4);
+  padding-bottom: var(--sp-5); margin-bottom: var(--sp-6);
+  border-bottom: 1px solid var(--line);
+  font-size: 0.9rem; color: var(--ink-mute);
+}
+.article-meta span { display: inline-flex; align-items: center; gap: 0.4rem; }
+.article-meta svg { width: 16px; height: 16px; color: var(--ember-600); }

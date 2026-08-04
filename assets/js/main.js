@@ -95,6 +95,16 @@
     if (!viewport || slides.length < 2) return;
 
     var current = 0;
+    var dots = [];
+
+    // Pinta puntos y flechas según el índice. Se llama al hacer clic y también
+    // al desplazar a mano: si dependiera solo del evento de scroll, los
+    // controles se quedarían desfasados hasta que el navegador lo emitiera.
+    var paint = function (i) {
+      dots.forEach(function (d, n) { d.setAttribute('aria-current', String(n === i)); });
+      if (prev) prev.disabled = i === 0;
+      if (next) next.disabled = i === slides.length - 1;
+    };
 
     var goTo = function (i) {
       current = Math.max(0, Math.min(i, slides.length - 1));
@@ -102,6 +112,7 @@
         left: slides[current].offsetLeft - viewport.offsetLeft,
         behavior: reduceMotion.matches ? 'auto' : 'smooth'
       });
+      paint(current);
     };
 
     // Puntos de navegación
@@ -614,6 +625,16 @@
       if (e.key === 'Escape' && lb.classList.contains('is-open')) closeLb();
     });
   }
+
+  /* ---------- Imágenes opcionales --------------------------- */
+  // Logos de terceros (sedes de ferias) que pueden no estar cargados todavía:
+  // si el archivo falta, se oculta el bloque en vez de mostrar un icono roto.
+  document.querySelectorAll('img[data-optional]').forEach(function (img) {
+    img.addEventListener('error', function () {
+      var host = img.closest('[data-optional-host]') || img;
+      host.hidden = true;
+    });
+  });
 
   /* ---------- Volver arriba --------------------------------- */
   var toTop = document.createElement('button');
