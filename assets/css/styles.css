@@ -1171,3 +1171,34 @@ strong, b { font-weight: 700; }
 }
 .article-meta span { display: inline-flex; align-items: center; gap: 0.4rem; }
 .article-meta svg { width: 16px; height: 16px; color: var(--ember-600); }
+
+/* ---------- 29. Bitácora de ferias (blog) -------------------------------- */
+.post-grid { display: grid; gap: var(--sp-5); grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); grid-auto-rows: 1fr; }
+.post-card {
+  display: flex; flex-direction: column; overflow: hidden;
+  background: var(--card); border: 1px solid var(--line-soft);
+  border-radius: var(--r-lg); box-shadow: var(--sh-1);
+  text-decoration: none; color: inherit;
+  transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+}
+.post-card:hover { transform: translateY(-5px); box-shadow: var(--sh-3); color: inherit; }
+.post-card__media {
+  display: grid; place-items: center; padding: var(--sp-6);
+  background: #004D81; min-height: 150px;
+}
+.post-card__media img { width: min(100%, 220px); height: auto; }
+.post-card__body { display: flex; flex-direction: column; flex: 1; padding: var(--sp-5); }
+.post-card__date {
+  display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: var(--sp-3);
+  font-size: 0.76rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.post-card__date svg { width: 14px; height: 14px; color: var(--ember-600); }
+.post-card h3 { font-size: var(--step-1); margin-bottom: var(--sp-2); color: var(--ember-800); }
+.post-card p { margin: 0 0 var(--sp-4); color: var(--ink-soft); font-size: 0.95rem; flex: 1; }
+.post-card__more {
+  display: inline-flex; align-items: center; gap: 0.4rem; margin-top: auto;
+  font-weight: 700; color: var(--ember-700); font-size: 0.93rem;
+}
+.post-card__more svg { width: 16px; height: 16px; transition: transform var(--dur) var(--ease); }
+.post-card:hover .post-card__more svg { transform: translateX(3px); }
