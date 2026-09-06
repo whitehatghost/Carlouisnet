@@ -303,3 +303,168 @@ GUIAS += [
         cta="Pedí las conservas para tu tabla",
     ),
 ]
+
+GUIAS += [
+    dict(
+        slug="regalos-gourmet-costa-rica",
+        titulo="Regalos gourmet en Costa Rica: qué regalar y cuánto gastar",
+        h1="Qué regalar de gourmet en Costa Rica",
+        desc="Guía para armar un regalo gourmet en Costa Rica: qué combinaciones funcionan, cuánto cuesta y cómo presentarlo. Productos artesanales hechos en Alajuela.",
+        img="pina-habanero", w=1024, h=1536,
+        lede="Un regalo de comida funciona porque se usa, se comenta y no termina en un "
+             "clóset. Estas son las combinaciones que mejor caen.",
+        intro=[
+            "El problema del regalo gourmet es que la mayoría de la gente compra una canasta "
+            "genérica llena de relleno: mucha paja, poco producto y nada memorable.",
+            "Un regalo bueno de comida tiene dos o tres cosas, todas de verdad usables, y "
+            "cuenta una historia: hecho a mano, en lotes pequeños, en Costa Rica. Eso último "
+            "es lo que se comenta cuando lo abren.",
+        ],
+        secciones=[
+            ("Combinaciones que funcionan", [
+                ("Para el que aguanta picante", "<a href=\'salsa-habanero-fire.html\'>Habanero Fire</a> y <a href=\'salsa-pina-habanero.html\'>Piña Habanero</a>. Una brutal y una equilibrada, para que tenga con qué comparar."),
+                ("Para el que cocina", "<a href=\'pesto-de-albahaca.html\'>Pesto de albahaca</a>, <a href=\'tomates-deshidratados.html\'>tomates deshidratados</a> y <a href=\'chimichurri-argentino.html\'>chimichurri</a>. Con eso resuelve pasta, tabla y parrilla."),
+                ("Para el que no come picante", "<a href=\'mayonesa-de-culantro.html\'>Mayonesa de culantro</a>, <a href=\'alioli.html\'>alioli</a> y <a href=\'salsa-de-mora.html\'>salsa de mora</a>. Ninguna pica y las tres se usan a diario."),
+                ("Para llevar al exterior", "Conservas en aceite y salsas selladas. Revisá siempre las reglas de la aerolínea y del país de destino antes de empacar líquidos."),
+                ("Para una oficina", "Varios frascos surtidos de nivel 2, que es el que le gusta a casi todo el mundo. Preguntá por precio de volumen."),
+            ]),
+            ("Cuánto cuesta", [
+                ("Regalo sencillo", "Dos frascos, entre ₡9.000 y ₡12.000. Es el rango donde cae la mayoría de los regalos de intercambio."),
+                ("Regalo bueno", "Tres o cuatro frascos, entre ₡15.000 y ₡22.000. Alcanza para cubrir picante, untable y conserva."),
+                ("Regalo de peso", "Seis frascos o más. A partir de ahí conviene preguntar por precio especial."),
+            ]),
+            ("Cómo presentarlo", [
+                ("Menos relleno, más producto", "Una caja pequeña con tres frascos se ve mejor que una canasta grande medio vacía."),
+                ("Una nota escrita a mano", "Suena obvio y casi nadie lo hace. Es lo que separa un regalo de un encargo."),
+                ("Decí qué es cada cosa", "Sobre todo con los picantes: avisá cuál es el nivel 5. Es parte de la gracia y evita accidentes."),
+            ]),
+        ],
+        faq=[
+            ("¿Cuánto cuesta un regalo gourmet decente en Costa Rica?",
+             "Entre ₡15.000 y ₡22.000 se arma un regalo de tres o cuatro frascos que cubre picante, untable y conserva. Con ₡9.000 ya se arma uno sencillo de dos frascos."),
+            ("¿Arman canastas o combos?",
+             "Sí. Escribinos por WhatsApp con el presupuesto y para quién es, y armamos la combinación. Para cantidades grandes hay precio especial."),
+            ("¿Se pueden llevar en avión?",
+             "Son líquidos y conservas en aceite, así que van en equipaje documentado, nunca de mano. Revisá siempre las reglas del país de destino."),
+            ("¿Qué regalo si no sé si la persona come picante?",
+             "Andá a lo seguro: mayonesa de culantro, alioli y salsa de mora. Ninguna pica y las tres se usan todos los días."),
+        ],
+        productos=["salsa-pina-habanero", "pesto-de-albahaca", "salsa-de-mora"],
+        cta="Armamos tu regalo por WhatsApp",
+    ),
+
+    dict(
+        slug="que-llevar-a-un-picnic",
+        titulo="Qué llevar a un picnic: comida que aguanta el viaje",
+        h1="Qué llevar a un picnic",
+        desc="Qué comida aguanta un picnic sin refrigeración, qué empacar y qué evitar. Guía práctica con conservas y untables artesanales de Costa Rica.",
+        img="chile-morron", w=727, h=545,
+        lede="La mitad de los picnics se arruinan por llevar comida que no aguanta el "
+             "traslado. Esto es lo que sí resiste.",
+        intro=[
+            "Un picnic tiene dos enemigos: el calor y el movimiento. Todo lo que se derrita, "
+            "se aguade o se despanzurre en el camino va a llegar mal.",
+            "La solución no es llevar menos comida, es llevar la correcta. Las conservas en "
+            "aceite y los untables densos son justamente lo que mejor viaja.",
+        ],
+        secciones=[
+            ("Lo que aguanta bien", [
+                ("Conservas en aceite", "<a href=\'tomates-deshidratados.html\'>Tomates deshidratados</a> y <a href=\'chile-morron-asado.html\'>chile morrón asado</a>. El aceite los protege y no necesitan frío inmediato."),
+                ("Untables densos", "<a href=\'pesto-de-albahaca.html\'>Pesto</a> y <a href=\'chimichurri-argentino.html\'>chimichurri</a>. No se derraman con facilidad y transforman un pan simple."),
+                ("Quesos maduros", "Aguantan mucho mejor que los frescos fuera de refrigeración."),
+                ("Pan que no se aplasta", "Baguette o pan campesino. El pan de molde llega hecho una lástima."),
+                ("Frutas firmes", "Manzana, uva, pera. Nada de banano ni mango maduro."),
+            ]),
+            ("Lo que conviene dejar en casa", [
+                ("Mayonesas y cremas", "Sin hielera son riesgosas. Si las llevás, que sea con hielera de verdad y consumo pronto."),
+                ("Ensaladas ya aliñadas", "Llegan aguadas. Llevá el aliño aparte y mezclá en el momento."),
+                ("Chocolate y quesos frescos", "El primero se derrite, el segundo se echa a perder."),
+                ("Cualquier cosa que dependa de estar caliente", "Va a llegar tibia, que es lo peor de los dos mundos."),
+            ]),
+            ("Cómo empacar", [
+                ("Los frascos, parados y envueltos", "Cada uno en un paño o servilleta. Evita que choquen entre sí."),
+                ("Lo pesado abajo", "Frascos y botellas al fondo de la canasta, el pan y la fruta arriba."),
+                ("Una cuchara por frasco", "Nada de compartir la misma cuchara entre productos: se mezclan sabores y se contaminan."),
+                ("Bolsa aparte para la basura", "Suena tonto hasta que estás en el parque sin dónde botar nada."),
+            ]),
+        ],
+        faq=[
+            ("¿Qué comida aguanta un picnic sin hielera?",
+             "Conservas en aceite, untables densos como pesto y chimichurri, quesos maduros, pan firme y frutas duras. Todo lo cremoso necesita hielera."),
+            ("¿Cuánto tiempo aguantan las conservas en aceite fuera de la refrigeradora?",
+             "Unas cuantas horas sin problema, siempre que el producto quede cubierto por el aceite. Al volver a casa, directo a la refrigeradora."),
+            ("¿Qué llevo para un picnic si somos varios?",
+             "Un pan grande, dos o tres untables distintos, un queso maduro y fruta. Sale más barato y más variado que llevar sándwiches armados."),
+        ],
+        productos=["tomates-deshidratados", "chile-morron-asado", "pesto-de-tomate"],
+        cta="Pedí las conservas para tu próxima salida",
+    ),
+
+    dict(
+        slug="como-hacer-una-parrillada",
+        titulo="Cómo hacer una parrillada: cortes, tiempos y salsas",
+        h1="Cómo armar una parrillada completa",
+        desc="Guía para organizar una parrillada: cuánta carne por persona, en qué orden asar y qué salsa va con cada corte. Con salsas artesanales de Costa Rica.",
+        img="chimichurri", w=849, h=637,
+        lede="Una parrillada no se arruina por la carne: se arruina por la organización. "
+             "Estos son los números y el orden que funcionan.",
+        intro=[
+            "Casi todos los errores de una parrillada pasan antes de prender el carbón: se "
+            "compra mal la cantidad, se pone todo junto al fuego y se sirve a destiempo.",
+            "Con tres cosas resueltas —cuánto comprar, en qué orden asar y qué poner al "
+            "lado— el resto se acomoda solo.",
+        ],
+        secciones=[
+            ("Los números", [
+                ("Carne por persona", "Entre 400 y 500 gramos de carne cruda por adulto si es el plato principal. Si hay muchos acompañamientos, con 300 alcanza."),
+                ("Variedad", "Dos o tres cortes distintos, no más. Más variedad significa más tiempos de cocción que controlar."),
+                ("Carbón", "Aproximadamente un kilo de carbón por kilo de carne. Siempre sobra menos de lo que se cree."),
+                ("Tiempo total", "Calculá dos horas desde que prendés hasta que se sirve el último corte. La gente siempre subestima esto."),
+            ]),
+            ("El orden de la parrilla", [
+                ("Primero los embutidos", "Chorizo y morcilla. Se cocinan rápido, la gente pica mientras espera y liberan grasa que sazona la parrilla."),
+                ("Después los vegetales", "Chile dulce, cebolla, zucchini. Aprovechan el fuego fuerte y se mantienen bien tibios."),
+                ("Luego los cortes gruesos", "Necesitan más tiempo y fuego medio. Sellado fuerte primero, después a la zona menos caliente."),
+                ("Al final el pollo", "Es el que más tarda y el que peor perdona: si queda crudo adentro, arruina la comida."),
+                ("Reposo obligatorio", "Cada corte descansa cinco minutos antes de cortarlo. Si lo cortás de una, se va todo el jugo a la tabla."),
+            ]),
+            ("Qué salsa con qué", [
+                ("Carnes rojas", "<a href=\'chimichurri-argentino.html\'>Chimichurri</a>, sobre el corte ya servido. Nunca durante la cocción, porque el vinagre se evapora y las hierbas se queman."),
+                ("Cerdo y costillas", "<a href=\'salsa-pina-habanero.html\'>Piña habanero</a> como glaseado en los últimos minutos. El azúcar caramelza y el picante corta la grasa."),
+                ("Pollo", "<a href=\'salsa-de-chile-dulce.html\'>Chile dulce</a> como glaseado, o <a href=\'mayonesa-de-chipotle.html\'>chipotle</a> al lado."),
+                ("Vegetales asados", "Chimichurri apenas salen de la parrilla, mientras están calientes."),
+                ("Para la mesa", "Dejá tres salsas de niveles distintos y que cada quien se sirva. Es lo que evita discusiones."),
+            ]),
+        ],
+        faq=[
+            ("¿Cuánta carne por persona en una parrillada?",
+             "Entre 400 y 500 gramos de carne cruda por adulto si es el plato principal. Con bastantes acompañamientos, 300 gramos alcanzan."),
+            ("¿En qué orden se asa?",
+             "Embutidos primero, luego vegetales, después los cortes gruesos y el pollo de último, que es el que más tarda."),
+            ("¿Cuándo se le pone el chimichurri a la carne?",
+             "Siempre después, sobre el corte ya servido. Si se pone durante la cocción, el vinagre se evapora y las hierbas se amargan."),
+            ("¿Cuántas salsas pongo en la mesa?",
+             "Tres de niveles distintos: una sin picante, una suave y una fuerte. Así cada quien se sirve lo que aguanta."),
+        ],
+        productos=["chimichurri-argentino", "salsa-pina-habanero", "salsa-de-chile-dulce"],
+        cta="Pedí tus salsas antes del próximo asado",
+    ),
+]
+
+# Fechas de publicación, escalonadas. La más nueva primero en el índice.
+FECHAS = {
+    "con-que-se-come-el-chimichurri":   ("2026-06-16", "16 de junio de 2026"),
+    "escala-de-picante":                ("2026-06-29", "29 de junio de 2026"),
+    "como-hacer-una-parrillada":        ("2026-07-09", "9 de julio de 2026"),
+    "como-conservar-salsas-artesanales":("2026-07-21", "21 de julio de 2026"),
+    "recetas-con-pesto":                ("2026-08-04", "4 de agosto de 2026"),
+    "que-llevar-a-un-picnic":           ("2026-08-12", "12 de agosto de 2026"),
+    "tabla-de-quesos-y-bocas":          ("2026-08-19", "19 de agosto de 2026"),
+    "salsas-para-comida-tica":          ("2026-08-25", "25 de agosto de 2026"),
+    "regalos-gourmet-costa-rica":       ("2026-08-30", "30 de agosto de 2026"),
+}
+for g in GUIAS:
+    g["fecha"], g["fecha_txt"] = FECHAS[g["slug"]]
+
+# El índice ordena de la más reciente a la más vieja
+GUIAS.sort(key=lambda g: g["fecha"], reverse=True)

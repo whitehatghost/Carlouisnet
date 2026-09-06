@@ -105,8 +105,8 @@ def ld_guia(g):
         "headline": {json.dumps(g["titulo"], ensure_ascii=False)},
         "description": {json.dumps(g["desc"], ensure_ascii=False)},
         "image": "{BASE}assets/img/{g["img"]}.jpg",
-        "datePublished": "2026-08-31",
-        "dateModified": "2026-08-31",
+        "datePublished": "{g["fecha"]}",
+        "dateModified": "{g["fecha"]}",
         "inLanguage": "es-CR",
         "mainEntityOfPage": "{BASE}{g["slug"]}.html",
         "author": {{ "@type": "Organization", "name": "CARLOUIS Gourmet", "url": "{BASE}" }},
@@ -174,7 +174,7 @@ def guia(g):
             <span style="color:#C4AE95"> / </span>
             <a href="guias.html" style="color:var(--gold-400);text-decoration:none">Guías</a>
           </nav>
-          <span class="eyebrow"><svg aria-hidden="true"><use href="#i-leaf"/></svg> Guía</span>
+          <span class="eyebrow"><svg aria-hidden="true"><use href="#i-calendar"/></svg> {g["fecha_txt"]}</span>
           <h1>{g["h1"]}</h1>
           <p style="font-size:var(--step-1);max-width:60ch;margin-inline:auto">{g["lede"]}</p>
         </div>
@@ -262,7 +262,8 @@ def indice():
             </div>
             <div class="post-card__body">
               <span class="post-card__date">
-                <svg aria-hidden="true"><use href="#i-leaf"/></svg> Guía
+                <svg aria-hidden="true"><use href="#i-calendar"/></svg>
+                <time datetime="{g["fecha"]}">{g["fecha_txt"]}</time>
               </span>
               <h3>{g["h1"]}</h3>
               <p>{g["lede"]}</p>
