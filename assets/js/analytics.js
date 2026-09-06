@@ -83,29 +83,17 @@
     if (!a) return;
     var href = a.getAttribute('href') || '';
 
-    // Agregar al pedido
+    // Agregar al pedido: solo cuál producto, sin montos
     if (a.hasAttribute('data-add')) {
-      gtag('event', 'add_to_cart', {
-        currency: 'CRC',
-        value: parseInt(a.dataset.price, 10) || 0,
-        items: [{ item_name: a.dataset.name, price: parseInt(a.dataset.price, 10) || 0 }]
-      });
+      gtag('event', 'agregar_producto', { producto: a.dataset.name });
       return;
     }
 
-    // Enviar el pedido completo: la conversión principal
+    // Enviar el pedido: se cuenta cuántos se envían, no cuánto suman
     if (a.hasAttribute('data-send')) {
-      var total = 0, items = [];
-      try {
-        JSON.parse(localStorage.getItem('carlouis:pedido') || '[]').forEach(function (i) {
-          total += i.price * i.qty;
-          items.push({ item_name: i.name, price: i.price, quantity: i.qty });
-        });
-      } catch (err) {}
-      gtag('event', 'generate_lead', {
-        currency: 'CRC', value: total, items: items,
-        method: 'whatsapp_pedido'
-      });
+      var lineas = 0;
+      try { lineas = JSON.parse(localStorage.getItem('carlouis:pedido') || '[]').length; } catch (err) {}
+      gtag('event', 'pedido_enviado', { productos_distintos: lineas });
       return;
     }
 
