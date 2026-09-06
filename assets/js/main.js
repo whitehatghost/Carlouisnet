@@ -116,7 +116,6 @@
     };
 
     // Puntos de navegación
-    var dots = [];
     if (dotsWrap) {
       slides.forEach(function (slide, i) {
         var li = document.createElement('li');
@@ -140,11 +139,7 @@
         if (dist < bestDist) { bestDist = dist; best = i; }
       });
       current = best;
-      dots.forEach(function (d, i) {
-        d.setAttribute('aria-current', String(i === best));
-      });
-      if (prev) prev.disabled = best === 0;
-      if (next) next.disabled = best === slides.length - 1;
+      paint(best);
     };
 
     var raf;
@@ -162,7 +157,10 @@
       if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
     });
 
+    // El primer cálculo corre antes de que fuentes e imágenes asienten el
+    // diseño, y marcaba el punto equivocado. Se repite al terminar la carga.
     sync();
+    window.addEventListener('load', sync);
   });
 
   /* ---------- Filtros del catálogo -------------------------- */
