@@ -153,3 +153,153 @@ GUIAS = [
         cta="Pedí productos frescos, hechos en lotes pequeños",
     ),
 ]
+
+GUIAS += [
+    dict(
+        slug="recetas-con-pesto",
+        titulo="Recetas con pesto: 8 formas de usarlo además de la pasta",
+        h1="Qué hacer con un frasco de pesto",
+        desc="Ocho formas de usar el pesto además de la pasta: pizza, pollo, sándwiches, papas y sopas. Con el truco para que no se corte. Guía de CARLOUIS, Costa Rica.",
+        img="pesto-albahaca", w=820, h=615,
+        lede="El pesto no es solo para pasta, y además casi todo el mundo lo usa mal. "
+             "Empecemos por ahí.",
+        intro=[
+            "El error más común con el pesto es echarlo a la olla. El calor directo separa el "
+            "aceite, oscurece la albahaca y mata el aroma, que es justamente por lo que se paga "
+            "un pesto bueno.",
+            "La regla es simple: <strong>el pesto entra siempre con el fuego apagado</strong>. "
+            "A partir de ahí, todo lo demás es fácil.",
+        ],
+        secciones=[
+            ("El truco que cambia todo", [
+                ("Guardá agua de la pasta", "Antes de escurrir, apartá media taza del agua de cocción. Tiene almidón, y ese almidón es lo que hace que el pesto se pegue al fideo en vez de resbalarse al fondo del plato."),
+                ("Apagá el fuego primero", "Pasta escurrida de vuelta a la olla, fuera del fuego. Dos cucharadas de pesto por porción, un chorrito del agua reservada, y revolvés hasta que quede cremoso."),
+                ("Nunca lo hiervas", "Si el pesto burbujea, ya perdiste el aroma. Lo que queda es aceite con hierbas cocidas."),
+            ]),
+            ("Las otras siete formas", [
+                ("Pizza casera", "Como base en lugar de salsa de tomate, o en cucharadas al salir del horno. El <a href=\'pesto-de-tomate.html\'>pesto de tomate</a> funciona mejor de base porque es más espeso y no humedece la masa."),
+                ("Pollo al horno", "Metelo debajo de la piel antes de hornear. Se cocina protegido y perfuma toda la carne."),
+                ("Sándwiches y tostadas", "En lugar de mayonesa. Con tomate y mozzarella es un caprese en pan."),
+                ("Papas", "Recién salidas del agua o del horno, revueltas en caliente. El almidón de la papa hace lo mismo que el agua de pasta."),
+                ("Sopas y cremas", "Una cucharada encima de una crema de vegetales, sin revolver. Se deshace sola al comerla."),
+                ("Huevos", "Revueltos, al final. O sobre un huevo poché con pan tostado."),
+                ("Aderezo de ensalada", "Una cucharada de pesto, dos de aceite de oliva y el jugo de medio limón. Se bate y rinde para toda la ensaladera."),
+            ]),
+        ],
+        faq=[
+            ("¿Por qué el pesto se pone amargo al cocinarlo?",
+             "Porque el calor directo degrada los aceites de la albahaca. Por eso el pesto se agrega siempre fuera del fuego, sobre la comida caliente."),
+            ("¿Cuál pesto uso para pizza, el de albahaca o el de tomate?",
+             "El de tomate como base, porque es más espeso y no humedece la masa. El de albahaca queda mejor agregado al salir del horno."),
+            ("¿Se puede congelar el pesto?",
+             "Sí, y es la mejor forma de estirar un frasco. En cubetera de hielo: un cubo por porción, se descongela a temperatura ambiente."),
+            ("¿Cuánto pesto va por porción de pasta?",
+             "Dos cucharadas colmadas por persona. El de tomate rinde un poco más: con una cucharada y media alcanza."),
+        ],
+        productos=["pesto-de-albahaca", "pesto-de-tomate", "tomates-deshidratados"],
+        cta="Pedí tu pesto hecho en lotes pequeños",
+    ),
+
+    dict(
+        slug="salsas-para-comida-tica",
+        titulo="Qué salsa va con cada comida tica: casados, gallos y chifrijo",
+        h1="Salsas para la comida tica",
+        desc="Qué salsa artesanal va mejor con casados, gallos, chifrijo, tacos y ceviche. Guía de maridaje para la comida costarricense hecha por CARLOUIS.",
+        img="mayo-culantro", w=772, h=579,
+        lede="La comida tica pide salsas distintas a las de las recetas de afuera. "
+             "Esto es lo que funciona de verdad en una mesa costarricense.",
+        intro=[
+            "En Costa Rica se come mucho arroz, mucho frijol y mucha carne a la plancha. Son "
+            "sabores que no necesitan que los tapen: necesitan algo que los levante.",
+            "Después de años en la feria escuchando qué se llevan los clientes y para qué, esto "
+            "es lo que más nos funciona recomendar.",
+        ],
+        secciones=[
+            ("Los platos de todos los días", [
+                ("Casado", "La <a href=\'mayonesa-de-culantro.html\'>mayonesa de culantro</a> es la ganadora. El culantro conecta con el arroz y no pelea con el frijol. Una cucharada al lado, no encima."),
+                ("Gallos de carne", "Mayonesa de <a href=\'mayonesa-de-chipotle.html\'>chipotle</a>. El ahumado hace que una carne sencilla sepa a parrilla."),
+                ("Chifrijo", "Aquí sí va picante de verdad. La <a href=\'salsa-de-chile-dulce.html\'>salsa de chile dulce</a> si hay gente que no aguanta, o habanero para los que sí."),
+                ("Arroz con pollo", "Mayonesa de culantro, como se sirve en las fiestas. Es la combinación que la gente ya espera."),
+            ]),
+            ("Fines de semana y parrilla", [
+                ("Carne asada", "Chimichurri sobre el corte ya servido. Nunca durante la cocción."),
+                ("Costillas de cerdo", "<a href=\'salsa-pina-habanero.html\'>Piña habanero</a> como glaseado en los últimos minutos. El azúcar de la piña caramelza y el habanero corta la grasa."),
+                ("Pollo a la parrilla", "Chile dulce como glaseado, o chipotle al lado."),
+                ("Chorizo", "Chimichurri, sin discusión."),
+            ]),
+            ("Mariscos y pescado", [
+                ("Ceviche", "Nada encima: el ceviche ya tiene su punto. Pero un chile dulce al lado, para quien quiera, funciona bien."),
+                ("Pescado a la plancha", "Mayonesa de culantro. Es fresca y no tapa un pescado blanco."),
+                ("Camarones", "Piña habanero, salteados y terminados con una cucharada."),
+                ("Tacos de pescado", "Mayonesa de culantro y encima unas gotas de habanero."),
+            ]),
+            ("Para picar", [
+                ("Patacones", "Alioli o chipotle. Los dos funcionan; el alioli es más suave."),
+                ("Yuca frita", "Alioli, sin dudarlo."),
+                ("Tortilla con queso", "<a href=\'chile-morron-asado.html\'>Chile morrón asado</a> picado adentro."),
+                ("Tabla de bocas", "Tres salsas de niveles distintos y que cada quien escoja. Es lo que hacemos en la feria."),
+            ]),
+        ],
+        faq=[
+            ("¿Qué salsa le pongo a un casado?",
+             "La mayonesa de culantro es la que mejor funciona: el culantro va con el arroz y no compite con el frijol. Se sirve al lado, no encima."),
+            ("¿Cuál es la mejor salsa para chifrijo?",
+             "Depende de quién come. Si hay gente que no aguanta picante, la salsa de chile dulce. Si todos aguantan, habanero."),
+            ("¿Qué salsa llevo para una parrillada?",
+             "Chimichurri para las carnes rojas y piña habanero para el cerdo. Con esas dos cubrís casi todo el asado."),
+            ("¿Qué salsas pongo en una tabla de bocas?",
+             "Tres de niveles distintos: una sin picante, una suave y una fuerte. Así nadie se queda afuera."),
+        ],
+        productos=["mayonesa-de-culantro", "salsa-de-chile-dulce", "mayonesa-de-chipotle"],
+        cta="Armá tu combo para la próxima comida",
+    ),
+
+    dict(
+        slug="tabla-de-quesos-y-bocas",
+        titulo="Cómo armar una tabla de quesos y bocas que impresione",
+        h1="Cómo armar una tabla de quesos",
+        desc="Guía para armar una tabla de quesos y bocas: qué llevar, cómo distribuirlo y qué conservas usar para lograr contraste. Productos artesanales de Costa Rica.",
+        img="tomates", w=800, h=600,
+        lede="Una tabla bien armada es la forma más barata de quedar bien con visitas. "
+             "El truco está en el contraste, no en gastar más.",
+        intro=[
+            "La gente cree que una buena tabla depende de conseguir quesos caros. No es así. "
+            "Depende de que haya <strong>contraste</strong>: algo salado contra algo dulce, algo "
+            "cremoso contra algo crujiente, algo suave contra algo intenso.",
+            "Con dos o tres quesos comunes y las conservas correctas se arma algo que se ve y "
+            "sabe mucho mejor que la suma de sus partes.",
+        ],
+        secciones=[
+            ("La estructura", [
+                ("Tres quesos bastan", "Uno suave y cremoso, uno maduro y salado, uno azul o de sabor fuerte. Más de tres y nadie los distingue."),
+                ("Un dulce", "Es lo que hace que la tabla funcione. La <a href=\'salsa-de-mora.html\'>salsa de mora</a> con un queso azul o maduro es el contraste clásico: la acidez corta la sal."),
+                ("Un salado en aceite", "<a href=\'tomates-deshidratados.html\'>Tomates deshidratados</a> o <a href=\'chile-morron-asado.html\'>chile morrón asado</a>. Aportan intensidad y color, y el aceite del frasco sirve para mojar pan."),
+                ("Algo crujiente", "Pan tostado, galletas saladas, tostadas. Sin esto la tabla se siente pesada."),
+                ("Algo fresco", "Uvas, manzana en gajos o pera. Limpian el paladar entre bocado y bocado."),
+            ]),
+            ("Cómo distribuirlo", [
+                ("Los quesos separados", "Cada uno en su zona, no amontonados. Si se tocan, se mezclan los sabores."),
+                ("Las salsas en cuenquitos", "Nunca directo sobre la tabla: se corren y ensucian todo. Cuencos pequeños, con su cuchara."),
+                ("Llenar los huecos", "Los espacios vacíos se rellenan con lo crujiente y lo fresco. Una tabla con huecos se ve incompleta."),
+                ("Sacarla antes de tiempo", "Los quesos se sirven a temperatura ambiente. Sacalos de la refri 30 minutos antes: fríos no saben a nada."),
+            ]),
+            ("Tres combinaciones que siempre funcionan", [
+                ("Queso azul con salsa de mora", "El contraste más fuerte y el que más comentarios genera."),
+                ("Queso fresco con tomates deshidratados", "Con un chorrito del aceite del frasco encima."),
+                ("Queso maduro con chile morrón asado", "El dulzor del morrón asado contra la sal del queso."),
+            ]),
+        ],
+        faq=[
+            ("¿Cuántos quesos necesito para una tabla?",
+             "Tres alcanzan: uno suave, uno maduro y uno de sabor fuerte. Más de tres y la gente deja de distinguirlos."),
+            ("¿Qué conserva va mejor con queso azul?",
+             "Una salsa dulce con acidez, como la de mora. La acidez corta la sal del queso azul y equilibra el bocado."),
+            ("¿Cuánto antes saco los quesos de la refrigeradora?",
+             "Media hora. Un queso frío pierde aroma y textura; a temperatura ambiente sabe muchísimo mejor."),
+            ("¿Se puede armar la tabla con anticipación?",
+             "Los quesos y las conservas sí, hasta una hora antes. Lo crujiente y la fruta, al último momento, para que no se ablanden."),
+        ],
+        productos=["salsa-de-mora", "tomates-deshidratados", "chile-morron-asado"],
+        cta="Pedí las conservas para tu tabla",
+    ),
+]
