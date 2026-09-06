@@ -169,6 +169,34 @@
   </url>
 
   <url>
+    <loc>https://www.carlouis.net/guias.html</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://www.carlouis.net/con-que-se-come-el-chimichurri.html</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://www.carlouis.net/escala-de-picante.html</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://www.carlouis.net/como-conservar-salsas-artesanales.html</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
     <loc>https://www.carlouis.net/eventos.html</loc>
     <lastmod>2026-08-04</lastmod>
     <changefreq>weekly</changefreq>
