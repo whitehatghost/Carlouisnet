@@ -581,7 +581,7 @@
     lb.innerHTML =
       '<button class="lightbox__close" type="button" aria-label="Cerrar la imagen">' +
         '<svg aria-hidden="true"><use href="#i-close"/></svg></button>' +
-      '<figure style="margin:0"><img src="" alt="" /><figcaption></figcaption></figure>';
+      '<figure style="margin:0"><img alt="" /><figcaption></figcaption></figure>';
     document.body.appendChild(lb);
 
     var lbImg = lb.querySelector('img');

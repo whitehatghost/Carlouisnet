@@ -1218,3 +1218,20 @@ strong, b { font-weight: 700; }
 }
 .uso h3 { font-size: 1.05rem; color: var(--ember-800); margin-bottom: 0.4rem; }
 .uso p { margin: 0; color: var(--ink-soft); font-size: 0.95rem; }
+
+/* ---------- 31. Aviso de cookies ------------------------------------------ */
+.cookie-aviso {
+  position: fixed; z-index: 150;
+  left: max(1rem, env(safe-area-inset-left));
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  max-width: 520px; margin-inline: auto;
+  display: grid; gap: var(--sp-4);
+  padding: var(--sp-5);
+  background: var(--card); color: var(--ink);
+  border: 1px solid var(--line); border-radius: var(--r-lg);
+  box-shadow: var(--sh-3);
+}
+.cookie-aviso p { margin: 0; font-size: 0.92rem; color: var(--ink-soft); }
+.cookie-aviso__btns { display: flex; gap: var(--sp-3); }
+.cookie-aviso__btns .btn { flex: 1; }

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; script-src 'self' https://www.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; style-src 'self' 'unsafe-inline'; font-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none';">
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
 
@@ -43,6 +43,7 @@
   <link rel="preload" href="assets/fonts/karla-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="assets/css/styles.css" />
   <script src="assets/js/main.js" defer></script>
+  <script src="assets/js/analytics.js" defer></script>
 
   <script type="application/ld+json">
   {
@@ -328,7 +329,7 @@
                 </div>
               </div>
               <div class="card__body">
-                <h3>Piña Habanero</h3>
+                <h3><a href="salsa-pina-habanero.html" style="color:inherit;text-decoration:none">Piña Habanero</a></h3>
                                 <p class="card__desc">Dulzura tropical de la piña con el toque aromático del habanero. Va perfecta con cerdo, pollo y tacos.</p>
                 <div class="card__foot">
                   <p class="price">₡5.000 <small>Frasco</small></p>
@@ -354,7 +355,7 @@
                 </div>
               </div>
               <div class="card__body">
-                <h3>Habanero Fire</h3>
+                <h3><a href="salsa-habanero-fire.html" style="color:inherit;text-decoration:none">Habanero Fire</a></h3>
                                 <p class="card__desc">Para los que de verdad aguantan. Habanero seleccionado e ingredientes naturales, sin rodeos.</p>
                 <div class="card__foot">
                   <p class="price">₡4.000 <small>160 gr</small></p>
@@ -375,7 +376,7 @@
                 </picture>
               </div>
               <div class="card__body">
-                <h3>Pesto de Albahaca</h3>
+                <h3><a href="pesto-de-albahaca.html" style="color:inherit;text-decoration:none">Pesto de Albahaca</a></h3>
                 <p class="card__desc">Clásico, aromático y 100% artesanal. El favorito para pastas, bruschettas y sándwiches.</p>
                 <div class="card__foot">
                   <p class="price">₡6.000 <small>Frasco</small></p>
@@ -396,7 +397,7 @@
                 </picture>
               </div>
               <div class="card__body">
-                <h3>Tomates Deshidratados</h3>
+                <h3><a href="tomates-deshidratados.html" style="color:inherit;text-decoration:none">Tomates Deshidratados</a></h3>
                 <p class="card__desc">Intensos y dulces, en aceite de oliva. Perfectos para pastas, tablas de picar y snacks.</p>
                 <div class="card__foot">
                   <p class="price">₡6.000 <small>Frasco</small></p>
@@ -452,7 +453,7 @@
               <a class="btn btn--gold" href="https://wa.me/50688252608?text=Hola%2C%20quiero%20pedir%20Pi%C3%B1a%20Habanero%20CARLOUIS" target="_blank" rel="noopener">
                 <svg aria-hidden="true"><use href="#i-wa"/></svg> Pedir por WhatsApp
               </a>
-              <a class="btn btn--ghost" href="productos.html">Ver productos</a>
+              <a class="btn btn--ghost" href="salsa-pina-habanero.html">Ver la ficha completa</a>
             </div>
           </div>
           <div class="feature__media">
@@ -492,7 +493,7 @@
               <a class="btn btn--gold" href="https://wa.me/50688252608?text=Hola%2C%20quiero%20pedir%20Habanero%20Fire%20by%20CARLOUIS" target="_blank" rel="noopener">
                 <svg aria-hidden="true"><use href="#i-wa"/></svg> Pedir por WhatsApp
               </a>
-              <a class="btn btn--ghost" href="productos.html">Ver productos</a>
+              <a class="btn btn--ghost" href="salsa-habanero-fire.html">Ver la ficha completa</a>
             </div>
           </div>
           <div class="feature__media">
