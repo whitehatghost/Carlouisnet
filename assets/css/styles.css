@@ -578,12 +578,20 @@ strong, b { font-weight: 700; }
   font-size: 0.86rem; font-weight: 600; color: #FFF6E8;
 }
 .price-row { display: flex; flex-wrap: wrap; gap: var(--sp-3); margin-bottom: var(--sp-6); }
+/* Por defecto vive sobre fondo claro; la variante oscura va dentro de .on-dark.
+   Antes solo existía la versión clara-sobre-oscuro y en las páginas de producto
+   quedaba texto crema sobre fondo crema: 1,00:1 de contraste, invisible. */
 .price-tag {
   padding: 0.7rem 1.1rem; border-radius: var(--r-md);
-  background: rgba(255, 246, 232, .1); border: 1px solid rgba(224, 160, 46, .4);
-  font-weight: 700; color: #FFF6E8; font-size: 0.95rem;
+  background: var(--paper-2); border: 1px solid var(--line);
+  font-weight: 700; color: var(--ink-soft); font-size: 0.95rem;
 }
-.price-tag b { display: block; font-family: var(--font-display); font-size: 1.35rem; color: var(--gold-400); }
+.price-tag b { display: block; font-family: var(--font-display); font-size: 1.35rem; color: var(--ember-700); }
+
+.on-dark .price-tag {
+  background: rgba(255, 246, 232, .1); border-color: rgba(224, 160, 46, .4); color: #FFF6E8;
+}
+.on-dark .price-tag b { color: var(--gold-400); }
 
 @media (max-width: 860px) {
   .feature { grid-template-columns: 1fr; }
@@ -1202,3 +1210,11 @@ strong, b { font-weight: 700; }
 }
 .post-card__more svg { width: 16px; height: 16px; transition: transform var(--dur) var(--ease); }
 .post-card:hover .post-card__more svg { transform: translateX(3px); }
+
+/* ---------- 30. Página de producto ---------------------------------------- */
+.uso {
+  padding: var(--sp-5); background: var(--card);
+  border: 1px solid var(--line-soft); border-radius: var(--r-lg);
+}
+.uso h3 { font-size: 1.05rem; color: var(--ember-800); margin-bottom: 0.4rem; }
+.uso p { margin: 0; color: var(--ink-soft); font-size: 0.95rem; }

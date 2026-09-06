@@ -37,6 +37,138 @@
   </url>
 
   <url>
+    <loc>https://www.carlouis.net/salsa-pina-habanero.html</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://www.carlouis.net/assets/img/pina-habanero.jpg</image:loc>
+      <image:title>Salsa Piña Habanero artesanal CARLOUIS</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.carlouis.net/salsa-habanero-fire.html</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://www.carlouis.net/assets/img/habanero-fire-160.jpg</image:loc>
+      <image:title>Habanero Fire artesanal CARLOUIS</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.carlouis.net/chimichurri-argentino.html</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://www.carlouis.net/assets/img/chimichurri.jpg</image:loc>
+      <image:title>Chimichurri Argentino artesanal CARLOUIS</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.carlouis.net/pesto-de-albahaca.html</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://www.carlouis.net/assets/img/pesto-albahaca.jpg</image:loc>
+      <image:title>Pesto de Albahaca artesanal CARLOUIS</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.carlouis.net/pesto-de-tomate.html</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://www.carlouis.net/assets/img/pesto-tomate.jpg</image:loc>
+      <image:title>Pesto de Tomate artesanal CARLOUIS</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.carlouis.net/alioli.html</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://www.carlouis.net/assets/img/alioli.jpg</image:loc>
+      <image:title>Alioli artesanal CARLOUIS</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.carlouis.net/mayonesa-de-chipotle.html</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://www.carlouis.net/assets/img/mayo-chipotle.jpg</image:loc>
+      <image:title>Mayonesa Chipotle artesanal CARLOUIS</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.carlouis.net/mayonesa-de-culantro.html</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://www.carlouis.net/assets/img/mayo-culantro.jpg</image:loc>
+      <image:title>Mayonesa de Culantro artesanal CARLOUIS</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.carlouis.net/tomates-deshidratados.html</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://www.carlouis.net/assets/img/tomates.jpg</image:loc>
+      <image:title>Tomates Deshidratados artesanal CARLOUIS</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.carlouis.net/chile-morron-asado.html</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://www.carlouis.net/assets/img/chile-morron.jpg</image:loc>
+      <image:title>Chile Morrón Asado artesanal CARLOUIS</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.carlouis.net/salsa-de-chile-dulce.html</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://www.carlouis.net/assets/img/chile-dulce.jpg</image:loc>
+      <image:title>Salsa de Chile Dulce artesanal CARLOUIS</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://www.carlouis.net/salsa-de-mora.html</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://www.carlouis.net/assets/img/salsa-mora.jpg</image:loc>
+      <image:title>Salsa de Mora artesanal CARLOUIS</image:title>
+    </image:image>
+  </url>
+
+  <url>
     <loc>https://www.carlouis.net/eventos.html</loc>
     <lastmod>2026-08-04</lastmod>
     <changefreq>weekly</changefreq>
