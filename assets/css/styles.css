@@ -1099,9 +1099,15 @@ strong, b { font-weight: 700; }
 .event-card__body { padding: clamp(1.75rem, 1.2rem + 2.5vw, 3rem); align-self: center; }
 .event-card__aside {
   display: grid; place-items: center; padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
-  background: #004D81; /* azul exacto del logo de Forum 2, para que se integre */
+  /* cada sede trae su propio fondo; el azul es el del logo de Forum 2 */
+  background: var(--aside-bg, #004D81);
 }
-.event-card__aside img { width: min(100%, 340px); height: auto; }
+/* Para afiches de fondo claro: enmarca en cálido en vez de recortar sobre azul */
+.event-card__aside--sand {
+  --aside-bg: linear-gradient(160deg, #F6F0E6 0%, #E7D6BD 100%);
+}
+.event-card__aside img { width: min(100%, 340px); height: auto; border-radius: var(--r-md); }
+.event-card__aside--sand img { box-shadow: 0 18px 40px rgba(74, 18, 6, .22); }
 @media (max-width: 820px) {
   .event-card { grid-template-columns: 1fr; }
   .event-card__aside { order: -1; }

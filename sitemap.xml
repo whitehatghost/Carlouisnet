@@ -247,9 +247,20 @@
 
   <url>
     <loc>https://www.carlouis.net/eventos.html</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-09-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://www.carlouis.net/feria-ananta-yoga-heredia.html</loc>
+    <lastmod>2026-09-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://www.carlouis.net/assets/img/feria-ananta.jpg</image:loc>
+      <image:title>Feria Holística en Ananta Yoga, Heredia — 20 de setiembre</image:title>
+    </image:image>
   </url>
 
   <url>
