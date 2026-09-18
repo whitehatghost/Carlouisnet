@@ -79,6 +79,35 @@ variación (`Carlouis` vs `CARLOUIS Gourmet`) le resta fuerza.
 
 ---
 
+## PASO 5 — IndexNow (Bing, y ya quedó activo)
+
+Google hay que rogarle página por página. Bing no: con IndexNow uno le avisa y suele indexar en
+horas. Bing alimenta también a DuckDuckGo, Ecosia y Yahoo, y es el buscador que consultan varias
+herramientas de IA. No es tanto tráfico como Google, pero es gratis y es inmediato.
+
+Ya está configurado. **Cada vez que agregués o cambiés una página, corré esto y listo:**
+
+```bash
+python tools/indexnow.py
+```
+
+Eso manda todas las URLs del sitemap. Si solo cambiaste una o dos, pasáselas y manda solo esas:
+
+```bash
+python tools/indexnow.py feria-nueva.html productos.html
+```
+
+Respuesta **200 o 202 = aceptado**. Un 403 significa que la llave dejó de estar accesible.
+
+La llave es el archivo `<hex>.txt` que está en la raíz del repo y se publica en
+`https://www.carlouis.net/<hex>.txt`. **No lo borrés ni lo renombrés**: los buscadores lo leen
+cada vez para confirmar que quien envía es el dueño del dominio. Es pública a propósito, no es
+una contraseña.
+
+Google **no** participa en IndexNow. Para Google sigue siendo Search Console, paso 4.
+
+---
+
 ## Lo que ya quedó hecho en el sitio
 
 - **Datos estructurados (JSON-LD)** — Google entiende el negocio, no solo lee texto:
