@@ -1257,3 +1257,53 @@ strong, b { font-weight: 700; }
 .entrega__op b { display: block; font-size: 0.95rem; color: var(--ink); }
 .entrega__op span { font-size: 0.83rem; color: var(--ink-mute); line-height: 1.4; }
 .entrega__op:has(input:checked) { border-color: var(--ember-600); background: var(--paper-2); }
+
+/* ---------- 32. Galería de afiches de feria ------------------------------- */
+/* Los afiches de la sede son verticales y de fondo crema. Sobre el fondo
+   oscuro de la sección resaltan solos, así que el marco es mínimo: solo una
+   línea dorada tenue y la sombra que los levanta del fondo. */
+/* Son seis afiches: se fijan las columnas para que nunca quede una fila
+   huérfana. 2 x 3 en celular, 3 x 2 de tablet en adelante. */
+.afiches {
+  display: grid; gap: var(--sp-4);
+  grid-template-columns: repeat(2, 1fr);
+}
+@media (min-width: 760px) {
+  .afiches { gap: var(--sp-5); grid-template-columns: repeat(3, 1fr); }
+}
+.afiche {
+  position: relative; margin: 0;
+  border-radius: var(--r-lg); overflow: hidden;
+  background: var(--paper-2);
+  border: 1px solid rgba(224, 160, 46, .28);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, .3);
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease),
+              border-color var(--dur) var(--ease);
+}
+.afiche:hover {
+  transform: translateY(-6px);
+  border-color: var(--gold-500);
+  box-shadow: 0 26px 56px rgba(0, 0, 0, .42);
+}
+.afiche img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+.afiche figcaption {
+  padding: 0.85rem 1rem 0.95rem;
+  background: var(--paper-2);
+  border-top: 1px solid var(--line);
+  font-size: 0.86rem; line-height: 1.4; color: var(--ember-800);
+  text-align: center;
+}
+.afiche figcaption b {
+  display: block; font-family: var(--font-display); font-size: 0.99rem;
+  font-weight: 700; color: var(--ember-900);
+}
+/* En celular el afiche mide ~160px: la línea descriptiva ocupaba más alto que
+   la propia imagen, así que ahí queda solo el título. */
+@media (max-width: 559px) {
+  .afiche figcaption { padding: 0.6rem 0.5rem 0.7rem; }
+  .afiche figcaption span { display: none; }
+  .afiche figcaption b { font-size: 0.88rem; }
+}
+/* El botón de ampliar se reutiliza del lightbox de producto. */
+.afiche .card__zoom { top: 0.7rem; right: 0.7rem; }
+.afiche:hover .card__zoom, .afiche .card__zoom:focus-visible { opacity: 1; transform: none; }

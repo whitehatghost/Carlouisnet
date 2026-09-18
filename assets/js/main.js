@@ -599,8 +599,10 @@
     render();
   }
 
-  /* ---------- Ampliar imagen de producto -------------------- */
-  var zoomables = document.querySelectorAll('.card__media');
+  /* ---------- Ampliar imagen (productos y afiches) ---------- */
+  // Sirve para la foto de un producto y para el afiche de una feria: en un
+  // caso el título sale del <h3> de la tarjeta, en el otro del <figcaption>.
+  var zoomables = document.querySelectorAll('.card__media, .afiche');
   if (zoomables.length) {
     var lb = document.createElement('div');
     lb.className = 'lightbox';
@@ -625,14 +627,16 @@
 
     zoomables.forEach(function (media) {
       var img = media.querySelector('img');
+      if (!img) return;
       var card = media.closest('.card');
-      if (!img || !card) return;
-      var title = card.querySelector('h3');
+      var title = card ? card.querySelector('h3')
+                       : (media.querySelector('figcaption b') || media.querySelector('figcaption'));
+      var nombre = title ? title.textContent.trim().replace(/\s+/g, ' ') : '';
 
       var zoom = document.createElement('button');
       zoom.type = 'button';
       zoom.className = 'card__zoom';
-      zoom.setAttribute('aria-label', 'Ampliar la imagen de ' + (title ? title.textContent.trim() : 'este producto'));
+      zoom.setAttribute('aria-label', 'Ampliar ' + (nombre || 'esta imagen'));
       zoom.innerHTML = '<svg aria-hidden="true"><use href="#i-zoom"/></svg>';
       media.appendChild(zoom);
 
@@ -640,7 +644,7 @@
         lbLast = zoom;
         lbImg.src = img.currentSrc || img.src;
         lbImg.alt = img.alt;
-        lbCap.textContent = title ? title.textContent.trim() : '';
+        lbCap.textContent = nombre;
         lb.classList.add('is-open');
         document.body.style.overflow = 'hidden';
         lb.querySelector('.lightbox__close').focus();
