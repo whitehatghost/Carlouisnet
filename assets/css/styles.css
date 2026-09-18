@@ -1236,3 +1236,18 @@ strong, b { font-weight: 700; }
 .cookie-aviso__btns { display: flex; gap: var(--sp-3); }
 .cookie-aviso__btns .btn { flex: 1; }
 
+
+/* Elegir envío o retiro: quita la dirección de en medio a quien retira */
+.entrega { border: 0; padding: 0; margin: 0; display: grid; gap: 0.5rem; }
+.entrega legend { padding: 0; margin-bottom: 0.5rem; font-weight: 700; font-size: 0.93rem; color: var(--ember-800); }
+.entrega__op {
+  display: grid; grid-template-columns: auto 1fr; gap: 0.7rem; align-items: start;
+  padding: 0.8rem 0.9rem; background: var(--paper); cursor: pointer;
+  border: 1px solid var(--line); border-radius: var(--r-md);
+  transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease);
+}
+.entrega__op:hover { border-color: var(--ember-600); }
+.entrega__op input { width: 19px; height: 19px; margin-top: 2px; accent-color: var(--ember-600); }
+.entrega__op b { display: block; font-size: 0.95rem; color: var(--ink); }
+.entrega__op span { font-size: 0.83rem; color: var(--ink-mute); line-height: 1.4; }
+.entrega__op:has(input:checked) { border-color: var(--ember-600); background: var(--paper-2); }

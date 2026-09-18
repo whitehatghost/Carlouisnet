@@ -272,20 +272,33 @@
           '<label for="cli-tel">Teléfono <span class="req">*</span></label>' +
           '<input type="tel" id="cli-tel" name="telefono" required maxlength="20" inputmode="tel" autocomplete="tel" placeholder="Ej: 8825 2608" />' +
         '</div>' +
-        '<div class="order-form__grid">' +
-          '<div class="field">' +
-            '<label for="cli-canton">Cantón <span class="req">*</span></label>' +
-            '<input type="text" id="cli-canton" name="canton" required maxlength="50" autocomplete="address-level2" placeholder="Ej: Santa Ana" />' +
+        '<fieldset class="entrega">' +
+          '<legend>¿Cómo lo recibís?</legend>' +
+          '<label class="entrega__op">' +
+            '<input type="radio" name="entrega" value="envio" checked />' +
+            '<span><b>Envío a mi cantón</b>Mismo precio en todo el país</span>' +
+          '</label>' +
+          '<label class="entrega__op">' +
+            '<input type="radio" name="entrega" value="feria" />' +
+            '<span><b>Retiro en la feria</b>Sábados en Alajuela, sin costo</span>' +
+          '</label>' +
+        '</fieldset>' +
+
+        '<div data-envio>' +
+          '<div class="order-form__grid">' +
+            '<div class="field">' +
+              '<label for="cli-canton">Cantón <span class="req">*</span></label>' +
+              '<input type="text" id="cli-canton" name="canton" required maxlength="50" autocomplete="address-level2" placeholder="Ej: Santa Ana" />' +
+            '</div>' +
+            '<div class="field">' +
+              '<label for="cli-distrito">Distrito</label>' +
+              '<input type="text" id="cli-distrito" name="distrito" maxlength="50" autocomplete="address-level3" placeholder="Ej: Pozos" />' +
+            '</div>' +
           '</div>' +
           '<div class="field">' +
-            '<label for="cli-distrito">Distrito <span class="req">*</span></label>' +
-            '<input type="text" id="cli-distrito" name="distrito" required maxlength="50" autocomplete="address-level3" placeholder="Ej: Pozos" />' +
+            '<label for="cli-direccion">Dirección <span class="hint">(podés dármela después)</span></label>' +
+            '<input type="text" id="cli-direccion" name="direccion" maxlength="160" autocomplete="street-address" placeholder="Señas para llegar" />' +
           '</div>' +
-        '</div>' +
-        '<div class="field">' +
-          '<label for="cli-direccion">Dirección exacta <span class="req">*</span></label>' +
-          '<input type="text" id="cli-direccion" name="direccion" required maxlength="160" autocomplete="street-address" placeholder="Señas para llegar" />' +
-          '<span class="hint">Entre más señas, más fácil la entrega.</span>' +
         '</div>' +
         '<div class="field">' +
           '<label for="cli-email">Correo electrónico <span class="hint">(opcional)</span></label>' +
@@ -368,6 +381,19 @@
         if (saved[f] && formEl.elements[f]) formEl.elements[f].value = saved[f];
       });
     })();
+    // Quien retira en la feria no necesita dar dirección. Pedirla igual era
+    // fricción pura: cinco campos obligatorios antes de poder escribir.
+    var bloqueEnvio = formEl.querySelector('[data-envio]');
+    var aplicarEntrega = function () {
+      var envio = formEl.elements.entrega.value === 'envio';
+      bloqueEnvio.hidden = !envio;
+      formEl.elements.canton.required = envio;
+    };
+    formEl.addEventListener('change', function (e) {
+      if (e.target.name === 'entrega') aplicarEntrega();
+    });
+    aplicarEntrega();
+
     formEl.addEventListener('input', function () {
       saveClient();
       sendEl.href = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(buildMessage());
@@ -392,9 +418,14 @@
         msg += '\n\n--- Mis datos ---' +
                '\nNombre: ' + c.nombre +
                '\nTeléfono: ' + c.telefono +
-               '\nCantón: ' + c.canton +
-               '\nDistrito: ' + c.distrito +
-               '\nDirección: ' + c.direccion;
+               '';
+        if (formEl.elements.entrega && formEl.elements.entrega.value === 'feria') {
+          msg += '\nRetiro en la feria de Alajuela';
+        } else {
+          msg += '\nCantón: ' + c.canton;
+          if (c.distrito) msg += '\nDistrito: ' + c.distrito;
+          if (c.direccion) msg += '\nDirección: ' + c.direccion;
+        }
         if (c.email) msg += '\nCorreo: ' + c.email;
       }
 
