@@ -759,6 +759,15 @@ strong, b { font-weight: 700; }
   background: var(--paper-2); border: 1px solid var(--line-soft);
   font-size: 0.82rem; color: var(--ink-soft);
 }
+/* Enlace a la página propia de cada provincia */
+.province__more {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  margin-top: var(--sp-4);
+  font-size: 0.9rem; font-weight: 600; color: var(--ember-700); text-decoration: none;
+  transition: gap var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.province__more svg { width: 16px; height: 16px; }
+.province__more:hover { gap: 0.7rem; color: var(--ember-600); text-decoration: underline; }
 
 /* ---------- 21. Mapa ------------------------------------------------------ */
 .map-frame {
@@ -1307,3 +1316,23 @@ strong, b { font-weight: 700; }
 /* El botón de ampliar se reutiliza del lightbox de producto. */
 .afiche .card__zoom { top: 0.7rem; right: 0.7rem; }
 .afiche:hover .card__zoom, .afiche .card__zoom:focus-visible { opacity: 1; transform: none; }
+
+/* ---------- 33. Fichas de cantón ------------------------------------------ */
+/* Listado de cantones de una provincia. Es una lista de verdad (<ul><li>) para
+   que un lector de pantalla la anuncie como tal; los puntos se quitan a mano. */
+.chips {
+  display: flex; flex-wrap: wrap; gap: 0.5rem;
+  list-style: none; padding: 0; margin: var(--sp-5) 0;
+}
+.chips li {
+  padding: 0.4rem 0.85rem;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.88rem; color: var(--ink-soft); white-space: nowrap;
+}
+.on-dark .chips li {
+  background: rgba(255, 246, 232, .1);
+  border-color: rgba(224, 160, 46, .34);
+  color: #F0DFC9;
+}
