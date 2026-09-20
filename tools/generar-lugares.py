@@ -10,6 +10,7 @@ una vive en tools/lugares.py.
 import io, os, re, sys, json
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from lugares import PROVINCIAS
+from lugares_gam import CANTONES
 from productos import PRODUCTOS
 from guias import GUIAS
 
@@ -39,14 +40,14 @@ def ld(p):
         '{ "@type": "City", "name": %s }' % json.dumps(c, ensure_ascii=False)
         for c in p["cantones"])
     url = BASE + p["slug"] + ".html"
-    return '''  {
+    _LD = '''  {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "BreadcrumbList",
         "itemListElement": [
           { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "%(base)s" },
-          { "@type": "ListItem", "position": 2, "name": "Envíos y cobertura", "item": "%(base)scobertura.html" },
+          { "@type": "ListItem", "position": 2, "name": %(padre_nom)s, "item": "%(padre_url)s" },
           { "@type": "ListItem", "position": 3, "name": %(nom)s, "item": "%(url)s" }
         ]
       },
@@ -58,9 +59,9 @@ def ld(p):
         "url": "%(url)s",
         "provider": { "@id": "%(base)s#organization" },
         "areaServed": [
-          { "@type": "State", "name": %(nomprov)s, "containsPlace": [
+          { "@type": %(tipo_area)s, "name": %(nomprov)s, "containsPlace": [
               %(cantones)s
-            ]
+            ]%(dentro_de)s
           }
         ],
         "availableChannel": {
@@ -82,10 +83,21 @@ def ld(p):
         ]
       }
     ]
-  }''' % {
+  }'''
+    # Un cantón es una City dentro de su State; una provincia es el State.
+    es_canton = bool(p.get("provincia"))
+    return _LD % {
         "base": BASE, "url": url,
         "nom": json.dumps("Salsas artesanales en " + p["nombre"], ensure_ascii=False),
-        "nomprov": json.dumps("Provincia de " + p["nombre"], ensure_ascii=False),
+        "tipo_area": json.dumps("City" if es_canton else "State"),
+        "nomprov": json.dumps(p["nombre"] if es_canton else "Provincia de " + p["nombre"],
+                              ensure_ascii=False),
+        "dentro_de": (',\n            "containedInPlace": { "@type": "State", "name": %s }'
+                      % json.dumps("Provincia de " + p["provincia"], ensure_ascii=False))
+                     if es_canton else "",
+        "padre_nom": json.dumps(p["provincia"] if es_canton else "Envíos y cobertura",
+                                ensure_ascii=False),
+        "padre_url": BASE + (p["provincia_slug"] + ".html" if es_canton else "cobertura.html"),
         "servicio": json.dumps("Entrega de salsas artesanales CARLOUIS en " + p["nombre"],
                                ensure_ascii=False),
         "desc": json.dumps(p["desc"], ensure_ascii=False),
@@ -134,9 +146,24 @@ def pagina(p):
               <div class="faq__answer"><p>%s</p></div>
             </details>''' % (q, a) for q, a in p["faq"])
 
+    # Desde un cantón se enlaza a los otros cantones del GAM y a su provincia;
+    # desde una provincia, a las otras seis.
+    if p.get("provincia"):
+        vecinos = [(o["slug"], o["nombre"]) for o in CANTONES if o["slug"] != p["slug"]]
+        vecinos.append((p["provincia_slug"], "Toda la provincia de " + p["provincia"]))
+    else:
+        vecinos = [(o["slug"], o["nombre"]) for o in PROVINCIAS if o["slug"] != p["slug"]]
     otras = "\n".join(
-        '            <li><a href="%s.html">%s</a></li>' % (o["slug"], o["nombre"])
-        for o in PROVINCIAS if o["slug"] != p["slug"])
+        '            <li><a href="%s.html">%s</a></li>' % (sl, nb) for sl, nb in vecinos)
+
+    # Una provincia del GAM anuncia los cantones que tienen página propia.
+    hijos = ""
+    propios = [c for c in CANTONES if c.get("provincia") == p["nombre"]]
+    if propios and not p.get("provincia"):
+        enlaces = ", ".join(
+            '<a href="%s.html">%s</a>' % (c["slug"], c["nombre"]) for c in propios)
+        hijos = ('          <p>Estos cantones tienen su propia página, con tiempos de entrega y lo '
+                 'que más se pide ahí: %s.</p>' % enlaces)
 
     return '''<!DOCTYPE html>
 <html lang="es-CR" class="no-js">
@@ -204,10 +231,10 @@ def pagina(p):
           <nav class="breadcrumb" aria-label="Ruta de navegación" style="margin-bottom:1rem;font-size:.9rem">
             <a href="index.html" style="color:var(--gold-400);text-decoration:none">Inicio</a>
             <span style="color:#C4AE95"> / </span>
-            <a href="cobertura.html" style="color:var(--gold-400);text-decoration:none">Envíos</a>
+            <a href="%(padre_url)s" style="color:var(--gold-400);text-decoration:none">%(padre)s</a>
             <span style="color:#C4AE95"> / %(nombre)s</span>
           </nav>
-          <span class="eyebrow"><svg aria-hidden="true"><use href="#i-pin"/></svg> %(ncantones)s cantones</span>
+          <span class="eyebrow"><svg aria-hidden="true"><use href="#i-pin"/></svg> %(etiqueta)s</span>
           <h1>%(h1)s</h1>
           <p style="font-size:var(--step-1);max-width:62ch;margin-inline:auto">%(lead)s</p>
           <div class="btn-row" style="justify-content:center;margin-top:var(--sp-5)">
@@ -261,14 +288,14 @@ def pagina(p):
 
       <section class="section section--tight">
         <div class="container container--narrow article-body">
-          <h2>Cantones de %(nombre)s a los que llegamos</h2>
+          <h2>%(titulo_zonas)s</h2>
           <p>
-            Enviamos a los %(ncantones)s cantones de la provincia. Si el tuyo aparece, ya hemos
-            mandado pedidos ahí:
+            %(intro_zonas)s
           </p>
           <ul class="chips">
 %(cantones)s
           </ul>
+%(hijos)s
 
           <h2>Para leer antes de pedir</h2>
           <ul>
@@ -317,18 +344,28 @@ def pagina(p):
         "wa": WA, "footer": FOOTER, "intro": intro, "angulo": angulo,
         "angulo_h2": p["angulo_h2"], "entrega": p["entrega"],
         "entrega_titulo": p["entrega_titulo"], "prods": prods, "cantones": cantones,
-        "guias": guias, "faqs": faqs, "otras": otras,
+        "guias": guias, "faqs": faqs, "otras": otras, "hijos": hijos,
         "ncantones": len(p["cantones"]),
+        "padre": p["provincia"] if p.get("provincia") else "Envíos",
+        "padre_url": (p["provincia_slug"] + ".html") if p.get("provincia") else "cobertura.html",
+        "etiqueta": ("Cantón de " + p["provincia"]) if p.get("provincia")
+                    else ("%d cantones" % len(p["cantones"])),
+        "titulo_zonas": ("Zonas de %s donde entregamos" % p["nombre"]) if p.get("provincia")
+                        else ("Cantones de %s a los que llegamos" % p["nombre"]),
+        "intro_zonas": ("Entregamos en todo el cantón. Estas son las zonas donde ya hemos dejado "
+                        "pedidos:" if p.get("provincia") else
+                        "Enviamos a los %d cantones de la provincia. Si el tuyo aparece, ya hemos "
+                        "mandado pedidos ahí:" % len(p["cantones"])),
     }
 
 
 if __name__ == "__main__":
     total = 0
-    for p in PROVINCIAS:
+    for p in PROVINCIAS + CANTONES:
         destino = p["slug"] + ".html"
         html = pagina(p)
         io.open(destino, "w", encoding="utf-8", newline="\n").write(html)
         palabras = len(re.sub(r"<[^>]+>", " ", html).split())
         print("  %-38s %5.1f KB  ~%d palabras" % (destino, len(html.encode()) / 1024, palabras))
         total += 1
-    print("\n%d páginas de provincia generadas." % total)
+    print("\n%d páginas de lugar generadas." % total)

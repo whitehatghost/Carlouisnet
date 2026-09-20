@@ -43,18 +43,19 @@ PROVINCIAS = [
         ],
         "angulo_h2": "Lo que más se pide en San José",
         "angulo": [
-            "En la zona de Escazú y Santa Ana pesan mucho los pedidos para picada y para recibir gente: "
-            "el alioli, los tomates deshidratados en aceite de oliva y el pesto de albahaca salen juntos "
-            "casi siempre. Es el combo de tabla de quesos, y lo explicamos en detalle en la guía de "
-            "tablas y bocas.",
+            "La provincia no se comporta igual en todos lados, y por eso el oeste y el este tienen "
+            "página aparte: en <a href=\"salsas-artesanales-escazu.html\">Escazú</a> y "
+            "<a href=\"salsas-artesanales-santa-ana.html\">Santa Ana</a> manda la picada y el regalo "
+            "corporativo, mientras que en <a href=\"salsas-artesanales-curridabat.html\">Curridabat</a> "
+            "manda la despensa de entre semana.",
 
-            "En Curridabat, Montes de Oca y San Pedro pesa más el pedido de diario: el que cocina entre "
-            "semana y quiere resolver una pasta o un sándwich sin que sepa a lo mismo de siempre. Ahí "
-            "los pestos y las mayonesas saborizadas son los que se repiten mes a mes.",
-
-            "Y en las oficinas del centro y de Sabana pesa el regalo: canastas para clientes y para "
+            "En las oficinas del centro y de Sabana lo que más entra son canastas: para clientes y para "
             "equipos de trabajo, sobre todo de setiembre en adelante. Para eso conviene avisar con una "
             "semana, porque producimos en lotes pequeños y los favoritos se acaban.",
+
+            "Y en Desamparados, Alajuelita y Aserrí el patrón es otra vez distinto: pesa la cocina de "
+            "casa, y ahí lo que más sale es la salsa de chile dulce y la mayonesa de culantro, que se "
+            "meten dentro del plato de todos los días en vez de ir encima.",
         ],
         "destacados": [
             ("alioli", "El más pedido de la provincia. Para papas, carnes y sándwiches."),
