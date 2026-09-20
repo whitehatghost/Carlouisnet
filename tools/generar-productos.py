@@ -3,6 +3,21 @@
 import io, os, re, sys, json
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from productos import PRODUCTOS
+from productos_seo import SEO
+
+# Las fichas quedaban en ~300 palabras y sin los sinonimos con que la gente
+# busca. productos_seo.py agrega ambas cosas y, donde hace falta, reemplaza
+# el title y la description.
+for _p in PRODUCTOS:
+    _extra = SEO.get(_p["slug"])
+    if _extra:
+        _p["title"] = _extra.get("title", _p["title"])
+        _p["desc"] = _extra.get("desc", _p["desc"])
+        _p["otros_nombres"] = _extra.get("otros_nombres", [])
+        _p["contexto_h2"] = _extra.get("contexto_h2", "")
+        _p["contexto"] = _extra.get("contexto", [])
+    else:
+        _p["otros_nombres"], _p["contexto_h2"], _p["contexto"] = [], "", []
 
 BASE = "https://www.carlouis.net/"
 WA = "https://wa.me/50688252608"
@@ -83,6 +98,31 @@ def ld(p):
       }}
     ]
   }}'''
+
+
+def contexto(p):
+    """Los parrafos de fondo mas la linea de sinonimos. Si un producto no tiene
+    contenido en productos_seo.py, no se imprime nada."""
+    if not p["contexto"]:
+        return ""
+    salto = chr(10)
+    parrafos = salto.join(
+        '            <p>%s</p>' % t for t in p["contexto"])
+    alias = ""
+    if p["otros_nombres"]:
+        nombres = ", ".join(p["otros_nombres"][:-1]) + " o " + p["otros_nombres"][-1]
+        alias = (salto + '            <p class="alias">También se le conoce como '
+                 '<strong>%s</strong>. Es el mismo producto.</p>' % nombres)
+    return '''
+      <section class="section">
+        <div class="container container--narrow article-body">
+          <div class="section-head" data-reveal>
+            <h2>%s</h2>
+          </div>
+%s%s
+        </div>
+      </section>
+''' % (p["contexto_h2"], parrafos, alias)
 
 
 def usos(p):
@@ -238,7 +278,7 @@ def pagina(p):
           </div>
         </div>
       </section>
-
+{contexto(p)}
       <section class="section">
         <div class="container container--narrow">
           <div class="section-head" data-reveal>

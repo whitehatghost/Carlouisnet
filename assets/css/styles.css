@@ -1336,3 +1336,14 @@ strong, b { font-weight: 700; }
   border-color: rgba(224, 160, 46, .34);
   color: #F0DFC9;
 }
+
+/* ---------- 34. Línea de sinónimos en ficha de producto ------------------- */
+/* "También se le conoce como tomate seco, tomate en aceite..." Es información
+   real para quien llegó buscando otro nombre, no relleno: por eso se ve. */
+.alias {
+  margin-top: var(--sp-5); padding: var(--sp-4) var(--sp-5);
+  background: var(--paper-2); border-left: 3px solid var(--gold-500);
+  border-radius: var(--r-sm);
+  font-size: 0.93rem; color: var(--ink-soft);
+}
+.alias strong { color: var(--ember-800); }
