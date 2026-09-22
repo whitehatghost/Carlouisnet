@@ -966,7 +966,9 @@
     if (pagos.length || abonado(p)) {
       h += '<div class="tarjeta"><p class="tarjeta__t">Pagos</p>';
       pagos.forEach(function (x, i) {
-        h += '<div class="pago"><span>' + fechaCorta(x.fecha) + ' · ' + esc(x.metodo) + '</span>' +
+        h += '<div class="pago"><span>' + fechaCorta(x.fecha) + ' · ' + esc(x.metodo) +
+          (x.vuelto ? ' · recibí ' + money(x.recibido) + ', vuelto ' + money(x.vuelto) : '') +
+          '</span>' +
           '<span><b>' + money(x.monto) + '</b> ' +
           '<button class="icono" data-borrar-pago="' + esc(p.id) + '|' + i + '" ' +
           'aria-label="Borrar este pago"><svg aria-hidden="true"><use href="#i-trash"/></svg></button>' +
@@ -1257,6 +1259,20 @@
       '<div class="cifra' + (vendido - gastoF >= 0 ? ' cifra--ok' : ' cifra--bad') + '"><b>' +
       money(vendido - gastoF) + '</b><span>neto del día</span></div>' +
       '</div></div>';
+
+    var vueltoDado = ventasFeria(f.id).reduce(function (s2, p) {
+      return s2 + (p.pagos || []).reduce(function (s3, x) { return s3 + (x.vuelto || 0); }, 0);
+    }, 0);
+    var enEfectivo = ventasFeria(f.id).reduce(function (s2, p) {
+      return s2 + (p.pagos || []).reduce(function (s3, x) {
+        return s3 + (x.metodo === 'Efectivo' ? x.monto : 0); }, 0);
+    }, 0);
+    if (enEfectivo || vueltoDado) {
+      h2 += '<div class="seccion"><div class="cifras">' +
+        '<div class="cifra"><b>' + money(enEfectivo) + '</b><span>en efectivo, en la caja</span></div>' +
+        '<div class="cifra"><b>' + money(vueltoDado) + '</b><span>dado en vueltos</span></div>' +
+        '</div></div>';
+    }
 
     h2 += '<div class="seccion"><h3>Caja</h3>';
     CATALOGO.forEach(function (p) {
@@ -1735,6 +1751,21 @@
       Array.prototype.forEach.call(
         met.parentNode.querySelectorAll('[data-metodo]'),
         function (b) { b.setAttribute('aria-pressed', b === met); });
+      var cont = met.closest('form');
+      if (cont) {
+        aplicarMetodo(cont, cont.matches('[data-form-cobro-feria]')
+          ? cobrarFeria._total : registrarPago._total);
+      }
+      return;
+    }
+
+    // Billete de un toque
+    var bil = t.closest('[data-billete]');
+    if (bil) {
+      var form2 = bil.closest('form');
+      $('#pg-recibido').value = bil.getAttribute('data-billete');
+      pintarVuelto(form2.matches('[data-form-cobro-feria]')
+        ? cobrarFeria._total : registrarPago._total);
       return;
     }
 
@@ -1878,6 +1909,12 @@
   });
 
   document.addEventListener('input', function (e) {
+    if (e.target.id === 'pg-recibido') {
+      var f3 = e.target.closest('form');
+      pintarVuelto(f3 && f3.matches('[data-form-cobro-feria]')
+        ? cobrarFeria._total : registrarPago._total);
+      return;
+    }
     if (e.target.matches('[data-buscar-cliente]')) {
       buscaCliente = e.target.value;
       var pos = e.target.selectionStart;
@@ -1966,8 +2003,9 @@
       var m = Number(f.monto.value);
       if (!m || m <= 0) return aviso('Poné un monto');
       var sel = f.querySelector('[data-metodo][aria-pressed="true"]');
+      var rec4 = Number((f.querySelector('#pg-recibido') || {}).value || 0);
       aplicarPago(f.getAttribute('data-pedido'), m,
-                  sel ? sel.getAttribute('data-metodo') : 'Otro');
+                  sel ? sel.getAttribute('data-metodo') : 'Otro', rec4);
       return;
     }
 
@@ -2001,7 +2039,8 @@
     if (f.matches('[data-form-cobro-feria]')) {
       e.preventDefault();
       var selF = f.querySelector('[data-metodo][aria-pressed="true"]');
-      aplicarCobroFeria(selF ? selF.getAttribute('data-metodo') : 'Efectivo');
+      var rec5 = Number((f.querySelector('#pg-recibido') || {}).value || 0);
+      aplicarCobroFeria(selF ? selF.getAttribute('data-metodo') : 'Efectivo', rec5);
       return;
     }
 
@@ -2058,6 +2097,59 @@
     return 'Ya estaba en el mejor orden: ' + m.despues.toFixed(1) + ' km';
   }
 
+  // Billetes que circulan en Costa Rica. Se ofrecen solo los que alcanzan
+  // para cubrir el total, y el exacto siempre.
+  var BILLETES = [1000, 2000, 5000, 10000, 20000];
+
+  function bloqueEfectivo(total) {
+    // Lo que de verdad entrega la gente: el exacto, el redondeo al siguiente
+    // cinco mil y al siguiente diez mil (que son combinaciones de billetes,
+    // no billetes sueltos), y el primer billete que alcance.
+    var cand = [total];
+    [5000, 10000].forEach(function (paso) {
+      cand.push(Math.ceil(total / paso) * paso);
+    });
+    BILLETES.forEach(function (b) { if (b >= total) cand.push(b); });
+
+    var utiles = [];
+    cand.forEach(function (x) { if (utiles.indexOf(x) < 0) utiles.push(x); });
+    utiles.sort(function (a, b) { return a - b; });
+    utiles = utiles.slice(0, 4);
+    return '<div class="campo" data-efectivo hidden>' +
+      '<label for="pg-recibido">¿Con cuánto paga?</label>' +
+      '<div class="filtros">' + utiles.map(function (b) {
+        return '<button class="chip" type="button" data-billete="' + b + '">' +
+          (b === total ? 'Exacto' : money(b)) + '</button>';
+      }).join('') + '</div>' +
+      '<input id="pg-recibido" type="number" inputmode="numeric" min="0" ' +
+      'placeholder="Escribilo o tocá un billete" />' +
+      '<div class="vuelto" data-vuelto hidden><span>Vuelto</span>' +
+      '<b data-vuelto-monto>\u20A10</b></div>' +
+      '</div>';
+  }
+
+  // Recalcula el vuelto cada vez que cambia el monto recibido.
+  function pintarVuelto(total) {
+    var campo = $('#pg-recibido');
+    if (!campo) return;
+    var caja = $('[data-vuelto]');
+    var recibido = Number(campo.value);
+    if (!recibido || recibido < total) { caja.hidden = true; return; }
+    caja.hidden = false;
+    $('[data-vuelto-monto]').textContent = money(recibido - total);
+  }
+
+  // Muestra u oculta el bloque de efectivo según el método elegido.
+  function aplicarMetodo(cont, total) {
+    var sel = cont.querySelector('[data-metodo][aria-pressed="true"]');
+    var esEfectivo = sel && sel.getAttribute('data-metodo') === 'Efectivo';
+    var blo = cont.querySelector('[data-efectivo]');
+    if (blo) {
+      blo.hidden = !esEfectivo;
+      if (esEfectivo) pintarVuelto(total);
+    }
+  }
+
   function registrarPago(pid) {
     var p = null;
     BD.pedidos.forEach(function (x) { if (x.id === pid) p = x; });
@@ -2080,16 +2172,23 @@
         return '<button class="subtab" type="button" data-metodo="' + esc(m) + '" ' +
           'aria-pressed="' + (i === 0) + '">' + esc(m) + '</button>';
       }).join('') + '</div></div>' +
+      bloqueEfectivo(falta) +
       '<button class="btn btn--g btn--ok" type="submit">Guardar pago</button>' +
       '</form>');
+    registrarPago._total = falta;
   }
 
-  function aplicarPago(pid, monto, metodo) {
+  function aplicarPago(pid, monto, metodo, recibido) {
     var p = null;
     BD.pedidos.forEach(function (x) { if (x.id === pid) p = x; });
     if (!p) return;
     if (!p.pagos) p.pagos = [];
-    p.pagos.push({ fecha: hoyISO(), monto: monto, metodo: metodo });
+    var reg = { fecha: hoyISO(), monto: monto, metodo: metodo };
+    if (metodo === 'Efectivo' && recibido > monto) {
+      reg.recibido = recibido;
+      reg.vuelto = recibido - monto;
+    }
+    p.pagos.push(reg);
     if (p.estado === 'pendiente') p.estado = 'entregado';
     p.pagado = estaPago(p);
     guardar();
@@ -2117,6 +2216,7 @@
         return '<button class="subtab" type="button" data-metodo="' + esc(m) + '" ' +
           'aria-pressed="' + (i === 0) + '">' + esc(m) + '</button>';
       }).join('') + '</div></div>' +
+      bloqueEfectivo(tot) +
       '<button class="btn btn--g btn--ok" type="submit">Listo, cobrado</button></form>');
 
     cobrarFeria._lineas = lineas;
@@ -2124,12 +2224,16 @@
     cobrarFeria._feria = f.id;
   }
 
-  function aplicarCobroFeria(metodo) {
+  function aplicarCobroFeria(metodo, recibido) {
+    var reg = { fecha: hoyISO(), monto: cobrarFeria._total, metodo: metodo };
+    if (metodo === 'Efectivo' && recibido > cobrarFeria._total) {
+      reg.recibido = recibido;
+      reg.vuelto = recibido - cobrarFeria._total;
+    }
     BD.pedidos.push({
       id: id(), clienteId: null, feriaId: cobrarFeria._feria,
       fecha: hoyISO(), lineas: cobrarFeria._lineas, notas: '',
-      estado: 'entregado', pagado: true,
-      pagos: [{ fecha: hoyISO(), monto: cobrarFeria._total, metodo: metodo }]
+      estado: 'entregado', pagado: true, pagos: [reg]
     });
     moverStock(cobrarFeria._lineas, -1);
     var cobrado = cobrarFeria._total;
