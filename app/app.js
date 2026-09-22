@@ -231,7 +231,26 @@
     return Uint8Array.from(atob(t), function (c) { return c.charCodeAt(0); });
   }
 
+  // Sello de tiempo de lo que cambió, para que la nube sepa qué es más
+  // reciente. Se compara contra una copia de la tanda anterior.
+  var _huellas = {};
+  function sellar() {
+    var ahora = new Date().toISOString();
+    ['clientes', 'pedidos', 'gastos', 'rutas', 'ferias', 'recordatorios']
+      .forEach(function (k) {
+        (BD[k] || []).forEach(function (x) {
+          if (!x.id) return;
+          var h = JSON.stringify(x);
+          if (_huellas[x.id] !== h) {
+            _huellas[x.id] = h;
+            x._actualizado = ahora;
+          }
+        });
+      });
+  }
+
   function guardar() {
+    sellar();
     try {
       if (!LLAVE_AES) {
         localStorage.setItem(LLAVE, JSON.stringify(BD));
@@ -1874,10 +1893,13 @@
       var cid = bc.getAttribute('data-borrar-cliente');
       var usos = BD.pedidos.filter(function (p) { return p.clienteId === cid; }).length;
       if (!confirm('¿Borrar este cliente?' + (usos ? '\n\nTiene ' + usos + ' pedido(s) en el historial. Los pedidos NO se borran.' : ''))) return;
+      // Se marca en vez de quitarse, para que el otro teléfono se entere.
+      BD.clientes.forEach(function (c) { if (c.id === cid) c._borrado = true; });
       BD.clientes = BD.clientes.filter(function (c) { return c.id !== cid; });
       BD.rutas.forEach(function (r) {
         r.paradas = r.paradas.filter(function (p) { return p.clienteId !== cid; });
       });
+      _borrados.push({ tipo: 'cliente', id: cid });
       guardar(); ir('#/clientes'); aviso('Cliente borrado');
       return;
     }
@@ -1887,6 +1909,7 @@
       var pid3 = bp.getAttribute('data-borrar-pedido');
       BD.pedidos.forEach(function (p) { if (p.id === pid3) moverStock(p.lineas, 1); });
       BD.pedidos = BD.pedidos.filter(function (p) { return p.id !== pid3; });
+      _borrados.push({ tipo: 'pedido', id: pid3 });
       guardar(); ir('#/pedidos'); aviso('Pedido borrado');
       return;
     }
@@ -1895,6 +1918,7 @@
       if (!confirm('¿Borrar este gasto?')) return;
       var gid = bg.getAttribute('data-borrar-gasto');
       BD.gastos = BD.gastos.filter(function (g) { return g.id !== gid; });
+      _borrados.push({ tipo: 'gasto', id: gid });
       guardar(); pintar();
       return;
     }
@@ -2028,6 +2052,7 @@
     if (brc) {
       var rid3 = brc.getAttribute('data-borrar-recordatorio');
       BD.recordatorios = BD.recordatorios.filter(function (x) { return x.id !== rid3; });
+      _borrados.push({ tipo: 'recordatorio', id: rid3 });
       guardar(); pintar();
       return;
     }
@@ -2117,8 +2142,17 @@
 
   /* ---------- envío de formularios --------------------------------------- */
 
+  // Después de guardar algo, empujarlo de una en vez de esperar el reloj.
+  var _subirPronto = null;
+  function subirLuego() {
+    if (!window.Nube || !Nube.activa()) return;
+    clearTimeout(_subirPronto);
+    _subirPronto = setTimeout(sincronizar, 1500);
+  }
+
   document.addEventListener('submit', function (e) {
     var f = e.target;
+    subirLuego();
 
     if (f.matches('[data-form-cliente]')) {
       e.preventDefault();
@@ -2592,6 +2626,59 @@
     d.setDate(d.getDate() + 1);
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') +
            '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  function pedirCuenta() {
+    var capa = document.createElement('div');
+    capa.className = 'candado';
+    capa.innerHTML =
+      '<form class="candado__caja" data-form-cuenta>' +
+      '<img class="candado__logo" src="../assets/img/logo.png" alt="CARLOUIS" ' +
+      'width="146" height="42" />' +
+      '<p style="margin:0 0 1rem;text-align:center;color:var(--ink-soft);font-size:.95rem">' +
+      'Entrá con la cuenta del negocio. Es la misma para los tres y se escribe ' +
+      'una sola vez en cada teléfono.</p>' +
+      '<div class="campo"><label for="nb-c">Correo</label>' +
+      '<input id="nb-c" type="email" autocomplete="username" required /></div>' +
+      '<div class="campo"><label for="nb-p">Contraseña</label>' +
+      '<input id="nb-p" type="password" autocomplete="current-password" required /></div>' +
+      '<button class="btn btn--g" type="submit">Entrar</button>' +
+      '<p class="candado__err" data-err hidden></p>' +
+      '<div style="height:.7rem"></div>' +
+      '<button class="btn btn--sec btn--g" type="button" data-sin-nube>' +
+      'Usarla solo en este teléfono</button>' +
+      '</form>';
+    document.body.appendChild(capa);
+    document.body.style.overflow = 'hidden';
+
+    capa.addEventListener('click', function (e) {
+      if (e.target.closest('[data-sin-nube]')) {
+        capa.remove();
+        document.body.style.overflow = '';
+        localStorage.setItem('carlouis.nube.no', '1');
+        pedirPerfil();
+      }
+    });
+
+    capa.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var err = capa.querySelector('[data-err]');
+      var btn = capa.querySelector('button[type="submit"]');
+      btn.textContent = 'Entrando…';
+      err.hidden = true;
+      Nube.entrar(capa.querySelector('#nb-c').value.trim(),
+                  capa.querySelector('#nb-p').value)
+        .then(function () {
+          capa.remove();
+          document.body.style.overflow = '';
+          pedirPerfil();
+        })
+        .catch(function (x) {
+          btn.textContent = 'Entrar';
+          err.hidden = false;
+          err.textContent = 'No se pudo entrar. Revisá el correo y la contraseña.';
+        });
+    });
   }
 
   function pedirPerfil() {
@@ -3095,6 +3182,61 @@
     if (e.target.closest('[data-quitar-clave]')) quitarClave();
   });
 
+  /* ---------- base compartida -------------------------------------------- */
+
+  // Lo que se borró en este teléfono y todavía no se le avisó al otro.
+  var _borrados = [];
+
+  function quienSoy() {
+    var p = perfilActivo();
+    return p ? p.nombre : null;
+  }
+
+  function sincronizar() {
+    if (!window.Nube || !Nube.activa()) return;
+    // Los borrados viajan como registros marcados.
+    _borrados.forEach(function (b) {
+      var lista = { cliente: 'clientes', pedido: 'pedidos', gasto: 'gastos',
+                    ruta: 'rutas', feria: 'ferias', recordatorio: 'recordatorios' }[b.tipo];
+      if (lista) BD[lista].push({ id: b.id, _borrado: true,
+                                  _actualizado: new Date().toISOString() });
+    });
+    var pendientes = _borrados.slice();
+    _borrados = [];
+    Nube.sincronizar(BD, quienSoy(), guardar).then(function () {
+      // Ya subidos, se sacan de la lista local para no arrastrarlos siempre.
+      pendientes.forEach(function (b) {
+        var lista = { cliente: 'clientes', pedido: 'pedidos', gasto: 'gastos',
+                      ruta: 'rutas', feria: 'ferias', recordatorio: 'recordatorios' }[b.tipo];
+        if (!lista) return;
+        BD[lista] = BD[lista].filter(function (x) {
+          return !(x.id === b.id && x._borrado);
+        });
+      });
+    });
+  }
+
+  function engancharNube() {
+    if (!window.Nube || !Nube.activa()) return;
+
+    Nube.alCambiar = function () {
+      // No repintar con una hoja abierta: le borraría a alguien lo que está
+      // escribiendo justo cuando está cobrando.
+      if (hoja.hidden) pintar();
+      else aviso('Llegaron datos nuevos');
+    };
+
+    Nube.alEstado = function (e) {
+      var ind = $('[data-nube]');
+      if (!ind) return;
+      ind.hidden = (e === 'listo');
+      ind.textContent = e === 'sin señal' ? 'sin señal' : 'sincronizando';
+      ind.className = 'top__estado' + (e === 'sin señal' ? '' : ' top__estado--ok');
+    };
+
+    Nube.arrancarReloj(BD, quienSoy(), guardar);
+  }
+
   /* ---------- conexión y service worker ---------------------------------- */
 
   function estadoConexion() {
@@ -3115,10 +3257,16 @@
     estadoConexion();
     if (!location.hash) location.hash = '#/hoy';
     pintar();
+    engancharNube();
   }
 
   migrarSiHace();
-  var act = perfilActivo();
-  if (act) entrarPerfil(act.id);
-  else pedirPerfil();
+  if (window.Nube && Nube.activa() && !localStorage.getItem('carlouis.nube.sesion') &&
+      !localStorage.getItem('carlouis.nube.no')) {
+    pedirCuenta();
+  } else {
+    var act = perfilActivo();
+    if (act) entrarPerfil(act.id);
+    else pedirPerfil();
+  }
 })();

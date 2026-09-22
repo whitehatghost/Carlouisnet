@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; connect-src 'self' https://router.project-osrm.org; style-src 'self' 'unsafe-inline'; font-src 'self'; worker-src 'self'; manifest-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; connect-src 'self' https://router.project-osrm.org https://*.supabase.co; style-src 'self' 'unsafe-inline'; font-src 'self'; worker-src 'self'; manifest-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none';">
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
 
@@ -25,7 +25,9 @@
   <link rel="preload" href="../assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="../assets/fonts/karla-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="app.css" />
+  <script src="config.js" defer></script>
   <script src="productos.js" defer></script>
+  <script src="nube.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 
@@ -63,6 +65,7 @@
   <img class="top__logo" src="../assets/img/logo.png" alt="CARLOUIS" width="146" height="42" />
   <h1 class="top__titulo" data-titulo>Hoy</h1>
   <span class="top__estado" data-conexion hidden>sin conexión</span>
+  <span class="top__estado" data-nube hidden></span>
 </header>
 
 <main id="vista" data-vista></main>
