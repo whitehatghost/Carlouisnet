@@ -947,7 +947,11 @@
       '<svg aria-hidden="true"><use href="#i-magic"/></svg> Buscar orden más corto</button>' +
       '<button class="btn btn--sec btn--sm" data-compartir-ruta="' + esc(r.id) + '">' +
       '<svg aria-hidden="true"><use href="#i-share"/></svg> Compartir</button>' +
-      '</div></div>';
+      '</div>' +
+      '<div class="acciones"><button class="btn btn--wa btn--g" data-avisar-ruta="' +
+      esc(r.id) + '"><svg aria-hidden="true"><use href="#i-wa"/></svg> ' +
+      'Avisarles a los de esta ruta</button></div>' +
+      '</div>';
 
     var urlMaps = urlMapsRuta(conGPS);
     if (urlMaps) {
@@ -1582,6 +1586,9 @@
 
     if (t.closest('[data-rapido]')) { clienteRapido(); return; }
 
+    var avr = t.closest('[data-avisar-ruta]');
+    if (avr) { avisarRuta(avr.getAttribute('data-avisar-ruta')); return; }
+
     var msz = t.closest('[data-mensajes]');
     if (msz) { hojaMensajes(msz.getAttribute('data-mensajes')); return; }
 
@@ -1968,6 +1975,52 @@
       }).join('') + '</div>');
 
     hojaMensajes._plantillas = plantillas;
+  }
+
+  function avisarRuta(rid) {
+    var r = null;
+    BD.rutas.forEach(function (x) { if (x.id === rid) r = x; });
+    if (!r) return;
+
+    var lista = r.paradas.map(function (p) { return cliente(p.clienteId); })
+      .filter(function (c) { return c && c.tel; });
+    if (!lista.length) return aviso('Ninguno de esta ruta tiene teléfono');
+
+    var cuando = r.fecha === hoyISO() ? 'hoy'
+      : r.fecha === maniana() ? 'mañana'
+      : 'el ' + fechaLarga(r.fecha);
+
+    var textos = [
+      'Buenas! Voy a andar por su zona ' + cuando + '. ¿Le llevo algo? Avíseme y se lo aparto.',
+      'Buenas! Le confirmo que ' + cuando + ' le paso dejando el pedido.',
+      'Buenas! Ya voy en camino, en un rato estoy por allá.'
+    ];
+
+    abrirHoja('Avisar a ' + lista.length + ' clientes', '' +
+      '<div class="campo"><label for="ms-t">Mensaje</label>' +
+      '<textarea id="ms-t" style="min-height:96px">' + esc(textos[0]) + '</textarea></div>' +
+      '<div class="filtros">' +
+      '<button class="chip" type="button" data-plantilla="0">Antes de salir</button>' +
+      '<button class="chip" type="button" data-plantilla="1">Confirmar entrega</button>' +
+      '<button class="chip" type="button" data-plantilla="2">Ya voy llegando</button>' +
+      '</div>' +
+      '<p class="pista">Cada toque abre el chat con el texto puesto. Los que ya ' +
+      'salieron quedan marcados.</p>' +
+      '<div>' + lista.map(function (c) {
+        return '<div class="linea" data-msg-fila="' + esc(c.id) + '">' +
+          '<span class="linea__n">' + esc(c.nombre) + '</span><span></span>' +
+          '<button class="btn btn--wa btn--sm" data-enviar="' + esc(c.id) + '">' +
+          '<svg aria-hidden="true"><use href="#i-wa"/></svg> Avisar</button></div>';
+      }).join('') + '</div>');
+
+    hojaMensajes._plantillas = textos;
+  }
+
+  function maniana() {
+    var d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') +
+           '-' + String(d.getDate()).padStart(2, '0');
   }
 
   function clienteRapido() {
