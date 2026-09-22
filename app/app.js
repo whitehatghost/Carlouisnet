@@ -2280,8 +2280,51 @@
     fijarPerfil(id);
     LLAVE_AES = null;
     cargar();
-    if (claveGuardada() || estaCifrado()) pedirClave();
-    else arrancarApp();
+    if (claveGuardada() || estaCifrado()) return pedirClave();
+
+    // La primera vez que se entra a un perfil se ofrece ponerle clave. No se
+    // obliga —el dueño decidió que no hubiera pasos de configuración— pero
+    // tampoco se esconde: si no se pregunta, nadie la pone nunca.
+    var visto = 'carlouis.preguntado.' + id;
+    if (!localStorage.getItem(visto)) {
+      localStorage.setItem(visto, '1');
+      return ofrecerClave();
+    }
+    arrancarApp();
+  }
+
+  function ofrecerClave() {
+    var quien = perfilActivo();
+    var capa = document.createElement('div');
+    capa.className = 'candado';
+    capa.innerHTML =
+      '<div class="candado__caja">' +
+      '<img class="candado__logo" src="../assets/img/logo.png" alt="CARLOUIS" ' +
+      'width="146" height="42" />' +
+      '<p style="margin:0 0 .6rem;text-align:center;font-weight:700;color:var(--ember-800)">' +
+      esc(quien ? quien.nombre : '') + '</p>' +
+      '<p style="margin:0 0 1.1rem;color:var(--ink-soft);font-size:.95rem;line-height:1.45">' +
+      'Si le ponés una clave, los datos quedan cifrados en el teléfono y nadie ' +
+      'los puede ver sin ella. Se puede poner después en Dinero.</p>' +
+      '<button class="btn btn--g" type="button" data-si-clave>Ponerle una clave</button>' +
+      '<div style="height:.6rem"></div>' +
+      '<button class="btn btn--sec btn--g" type="button" data-no-clave>Ahora no</button>' +
+      '</div>';
+    document.body.appendChild(capa);
+    document.body.style.overflow = 'hidden';
+
+    capa.addEventListener('click', function (e) {
+      if (e.target.closest('[data-no-clave]')) {
+        capa.remove();
+        document.body.style.overflow = '';
+        arrancarApp();
+      } else if (e.target.closest('[data-si-clave]')) {
+        capa.remove();
+        document.body.style.overflow = '';
+        arrancarApp();
+        ponerClave();
+      }
+    });
   }
 
   function cambiarPerfil() {
