@@ -11,6 +11,6 @@
  * Ver SUPABASE.md para llenarlos.
  */
 window.NUBE_CONFIG = {
-  url: '',
-  llave: ''
+  url: 'https://qtomllbnhlavxxplmauy.supabase.co',
+  llave: 'sb_publishable_RnLb_J3H-bVUyiFdE7tFbw_d2rqjhI1'
 };
