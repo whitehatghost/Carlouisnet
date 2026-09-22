@@ -282,9 +282,10 @@
     return 2 * R * Math.asin(Math.min(1, Math.sqrt(s)));
   }
 
-  function largoRuta(pts, origen) {
+  function largoRuta(pts, origen, costo) {
+    var f = costo || dist;
     var t = 0, prev = origen || pts[0];
-    for (var i = 0; i < pts.length; i++) { t += dist(prev, pts[i]); prev = pts[i]; }
+    for (var i = 0; i < pts.length; i++) { t += f(prev, pts[i]); prev = pts[i]; }
     return t;
   }
 
@@ -296,7 +297,8 @@
   // de 6 a 8 paradas: da el óptimo exacto en el 100% de los casos. Arrancar
   // desde un solo punto daba el óptimo en 31 de 40, con desvíos de hasta 12%.
   // El costo es despreciable: una ruta de 15 paradas se resuelve al instante.
-  function optimizar(pts, origen) {
+  function optimizar(pts, origen, costo) {
+    var f = costo || dist;
     if (pts.length < 2) return pts.slice();
 
     var mejorOrden = null, mejorLargo = Infinity;
@@ -310,15 +312,15 @@
       while (pend.length) {
         var mj = 0, md = Infinity;
         for (var i = 0; i < pend.length; i++) {
-          var d = dist(act, pend[i]);
+          var d = f(act, pend[i]);
           if (d < md) { md = d; mj = i; }
         }
         act = pend[mj];
         orden.push(act);
         pend.splice(mj, 1);
       }
-      orden = pulir(orden, origen);
-      var l = largoRuta(orden, origen);
+      orden = pulir(orden, origen, f);
+      var l = largoRuta(orden, origen, f);
       if (l < mejorLargo) { mejorLargo = l; mejorOrden = orden; }
     }
     return mejorOrden;
@@ -330,11 +332,12 @@
   // vuelve a empezar desde cero con el orden nuevo. Seguir recorriendo con los
   // índices viejos sobre un arreglo que ya cambió produce resultados peores
   // que no hacer nada; pasó, y se detectó comparando contra fuerza bruta.
-  function pulir(orden, origen) {
+  function pulir(orden, origen, costo) {
+    var f = costo || dist;
     var vueltas = 0;
     while (vueltas < 400) {
       vueltas++;
-      var actual = largoRuta(orden, origen);
+      var actual = largoRuta(orden, origen, f);
       var mejor = null, mejorLargo = actual;
 
       // 2-opt: invertir un tramo deshace los cruces.
@@ -343,7 +346,7 @@
           var c1 = orden.slice(0, a)
             .concat(orden.slice(a, b + 1).reverse())
             .concat(orden.slice(b + 1));
-          var l1 = largoRuta(c1, origen);
+          var l1 = largoRuta(c1, origen, f);
           if (l1 < mejorLargo - 1e-9) { mejor = c1; mejorLargo = l1; }
         }
       }
@@ -359,7 +362,7 @@
             for (var rev = 0; rev < 2; rev++) {
               var t2 = rev ? tramo.slice().reverse() : tramo;
               var c2 = resto.slice(0, y).concat(t2).concat(resto.slice(y));
-              var l2 = largoRuta(c2, origen);
+              var l2 = largoRuta(c2, origen, f);
               if (l2 < mejorLargo - 1e-9) { mejor = c2; mejorLargo = l2; }
             }
           }
@@ -370,6 +373,33 @@
       orden = mejor;
     }
     return orden;
+  }
+
+  // Matriz de tiempos reales de manejo entre todos los puntos, por calles.
+  // Devuelve null si no hay señal o el servicio no contesta: ahí el que llama
+  // usa el cálculo de línea recta.
+  var OSRM = 'https://router.project-osrm.org/table/v1/driving/';
+
+  function matrizCalles(pts) {
+    if (!navigator.onLine || pts.length < 2 || pts.length > 40) {
+      return Promise.resolve(null);
+    }
+    var coords = pts.map(function (p) {
+      return p.lng.toFixed(6) + ',' + p.lat.toFixed(6);
+    }).join(';');
+
+    var corta = new AbortController();
+    var reloj = setTimeout(function () { corta.abort(); }, 9000);
+
+    return fetch(OSRM + coords + '?annotations=duration,distance',
+                 { signal: corta.signal })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (d) {
+        clearTimeout(reloj);
+        if (!d || d.code !== 'Ok' || !d.durations) return null;
+        return { min: d.durations, metros: d.distances };
+      })
+      .catch(function () { clearTimeout(reloj); return null; });
   }
 
   function ubicacionActual() {
@@ -1683,14 +1713,15 @@
     if (reo) {
       var rid = reo.getAttribute('data-reordenar');
       reo.textContent = 'Ordenando…';
+      aviso('Consultando calles…');
       ubicacionActual().then(function (origen) {
-        var mejora = null;
-        BD.rutas.forEach(function (r) {
-          if (r.id !== rid) return;
-          mejora = ordenarRuta(r, origen);
+        var ruta = null;
+        BD.rutas.forEach(function (r) { if (r.id === rid) ruta = r; });
+        if (!ruta) return;
+        return ordenarRuta(ruta, origen).then(function (mejora) {
+          guardar(); pintar();
+          aviso(frasePorMejora(mejora));
         });
-        guardar(); pintar();
-        aviso(frasePorMejora(mejora));
       });
       return;
     }
@@ -1990,10 +2021,12 @@
         paradas: ids.map(function (cid) { return { clienteId: cid, hecho: false }; })
       };
       BD.rutas.push(r);
+      aviso('Ordenando por calles…');
       ubicacionActual().then(function (origen) {
-        var mejora = ordenarRuta(r, origen);
-        guardar(); ir('#/rutas/' + r.id);
-        aviso(frasePorMejora(mejora));
+        return ordenarRuta(r, origen).then(function (mejora) {
+          guardar(); ir('#/rutas/' + r.id);
+          aviso(frasePorMejora(mejora));
+        });
       });
       return;
     }
@@ -2073,6 +2106,8 @@
 
   // Ordena las paradas por cercanía. Las que no tienen GPS quedan al final,
   // en el orden en que se marcaron: no hay forma de ordenarlas sin coordenadas.
+  // Ordena la ruta. Primero intenta por calles reales; si no hay señal,
+  // por línea recta. Siempre devuelve una promesa.
   function ordenarRuta(r, origen) {
     var con = [], sin = [];
     r.paradas.forEach(function (p) {
@@ -2080,21 +2115,55 @@
       if (c && c.lat != null) con.push({ p: p, lat: c.lat, lng: c.lng });
       else sin.push(p);
     });
-    var antes = con.length > 1 ? largoRuta(con, origen) : 0;
-    if (con.length > 1) con = optimizar(con, origen);
-    var despues = con.length > 1 ? largoRuta(con, origen) : 0;
-    r.paradas = con.map(function (x) { return x.p; }).concat(sin);
-    return { antes: antes, despues: despues, ahorro: antes - despues };
+
+    if (con.length < 2) {
+      r.paradas = con.map(function (x) { return x.p; }).concat(sin);
+      return Promise.resolve({ antes: 0, despues: 0, ahorro: 0, porCalles: false });
+    }
+
+    // El punto de salida entra a la matriz como una parada más, en la
+    // posición 0, para que el tiempo desde donde uno está también cuente.
+    var puntos = origen ? [origen].concat(con) : con.slice();
+
+    return matrizCalles(puntos).then(function (m) {
+      var costo = null, unidad = 'km', factor = 1;
+
+      if (m) {
+        // Índice de cada punto dentro de la matriz.
+        puntos.forEach(function (p, i) { p._i = i; });
+        costo = function (a, b) {
+          var v = m.min[a._i] && m.min[a._i][b._i];
+          // Si el servicio no pudo unir dos puntos, se usa línea recta para
+          // ese par en vez de descartar toda la matriz.
+          return (v == null) ? dist(a, b) * 120 : v;
+        };
+        unidad = 'min';
+        factor = 1 / 60;
+      }
+
+      var antes = largoRuta(con, origen, costo) * factor;
+      var puestos = optimizar(con, origen, costo);
+      var despues = largoRuta(puestos, origen, costo) * factor;
+      r.paradas = puestos.map(function (x) { return x.p; }).concat(sin);
+      r.porCalles = !!m;
+
+      return {
+        antes: antes, despues: despues, ahorro: antes - despues,
+        porCalles: !!m, unidad: unidad
+      };
+    });
   }
 
-  // Frase corta para decir si valió la pena reordenar.
+  // Frase corta para decir si valió la pena reordenar, y con qué se calculó.
   function frasePorMejora(m) {
     if (!m || m.despues <= 0) return 'Ruta guardada';
-    if (m.ahorro > 0.3) {
-      return 'Quedó ' + m.ahorro.toFixed(1) + ' km más corta (' +
-             Math.round(m.ahorro / m.antes * 100) + '% menos)';
+    var u = m.unidad || 'km';
+    var como = m.porCalles ? '' : ' (sin señal, por línea recta)';
+    if (m.ahorro > (u === 'min' ? 1 : 0.3)) {
+      return 'Ahorra ' + Math.round(m.ahorro) + ' ' + u + ' (' +
+             Math.round(m.ahorro / m.antes * 100) + '% menos)' + como;
     }
-    return 'Ya estaba en el mejor orden: ' + m.despues.toFixed(1) + ' km';
+    return 'Ya estaba en el mejor orden: ' + Math.round(m.despues) + ' ' + u + como;
   }
 
   // Billetes que circulan en Costa Rica. Se ofrecen solo los que alcanzan
@@ -2473,9 +2542,10 @@
     BD.rutas.push(r);
     aviso('Armando la ruta…');
     ubicacionActual().then(function (origen) {
-      var mejora = ordenarRuta(r, origen);
-      guardar(); ir('#/rutas/' + r.id);
-      aviso(lista.length + ' paradas · ' + frasePorMejora(mejora));
+      return ordenarRuta(r, origen).then(function (mejora) {
+        guardar(); ir('#/rutas/' + r.id);
+        aviso(lista.length + ' paradas · ' + frasePorMejora(mejora));
+      });
     });
   }
 
