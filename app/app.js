@@ -1524,6 +1524,14 @@
       ' pedidos · ' + BD.gastos.length + ' gastos · ' + BD.rutas.length + ' rutas</p>' +
       '</div></div>';
 
+    if (!yaInstalada()) {
+      h += '<div class="seccion"><h3>Instalar la app</h3><div class="tarjeta">' +
+        '<p class="tarjeta__s">Ahorita está abierta en el navegador. Si la instalás ' +
+        'queda con el logo en la pantalla de inicio y abre más rápido.</p>' +
+        '<div class="acciones"><button class="btn btn--gold btn--g btn--sm" ' +
+        'data-ver-guia>Cómo instalarla</button></div></div></div>';
+    }
+
     var yo = perfilActivo();
     h += '<div class="seccion"><h3>Usuario</h3><div class="tarjeta">' +
       '<p class="tarjeta__t">' + esc(yo ? yo.nombre : '—') + '</p>' +
@@ -2464,6 +2472,16 @@
       return ofrecerClave();
     }
     arrancarApp();
+    // Si todavía anda por el navegador, se le enseña a instalarla. Una sola
+    // vez, para no fastidiar a quien decidió usarla así.
+    // Al que está dentro de WhatsApp se le avisa siempre, no una sola vez:
+    // mientras siga ahí no va a poder instalarla nunca.
+    if (navegadorInterno()) {
+      setTimeout(guiaInstalar, 900);
+    } else if (!yaInstalada() && !localStorage.getItem('carlouis.guia.instalar')) {
+      localStorage.setItem('carlouis.guia.instalar', '1');
+      setTimeout(guiaInstalar, 1200);
+    }
   }
 
   function ofrecerClave() {
@@ -2506,6 +2524,196 @@
     location.hash = '#/hoy';
     vista.innerHTML = '';
     pedirPerfil();
+  }
+
+  /* ---------- instalación --------------------------------------------- */
+
+  var promptInstalar = null;   // lo entrega Android; iOS nunca lo manda
+
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    promptInstalar = e;
+  });
+
+  function yaInstalada() {
+    return window.navigator.standalone === true ||
+           (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+  }
+
+  // En iOS, un navegador dentro de otra app (WhatsApp, Instagram, Facebook)
+  // no puede instalar nada. Tampoco Chrome ni Firefox en iPhone.
+  function esAndroid() { return /Android/.test(navigator.userAgent); }
+
+  function navegadorInterno() {
+    if (yaInstalada()) return false;
+    var ua = navigator.userAgent;
+    if (esAndroid()) {
+      // El WebView de Android se marca con "; wv" en el user agent. Es el que
+      // usan WhatsApp, Facebook e Instagram para abrir enlaces.
+      return /; wv\)/.test(ua) || /FBAN|FBAV|Instagram|Line\//.test(ua);
+    }
+    if (!esApple()) return false;
+    if (window.navigator.standalone === undefined) return true;  // WKWebView
+    return /CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
+  }
+
+  function copiarEnlace() {
+    var url = location.href.split('#')[0];
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function () {
+        aviso('Enlace copiado. Abrí Safari y pegalo.');
+      }, function () { aviso(url); });
+    } else {
+      aviso(url);
+    }
+  }
+
+  function esApple() {
+    var ua = navigator.userAgent;
+    // iPadOS 13 en adelante se hace pasar por Mac; se reconoce por el táctil.
+    return /iPad|iPhone|iPod/.test(ua) ||
+           (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  }
+
+  function guiaInstalar() {
+    // Si ya hay una abierta se quita: abrirla dos veces las apilaba y la de
+    // abajo quedaba con el texto de otro sistema.
+    var previa = document.querySelector('.instalar');
+    if (previa) previa.remove();
+    var apple = esApple();
+    var capa = document.createElement('div');
+    capa.className = 'candado instalar';
+
+    var cuerpo;
+    if (navegadorInterno()) {
+      // Acá no se puede instalar, y decirle "tocá compartir" sería mandarla a
+      // buscar algo que no existe en esta pantalla.
+      var nav = esAndroid() ? 'Chrome' : 'Safari';
+      var pinta = esAndroid()
+        ? 'el círculo de colores, el que trae el teléfono de fábrica'
+        : 'la brújula azul, la que trae el iPhone de fábrica';
+      cuerpo =
+        '<p class="ins__t">Hay que abrirla en ' + nav + '</p>' +
+        '<p class="ins__p">Está viendo la app dentro de otra aplicación ' +
+        '(WhatsApp, Facebook o similar). Desde acá el teléfono no deja ' +
+        'instalarla. No es culpa suya: la opción no aparece.</p>' +
+
+        '<div class="paso"><span class="paso__n">1</span><div>' +
+        '<b>Copiá el enlace</b>' +
+        '<span class="paso__s">Tocá el botón de abajo.</span>' +
+        '</div></div>' +
+
+        '<div class="paso"><span class="paso__n">2</span><div>' +
+        '<b>Abrí ' + nav + '</b>' +
+        '<span class="paso__s">Es ' + pinta + '.</span>' +
+        '</div></div>' +
+
+        '<div class="paso"><span class="paso__n">3</span><div>' +
+        '<b>Pegá el enlace y entrá</b>' +
+        '<span class="paso__s">Ahí sí va a poder instalarla, y la app le vuelve ' +
+        'a explicar cómo.</span>' +
+        '</div></div>' +
+
+        '<button class="btn btn--g btn--gold" type="button" data-copiar-enlace>' +
+        'Copiar el enlace</button>';
+    } else if (!apple && promptInstalar) {
+      // Android: un toque y listo.
+      cuerpo =
+        '<p class="ins__t">Poné la app en su teléfono</p>' +
+        '<p class="ins__p">Va a quedar con el logo de CARLOUIS en la pantalla, ' +
+        'igual que WhatsApp.</p>' +
+        '<button class="btn btn--g btn--ok" type="button" data-instalar-ya>' +
+        'Instalar ahora</button>';
+    } else if (apple) {
+      // iPhone y iPad: Safari no permite botón. Solo se puede enseñar.
+      cuerpo =
+        '<p class="ins__t">Poné la app en su teléfono</p>' +
+        '<p class="ins__p">Son dos toques. Seguí el dibujo:</p>' +
+
+        '<div class="paso"><span class="paso__n">1</span><div>' +
+        '<b>Tocá este botón, abajo</b>' +
+        '<svg class="ins__icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+        'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M12 15V3"/><path d="m8 7 4-4 4 4"/>' +
+        '<path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>' +
+        '<span class="paso__s">Está en la barra de abajo, en el centro. ' +
+        'Es un cuadrito con una flecha para arriba.</span>' +
+        '</div></div>' +
+
+        '<div class="paso"><span class="paso__n">2</span><div>' +
+        '<b>Deslizá para abajo y tocá<br>“Agregar a inicio”</b>' +
+        '<span class="paso__s">Después tocá <b>Agregar</b>, arriba a la derecha. ' +
+        'Listo.</span>' +
+        '</div></div>' +
+
+        '<div class="flechita" aria-hidden="true">' +
+        '<svg viewBox="0 0 40 60" fill="none" stroke="currentColor" stroke-width="3" ' +
+        'stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M20 4v46"/><path d="m8 38 12 12 12-12"/></svg>' +
+        '<span>el botón está por acá abajo</span></div>';
+    } else if (esAndroid()) {
+      // Chrome de verdad, pero todavía no ofreció el botón. Pasa seguido:
+      // Chrome lo entrega cuando quiere. Se explican los pasos a mano.
+      cuerpo =
+        '<p class="ins__t">Poné la app en su teléfono</p>' +
+        '<p class="ins__p">Son dos toques. Seguí el dibujo:</p>' +
+
+        '<div class="paso"><span class="paso__n">1</span><div>' +
+        '<b>Tocá los tres puntitos</b>' +
+        '<svg class="ins__icono ins__icono--and" viewBox="0 0 24 24" fill="currentColor">' +
+        '<circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/>' +
+        '<circle cx="12" cy="19" r="2"/></svg>' +
+        '<span class="paso__s">Están arriba a la derecha, en la esquina.</span>' +
+        '</div></div>' +
+
+        '<div class="paso"><span class="paso__n">2</span><div>' +
+        '<b>Tocá “Instalar aplicación”</b>' +
+        '<span class="paso__s">Si no dice eso, va a decir ' +
+        '<b>“Agregar a pantalla principal”</b>. Es lo mismo.</span>' +
+        '</div></div>' +
+
+        '<div class="flechita flechita--arriba" aria-hidden="true">' +
+        '<svg viewBox="0 0 40 60" fill="none" stroke="currentColor" stroke-width="3" ' +
+        'stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M20 56V10"/><path d="m8 22 12-12 12 12"/></svg>' +
+        '<span>los puntitos están por allá arriba</span></div>';
+    } else {
+      // Computadora, o navegador que no soporta instalación.
+      cuerpo =
+        '<p class="ins__t">Guardá la página</p>' +
+        '<p class="ins__p">En la computadora la app funciona igual desde el ' +
+        'navegador. Guardala en favoritos con Ctrl+D para tenerla a mano.</p>';
+    }
+
+    capa.innerHTML =
+      '<div class="candado__caja ins__caja">' +
+      '<img class="candado__logo" src="../assets/img/logo.png" alt="CARLOUIS" ' +
+      'width="146" height="42" />' + cuerpo +
+      '<div style="height:.7rem"></div>' +
+      '<button class="btn btn--sec btn--g" type="button" data-cerrar-guia>' +
+      'Ahora no, usarla así</button>' +
+      '</div>';
+
+    document.body.appendChild(capa);
+    document.body.style.overflow = 'hidden';
+
+    capa.addEventListener('click', function (e) {
+      if (e.target.closest('[data-copiar-enlace]')) {
+        copiarEnlace();
+      } else if (e.target.closest('[data-cerrar-guia]')) {
+        capa.remove();
+        document.body.style.overflow = '';
+      } else if (e.target.closest('[data-instalar-ya]')) {
+        if (!promptInstalar) return;
+        promptInstalar.prompt();
+        promptInstalar.userChoice.then(function (res) {
+          capa.remove();
+          document.body.style.overflow = '';
+          if (res && res.outcome === 'accepted') aviso('Instalada. Buscá el logo en el inicio.');
+        });
+        promptInstalar = null;
+      }
+    });
   }
 
   function clienteRapido() {
@@ -2687,6 +2895,7 @@
   }
 
   document.addEventListener('click', function (e) {
+    if (e.target.closest('[data-ver-guia]')) guiaInstalar();
     if (e.target.closest('[data-cambiar-perfil]')) cambiarPerfil();
     if (e.target.closest('[data-poner-clave]')) ponerClave();
     if (e.target.closest('[data-quitar-clave]')) quitarClave();
