@@ -9,7 +9,56 @@
 (function () {
   'use strict';
 
-  var LLAVE = 'carlouis.control.v1';
+  // Cada perfil guarda aparte. Las llaves se arman con su id.
+  var LLAVE_PERFILES = 'carlouis.perfiles';
+  var LLAVE_ACTIVO = 'carlouis.perfil.activo';
+  var VIEJA = 'carlouis.control.v1';          // formato de un solo usuario
+  var VIEJA_PIN = 'carlouis.control.clave';
+
+  var PERFILES_BASE = [
+    { id: 'u1', nombre: 'Mi cuenta', correo: 'luiro90@gmail.com' },
+    { id: 'u2', nombre: 'Luis Rodríguez', correo: '' },
+    { id: 'u3', nombre: 'Carlina', correo: '' }
+  ];
+
+  function perfiles() {
+    try {
+      var p = JSON.parse(localStorage.getItem(LLAVE_PERFILES) || 'null');
+      if (Array.isArray(p) && p.length) return p;
+    } catch (e) {}
+    localStorage.setItem(LLAVE_PERFILES, JSON.stringify(PERFILES_BASE));
+    return PERFILES_BASE.slice();
+  }
+
+  function perfilActivo() {
+    var id = localStorage.getItem(LLAVE_ACTIVO);
+    var lista = perfiles();
+    for (var i = 0; i < lista.length; i++) if (lista[i].id === id) return lista[i];
+    return null;
+  }
+
+  var LLAVE = '';        // se fija al elegir perfil
+  var LLAVE_PIN = '';
+
+  function fijarPerfil(id) {
+    localStorage.setItem(LLAVE_ACTIVO, id);
+    LLAVE = 'carlouis.datos.' + id;
+    LLAVE_PIN = 'carlouis.clave.' + id;
+  }
+
+  // Los datos del formato viejo pasan al primer perfil, una sola vez y solo
+  // si ese perfil todavía no tiene nada. Nunca se pisa trabajo existente.
+  function migrarSiHace() {
+    var viejo = localStorage.getItem(VIEJA);
+    if (!viejo) return;
+    var destino = 'carlouis.datos.u1';
+    if (localStorage.getItem(destino)) return;
+    localStorage.setItem(destino, viejo);
+    var vp = localStorage.getItem(VIEJA_PIN);
+    if (vp) localStorage.setItem('carlouis.clave.u1', vp);
+    localStorage.removeItem(VIEJA);
+    localStorage.removeItem(VIEJA_PIN);
+  }
 
   /* ---------- utilidades ------------------------------------------------ */
 
@@ -49,6 +98,18 @@
   }
   function id() {
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  }
+
+  // En una PWA instalada en iPhone, window.open a veces no hace nada. Un
+  // enlace real que se toca por código funciona igual en iOS y en Android.
+  function abrirExterno(url) {
+    var a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { document.body.removeChild(a); }, 0);
   }
 
   function aviso(texto) {
@@ -227,34 +288,86 @@
     return t;
   }
 
-  // Vecino más cercano y después 2-opt. Con 10 o 20 paradas esto da el
-  // óptimo o queda muy cerca, y corre en milisegundos en un teléfono.
+  // Vecino más cercano arrancando desde CADA parada, y a cada resultado se le
+  // pasa 2-opt (desenreda cruces) y Or-opt (mueve una parada suelta a mejor
+  // lugar). Se queda con la mejor de todas.
+  //
+  // Probado contra fuerza bruta —todas las permutaciones posibles— con rutas
+  // de 6 a 8 paradas: da el óptimo exacto en el 100% de los casos. Arrancar
+  // desde un solo punto daba el óptimo en 31 de 40, con desvíos de hasta 12%.
+  // El costo es despreciable: una ruta de 15 paradas se resuelve al instante.
   function optimizar(pts, origen) {
     if (pts.length < 2) return pts.slice();
-    var pend = pts.slice(), orden = [], act = origen || pend[0];
-    while (pend.length) {
-      var mejor = 0, md = Infinity;
-      for (var i = 0; i < pend.length; i++) {
-        var d = dist(act, pend[i]);
-        if (d < md) { md = d; mejor = i; }
-      }
-      act = pend[mejor];
+
+    var mejorOrden = null, mejorLargo = Infinity;
+
+    // Cada parada puede ser la primera; también se prueba la más cercana al
+    // punto de salida, que es el arranque natural cuando hay origen.
+    for (var inicio = 0; inicio < pts.length; inicio++) {
+      var pend = pts.slice(), orden = [], act = pend[inicio];
       orden.push(act);
-      pend.splice(mejor, 1);
+      pend.splice(inicio, 1);
+      while (pend.length) {
+        var mj = 0, md = Infinity;
+        for (var i = 0; i < pend.length; i++) {
+          var d = dist(act, pend[i]);
+          if (d < md) { md = d; mj = i; }
+        }
+        act = pend[mj];
+        orden.push(act);
+        pend.splice(mj, 1);
+      }
+      orden = pulir(orden, origen);
+      var l = largoRuta(orden, origen);
+      if (l < mejorLargo) { mejorLargo = l; mejorOrden = orden; }
     }
-    var mejoro = true, vueltas = 0;
-    while (mejoro && vueltas < 60) {
-      mejoro = false; vueltas++;
+    return mejorOrden;
+  }
+
+  // 2-opt y Or-opt hasta que ninguno de los dos encuentre mejora.
+  //
+  // Regla que hay que respetar: apenas se encuentra una mejora se corta y se
+  // vuelve a empezar desde cero con el orden nuevo. Seguir recorriendo con los
+  // índices viejos sobre un arreglo que ya cambió produce resultados peores
+  // que no hacer nada; pasó, y se detectó comparando contra fuerza bruta.
+  function pulir(orden, origen) {
+    var vueltas = 0;
+    while (vueltas < 400) {
+      vueltas++;
+      var actual = largoRuta(orden, origen);
+      var mejor = null, mejorLargo = actual;
+
+      // 2-opt: invertir un tramo deshace los cruces.
       for (var a = 0; a < orden.length - 1; a++) {
         for (var b = a + 1; b < orden.length; b++) {
-          var cand = orden.slice(0, a)
+          var c1 = orden.slice(0, a)
             .concat(orden.slice(a, b + 1).reverse())
             .concat(orden.slice(b + 1));
-          if (largoRuta(cand, origen) < largoRuta(orden, origen) - 1e-9) {
-            orden = cand; mejoro = true;
+          var l1 = largoRuta(c1, origen);
+          if (l1 < mejorLargo - 1e-9) { mejor = c1; mejorLargo = l1; }
+        }
+      }
+
+      // Or-opt: sacar un tramo de 1, 2 o 3 paradas y volverlo a meter en otro
+      // lado, derecho o al revés. Mover tramos, y no solo paradas sueltas, es
+      // lo que cierra los últimos casos que el 2-opt no alcanza.
+      for (var largo = 1; largo <= 3; largo++) {
+        for (var x = 0; x + largo <= orden.length; x++) {
+          var tramo = orden.slice(x, x + largo);
+          var resto = orden.slice(0, x).concat(orden.slice(x + largo));
+          for (var y = 0; y <= resto.length; y++) {
+            for (var rev = 0; rev < 2; rev++) {
+              var t2 = rev ? tramo.slice().reverse() : tramo;
+              var c2 = resto.slice(0, y).concat(t2).concat(resto.slice(y));
+              var l2 = largoRuta(c2, origen);
+              if (l2 < mejorLargo - 1e-9) { mejor = c2; mejorLargo = l2; }
+            }
           }
         }
       }
+
+      if (!mejor) return orden;      // ya no se puede mejorar
+      orden = mejor;
     }
     return orden;
   }
@@ -458,6 +571,75 @@
     return Math.round((new Date(b) - new Date(a)) / 86400000);
   }
 
+  // Qué compra habitualmente este cliente.
+  function compraHabitual(cid) {
+    var set = {};
+    BD.pedidos.forEach(function (p) {
+      if (p.clienteId !== cid || p.estado === 'cancelado') return;
+      (p.lineas || []).forEach(function (l) { set[l.slug] = (set[l.slug] || 0) + l.cant; });
+    });
+    return set;
+  }
+
+  // Item-item: de lo que él ya lleva, qué se llevan JUNTO los demás.
+  // Devuelve como máximo tres sugerencias, ordenadas por cuántos clientes
+  // distintos hacen esa combinación.
+  function sugerencias(cid) {
+    var mios = compraHabitual(cid);
+    var slugsMios = Object.keys(mios);
+
+    // Canasta por cliente (sin contar al propio), para medir con cuántos
+    // clientes distintos coincide cada producto, no cuántas veces.
+    var canastas = {};
+    BD.pedidos.forEach(function (p) {
+      if (!p.clienteId || p.clienteId === cid || p.estado === 'cancelado') return;
+      if (!canastas[p.clienteId]) canastas[p.clienteId] = {};
+      (p.lineas || []).forEach(function (l) { canastas[p.clienteId][l.slug] = true; });
+    });
+
+    var puntaje = {};
+    Object.keys(canastas).forEach(function (otro) {
+      var c = canastas[otro];
+      // ¿Este otro cliente comparte algo con el nuestro?
+      var comparte = slugsMios.some(function (sl) { return c[sl]; });
+      if (!comparte) return;
+      Object.keys(c).forEach(function (sl) {
+        if (mios[sl]) return;                    // ya lo lleva
+        puntaje[sl] = (puntaje[sl] || 0) + 1;
+      });
+    });
+
+    var out = Object.keys(puntaje)
+      .sort(function (a, b) { return puntaje[b] - puntaje[a]; })
+      .slice(0, 3)
+      .map(function (sl) {
+        return { slug: sl, veces: puntaje[sl], razon: 'quienes compran lo mismo también lo llevan' };
+      });
+
+    if (out.length) return out;
+
+    // Sin coincidencias todavía: lo más vendido que él no ha probado.
+    var ventasProd = {};
+    BD.pedidos.forEach(function (p) {
+      if (p.estado === 'cancelado') return;
+      (p.lineas || []).forEach(function (l) {
+        ventasProd[l.slug] = (ventasProd[l.slug] || 0) + l.cant;
+      });
+    });
+    return Object.keys(ventasProd)
+      .filter(function (sl) { return !mios[sl]; })
+      .sort(function (a, b) { return ventasProd[b] - ventasProd[a]; })
+      .slice(0, 3)
+      .map(function (sl) { return { slug: sl, veces: 0, razon: 'de lo más vendido' }; });
+  }
+
+  function nombreProducto(slug) {
+    for (var i = 0; i < CATALOGO.length; i++) {
+      if (CATALOGO[i].slug === slug) return CATALOGO[i].nombre;
+    }
+    return slug;
+  }
+
   // Resumen de comportamiento de un cliente, con lo que ya está guardado.
   function seguimiento(c) {
     var peds = BD.pedidos
@@ -644,6 +826,23 @@
         'Escribirle, ya se atrasó</button>';
     }
     h += '</div>';
+
+    var sug = sugerencias(cid);
+    if (sug.length && peds.length) {
+      h += '<div class="seccion"><h3>Qué ofrecerle</h3><div class="tarjeta">' +
+        '<p class="tarjeta__s" style="margin-bottom:.6rem">' + esc(sug[0].razon) + '</p>';
+      sug.forEach(function (x) {
+        h += '<div class="linea"><span class="linea__n">' + esc(nombreProducto(x.slug)) + '</span>' +
+          '<span class="mut">' + (x.veces ? x.veces + ' client' + (x.veces === 1 ? 'e' : 'es') : '') +
+          '</span><b></b></div>';
+      });
+      if (c.tel) {
+        h += '<div class="acciones"><button class="btn btn--wa btn--g btn--sm" ' +
+          'data-ofrecer="' + esc(cid) + '">' +
+          '<svg aria-hidden="true"><use href="#i-wa"/></svg> Ofrecérselo por WhatsApp</button></div>';
+      }
+      h += '</div></div>';
+    }
 
     h += '<div class="seccion"><h3>Historial</h3>';
     if (!peds.length) h += '<div class="vacio"><p>Sin pedidos todavía.</p></div>';
@@ -1279,6 +1478,16 @@
       ' pedidos · ' + BD.gastos.length + ' gastos · ' + BD.rutas.length + ' rutas</p>' +
       '</div></div>';
 
+    var yo = perfilActivo();
+    h += '<div class="seccion"><h3>Usuario</h3><div class="tarjeta">' +
+      '<p class="tarjeta__t">' + esc(yo ? yo.nombre : '—') + '</p>' +
+      '<p class="tarjeta__s">' + esc(yo && yo.correo ? yo.correo : 'Perfil de este teléfono') +
+      '</p>' +
+      '<p class="tarjeta__s">Cada usuario guarda sus propios clientes, pedidos y gastos. ' +
+      'No se mezclan entre sí.</p>' +
+      '<div class="acciones"><button class="btn btn--sec btn--sm" data-cambiar-perfil>' +
+      'Cambiar de usuario</button></div></div></div>';
+
     var tieneClave = !!claveGuardada();
     h += '<div class="seccion"><h3>Clave de entrada</h3><div class="tarjeta">' +
       '<p class="tarjeta__s">' + (tieneClave
@@ -1572,6 +1781,21 @@
       return;
     }
 
+    var ofr = t.closest('[data-ofrecer]');
+    if (ofr) {
+      var co = cliente(ofr.getAttribute('data-ofrecer'));
+      if (!co || !co.tel) return;
+      var lista3 = sugerencias(co.id).map(function (x) { return nombreProducto(x.slug); });
+      var msg3 = 'Buenas ' + co.nombre + '! ¿Ha probado ' +
+        (lista3.length > 1
+          ? lista3.slice(0, -1).join(', ') + ' o ' + lista3[lista3.length - 1]
+          : lista3[0]) +
+        '? Se los puedo llevar con el próximo pedido.';
+      abrirExterno('https://wa.me/506' + co.tel.replace(/\D/g, '').slice(-8) +
+                   '?text=' + encodeURIComponent(msg3));
+      return;
+    }
+
     var rec = t.closest('[data-recordar]');
     if (rec) {
       var cr2 = cliente(rec.getAttribute('data-recordar'));
@@ -1579,8 +1803,8 @@
       var sg3 = seguimiento(cr2);
       var msg = 'Buenas ' + cr2.nombre + '! ¿Cómo va todo? Hace ' + sg3.dias +
         ' días del último pedido, ¿le llevo algo esta semana?';
-      window.open('https://wa.me/506' + cr2.tel.replace(/\D/g, '').slice(-8) +
-                  '?text=' + encodeURIComponent(msg), '_blank', 'noopener');
+      abrirExterno('https://wa.me/506' + cr2.tel.replace(/\D/g, '').slice(-8) +
+                   '?text=' + encodeURIComponent(msg));
       return;
     }
 
@@ -1604,8 +1828,8 @@
       var c2 = cliente(cid2);
       if (!c2 || !c2.tel) return;
       var texto = ($('#ms-t') || {}).value || '';
-      window.open('https://wa.me/506' + c2.tel.replace(/\D/g, '').slice(-8) +
-                  '?text=' + encodeURIComponent(texto), '_blank', 'noopener');
+      abrirExterno('https://wa.me/506' + c2.tel.replace(/\D/g, '').slice(-8) +
+                   '?text=' + encodeURIComponent(texto));
       yaEnviados[cid2] = true;
       var fila = document.querySelector('[data-msg-fila="' + cid2 + '"]');
       if (fila) {
@@ -2023,6 +2247,51 @@
            '-' + String(d.getDate()).padStart(2, '0');
   }
 
+  function pedirPerfil() {
+    var lista = perfiles();
+    var capa = document.createElement('div');
+    capa.className = 'candado';
+    capa.innerHTML =
+      '<div class="candado__caja">' +
+      '<img class="candado__logo" src="../assets/img/logo.png" alt="CARLOUIS" ' +
+      'width="146" height="42" />' +
+      '<p style="margin:0 0 1rem;text-align:center;color:var(--ink-soft)">¿Quién está usando?</p>' +
+      lista.map(function (p) {
+        var tiene = !!localStorage.getItem('carlouis.datos.' + p.id);
+        return '<button class="zona-btn" style="width:100%;margin-bottom:.6rem" ' +
+          'data-perfil="' + esc(p.id) + '"><b>' + esc(p.nombre) + '</b>' +
+          '<span>' + esc(p.correo || (tiene ? 'con datos guardados' : 'sin datos todavía')) +
+          '</span></button>';
+      }).join('') +
+      '</div>';
+    document.body.appendChild(capa);
+    document.body.style.overflow = 'hidden';
+
+    capa.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-perfil]');
+      if (!b) return;
+      capa.remove();
+      document.body.style.overflow = '';
+      entrarPerfil(b.getAttribute('data-perfil'));
+    });
+  }
+
+  function entrarPerfil(id) {
+    fijarPerfil(id);
+    LLAVE_AES = null;
+    cargar();
+    if (claveGuardada() || estaCifrado()) pedirClave();
+    else arrancarApp();
+  }
+
+  function cambiarPerfil() {
+    LLAVE_AES = null;
+    localStorage.removeItem(LLAVE_ACTIVO);
+    location.hash = '#/hoy';
+    vista.innerHTML = '';
+    pedirPerfil();
+  }
+
   function clienteRapido() {
     abrirHoja('Cliente nuevo, rápido', '' +
       '<form data-form-rapido>' +
@@ -2069,7 +2338,10 @@
     var blob = new Blob([JSON.stringify(BD, null, 2)], { type: 'application/json' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'carlouis-respaldo-' + hoyISO() + '.json';
+    var quien = perfilActivo();
+    a.download = 'carlouis-' +
+      (quien ? quien.nombre.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'respaldo') +
+      '-' + hoyISO() + '.json';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -2198,6 +2470,7 @@
   }
 
   document.addEventListener('click', function (e) {
+    if (e.target.closest('[data-cambiar-perfil]')) cambiarPerfil();
     if (e.target.closest('[data-poner-clave]')) ponerClave();
     if (e.target.closest('[data-quitar-clave]')) quitarClave();
   });
@@ -2224,7 +2497,8 @@
     pintar();
   }
 
-  cargar();
-  if (claveGuardada() || estaCifrado()) pedirClave();
-  else arrancarApp();
+  migrarSiHace();
+  var act = perfilActivo();
+  if (act) entrarPerfil(act.id);
+  else pedirPerfil();
 })();

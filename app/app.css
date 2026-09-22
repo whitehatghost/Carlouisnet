@@ -365,3 +365,38 @@ main { padding: 1rem 1rem 1.5rem; max-width: 720px; margin-inline: auto; }
   color: var(--ember-800);
 }
 .grupo:first-child { margin-top: 0; }
+
+/* ---------- Tablet y iPad ----------------------------------------------- */
+/* En pantalla ancha la app se centra y las pestañas dejan de ser una barra
+   pegada al borde: se vuelven una barra flotante del ancho del contenido,
+   porque en un iPad los pulgares no llegan a las esquinas de abajo. */
+@media (min-width: 700px) {
+  main { padding: 1.4rem 1.6rem 2rem; }
+  .tabs {
+    left: 50%; right: auto; transform: translateX(-50%);
+    width: min(560px, calc(100% - 2rem));
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    border: 1px solid var(--line); border-radius: 999px;
+    box-shadow: var(--sh-2); overflow: hidden;
+  }
+  :root { --tabs-h: calc(76px + env(safe-area-inset-bottom)); }
+  .fab { right: max(1rem, calc(50vw - 360px + 1rem)); }
+  .hoja__panel {
+    left: 50%; right: auto; transform: translateX(-50%);
+    width: min(560px, 100%); border-radius: 20px 20px 0 0;
+  }
+  .cifras { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+  .candado__caja { max-width: 380px; }
+}
+
+/* Pantalla muy ancha: no estirar las líneas de texto más de lo legible. */
+@media (min-width: 1000px) {
+  main { max-width: 760px; }
+}
+
+/* Horizontal en teléfono: la barra superior se achica para dejar ver algo. */
+@media (max-height: 460px) and (orientation: landscape) {
+  .top { padding-top: calc(env(safe-area-inset-top) + .35rem); padding-bottom: .35rem; }
+  .top__titulo { font-size: .98rem; }
+  .cifra b { font-size: 1.3rem; }
+}
