@@ -459,3 +459,15 @@ main { padding: 1rem 1rem 1.5rem; max-width: 720px; margin-inline: auto; }
 .ins__icono--and { color: var(--ink); border-color: var(--line); padding: .2rem; }
 .flechita--arriba svg { animation: botaArriba 1.4s ease-in-out infinite; }
 @keyframes botaArriba { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+
+/* ---------- Recordatorios ----------------------------------------------- */
+/* El atrasado tiene que verse distinto de un golpe; si se ve igual que los
+   de hoy, se ignora igual que si no existiera. */
+.tarjeta--urge { border-color: var(--bad); border-left-width: 4px; background: #FFF7F7; }
+.tilde {
+  display: grid; place-items: center; width: 44px; height: 44px; flex: none;
+  background: var(--paper-2); color: var(--ok);
+  border: 2px solid var(--line); border-radius: 50%; cursor: pointer;
+}
+.tilde:active { background: #DCFCE7; border-color: var(--ok); }
+.tilde svg { width: 22px; height: 22px; }

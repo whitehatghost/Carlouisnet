@@ -122,7 +122,8 @@
 
   /* ---------- almacenamiento -------------------------------------------- */
 
-  var VACIO = { v: 1, clientes: [], pedidos: [], gastos: [], rutas: [], ferias: [], stock: {} };
+  var VACIO = { v: 1, clientes: [], pedidos: [], gastos: [], rutas: [], ferias: [],
+               recordatorios: [], stock: {} };
   var BD;
 
   // Llave de cifrado en memoria. Nunca se guarda en el teléfono: se deriva de
@@ -131,13 +132,57 @@
   var LLAVE_AES = null;
 
   function normalizar() {
-    ['clientes', 'pedidos', 'gastos', 'rutas', 'ferias'].forEach(function (k) {
+    ['clientes', 'pedidos', 'gastos', 'rutas', 'ferias', 'recordatorios'].forEach(function (k) {
       if (!Array.isArray(BD[k])) BD[k] = [];
     });
     if (!BD.stock || typeof BD.stock !== 'object') BD.stock = {};
   }
 
   function hay(slug) { return Number(BD.stock[slug] || 0); }
+
+  // Pendientes ordenados: primero los más atrasados.
+  function pendientes() {
+    return BD.recordatorios
+      .filter(function (x) { return !x.hecho; })
+      .sort(function (a, b) {
+        return ((a.fecha || '') + (a.hora || '99:99'))
+          .localeCompare((b.fecha || '') + (b.hora || '99:99'));
+      });
+  }
+  function paraHoy() {
+    var h = hoyISO();
+    return pendientes().filter(function (x) { return !x.fecha || x.fecha <= h; });
+  }
+  function sumarDias(n) {
+    var d = new Date();
+    d.setDate(d.getDate() + n);
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') +
+           '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function cuandoTexto(iso, hora) {
+    var reloj = hora ? ' a las ' + hora : '';
+    if (!iso) return 'sin fecha';
+    var h = hoyISO();
+    if (iso === h) return 'hoy' + reloj;
+    if (iso === sumarDias(1)) return 'mañana' + reloj;
+    if (iso < h) {
+      var d = diasEntre(iso, h);
+      return 'hace ' + d + (d === 1 ? ' día' : ' días');
+    }
+    return fechaLarga(iso) + reloj;
+  }
+
+  // Ya pasó su momento: por fecha, o por fecha y hora si tiene hora puesta.
+  function vencido(x) {
+    if (!x.fecha) return false;
+    var h = hoyISO();
+    if (x.fecha < h) return true;
+    if (x.fecha > h) return false;
+    if (!x.hora) return false;
+    var ahora = new Date();
+    return x.hora < String(ahora.getHours()).padStart(2, '0') + ':' +
+                    String(ahora.getMinutes()).padStart(2, '0');
+  }
   function moverStock(lineas, signo) {
     (lineas || []).forEach(function (l) {
       BD.stock[l.slug] = hay(l.slug) + signo * l.cant;
@@ -521,6 +566,21 @@
       '<b style="font-size:2.1rem">' + money(gananciaMes) + '</b>' +
       '<span>le queda este mes, ya restando gastos</span></div></div>';
 
+    var hoyRec = paraHoy();
+    if (hoyRec.length) {
+      h += '<div class="seccion"><div class="fila fila--sep" style="margin-bottom:.6rem">' +
+        '<h3 style="margin:0">Recordatorios</h3>' +
+        (pendientes().length > hoyRec.length
+          ? '<button class="btn btn--sec btn--sm" data-ir="#/recordatorios">Ver todos</button>'
+          : '') + '</div>';
+      hoyRec.slice(0, 5).forEach(function (x) { h += tarjetaRecordatorio(x); });
+      if (hoyRec.length > 5) {
+        h += '<button class="btn btn--sec btn--g btn--sm" data-ir="#/recordatorios">' +
+          'y ' + (hoyRec.length - 5) + ' más</button>';
+      }
+      h += '</div>';
+    }
+
     // A quién hay que buscar hoy.
     var seguir = BD.clientes.map(function (c) {
       return { c: c, s: seguimiento(c) };
@@ -569,6 +629,7 @@
       '<button class="btn" data-ir="#/pedidos/nuevo"><svg aria-hidden="true"><use href="#i-plus"/></svg> Pedido</button>' +
       '<button class="btn btn--sec" data-rapido><svg aria-hidden="true"><use href="#i-plus"/></svg> Cliente</button>' +
       '<button class="btn btn--sec" data-ir="#/gastos/nuevo"><svg aria-hidden="true"><use href="#i-plus"/></svg> Gasto</button>' +
+      '<button class="btn btn--sec" data-nuevo-recordatorio><svg aria-hidden="true"><use href="#i-plus"/></svg> Recordatorio</button>' +
       '</div></div>';
 
     if (rutasHoy.length) {
@@ -836,6 +897,8 @@
       '<svg aria-hidden="true"><use href="#i-nav"/></svg> Waze</a>' +
       '<button class="btn btn--sec btn--sm" data-ir="#/clientes/' + esc(cid) + '/editar">' +
       '<svg aria-hidden="true"><use href="#i-edit"/></svg> Editar</button>' +
+      '<button class="btn btn--sec btn--sm" data-recordar-cliente="' + esc(cid) + '">' +
+      'Recordarme algo</button>' +
       '</div></div>';
 
     var sg2 = seguimiento(c);
@@ -880,6 +943,58 @@
     h += '</div>';
     return h;
   };
+
+  V.recordatorios = function () {
+    var pend = pendientes();
+    var hechos = BD.recordatorios.filter(function (x) { return x.hecho; })
+      .sort(function (a, b) { return (b.fecha || '').localeCompare(a.fecha || ''); });
+
+    var h = '';
+    if (!pend.length) {
+      h += '<div class="vacio"><p>No hay nada pendiente.</p>' +
+        '<button class="btn" data-nuevo-recordatorio>Agregar uno</button></div>';
+    } else {
+      h += pend.map(tarjetaRecordatorio).join('');
+    }
+
+    if (hechos.length) {
+      h += '<div class="seccion" style="margin-top:1.6rem"><h3>Ya hechos</h3>';
+      hechos.slice(0, 15).forEach(function (x) {
+        h += '<div class="tarjeta" style="opacity:.55"><div class="fila fila--sep">' +
+          '<span class="crece" style="text-decoration:line-through">' + esc(x.texto) + '</span>' +
+          '<button class="icono" data-borrar-recordatorio="' + esc(x.id) + '" ' +
+          'aria-label="Borrar"><svg aria-hidden="true"><use href="#i-trash"/></svg></button>' +
+          '</div></div>';
+      });
+      h += '</div>';
+    }
+
+    h += '<button class="fab" data-nuevo-recordatorio aria-label="Nuevo recordatorio">' +
+      '<svg aria-hidden="true"><use href="#i-plus"/></svg></button>';
+    return h;
+  };
+
+  function tarjetaRecordatorio(x) {
+    var atrasado = vencido(x);
+    var c = x.clienteId ? cliente(x.clienteId) : null;
+    return '<div class="tarjeta' + (atrasado ? ' tarjeta--urge' : '') + '">' +
+      '<div class="fila">' +
+      '<button class="tilde" data-hecho-recordatorio="' + esc(x.id) + '" ' +
+      'aria-label="Marcar como hecho"><svg aria-hidden="true"><use href="#i-check"/></svg></button>' +
+      '<div class="crece"><p class="tarjeta__t">' + esc(x.texto) + '</p>' +
+      '<p class="tarjeta__s">' +
+      (atrasado ? '<b style="color:var(--bad)">' + cuandoTexto(x.fecha, x.hora) + '</b>'
+                : cuandoTexto(x.fecha, x.hora)) +
+      (c ? ' · ' + esc(c.nombre) : '') + '</p></div>' +
+      (c && c.tel
+        ? '<a class="btn btn--wa btn--sm" href="https://wa.me/506' +
+          esc(c.tel.replace(/\D/g, '').slice(-8)) + '" target="_blank" rel="noopener" ' +
+          'aria-label="WhatsApp"><svg aria-hidden="true"><use href="#i-wa"/></svg></a>'
+        : '') +
+      '<button class="icono" data-borrar-recordatorio="' + esc(x.id) + '" ' +
+      'aria-label="Borrar"><svg aria-hidden="true"><use href="#i-trash"/></svg></button>' +
+      '</div></div>';
+  }
 
   /* ---------- Pedidos ---------------------------------------------------- */
   var filtroPedido = 'pendiente';
@@ -1589,6 +1704,10 @@
     } else if (sec === 'gastos') {
       if (arg === 'nuevo') { html = V.gastoForm(); titulo = 'Nuevo gasto'; atras = true; }
       else { location.replace('#/dinero'); return; }
+    } else if (sec === 'recordatorios') {
+      html = V.recordatorios();
+      titulo = 'Recordatorios';
+      atras = true;
     } else if (sec === 'feria') {
       html = V.feria();
       var fa = feriaActiva();
@@ -1880,6 +1999,39 @@
 
     if (t.closest('[data-rapido]')) { clienteRapido(); return; }
 
+    if (t.closest('[data-nuevo-recordatorio]')) { hojaRecordatorio(null); return; }
+
+    var rcl = t.closest('[data-recordar-cliente]');
+    if (rcl) { hojaRecordatorio(rcl.getAttribute('data-recordar-cliente')); return; }
+
+    var sug = t.closest('[data-sugerido]');
+    if (sug) { $('#rc-t').value = sug.getAttribute('data-sugerido'); return; }
+
+    var cdo = t.closest('[data-cuando]');
+    if (cdo) {
+      Array.prototype.forEach.call(
+        cdo.parentNode.querySelectorAll('[data-cuando]'),
+        function (b) { b.setAttribute('aria-pressed', b === cdo); });
+      $('#rc-f').value = sumarDias(Number(cdo.getAttribute('data-cuando')));
+      return;
+    }
+
+    var hrc = t.closest('[data-hecho-recordatorio]');
+    if (hrc) {
+      var rid2 = hrc.getAttribute('data-hecho-recordatorio');
+      BD.recordatorios.forEach(function (x) { if (x.id === rid2) x.hecho = true; });
+      guardar(); pintar(); aviso('Listo');
+      return;
+    }
+
+    var brc = t.closest('[data-borrar-recordatorio]');
+    if (brc) {
+      var rid3 = brc.getAttribute('data-borrar-recordatorio');
+      BD.recordatorios = BD.recordatorios.filter(function (x) { return x.id !== rid3; });
+      guardar(); pintar();
+      return;
+    }
+
     var avr = t.closest('[data-avisar-ruta]');
     if (avr) { avisarRuta(avr.getAttribute('data-avisar-ruta')); return; }
 
@@ -2047,6 +2199,20 @@
       var rec4 = Number((f.querySelector('#pg-recibido') || {}).value || 0);
       aplicarPago(f.getAttribute('data-pedido'), m,
                   sel ? sel.getAttribute('data-metodo') : 'Otro', rec4);
+      return;
+    }
+
+    if (f.matches('[data-form-recordatorio]')) {
+      e.preventDefault();
+      var txt2 = f.texto.value.trim();
+      if (!txt2) return;
+      BD.recordatorios.push({
+        id: id(), texto: txt2, fecha: f.fecha.value || hoyISO(),
+        hora: f.hora.value || '',
+        clienteId: f.getAttribute('data-cliente') || null,
+        hecho: false, creado: hoyISO()
+      });
+      guardar(); cerrarHoja(); pintar(); aviso('Recordatorio guardado');
       return;
     }
 
@@ -2716,6 +2882,35 @@
     });
   }
 
+  function hojaRecordatorio(cid) {
+    var c = cid ? cliente(cid) : null;
+    var sugeridos = c
+      ? ['Llamar a ' + c.nombre, 'Pasar a cobrarle a ' + c.nombre,
+         'Llevarle pedido a ' + c.nombre]
+      : ['Comprar frascos', 'Hacer lote de habanero', 'Pagar la luz',
+         'Llamar al del registro sanitario'];
+
+    abrirHoja(c ? 'Recordar sobre ' + c.nombre : 'Nuevo recordatorio', '' +
+      '<form data-form-recordatorio data-cliente="' + esc(cid || '') + '">' +
+      '<div class="campo"><label for="rc-t">¿Qué hay que recordar?</label>' +
+      '<input id="rc-t" name="texto" required autocomplete="off" /></div>' +
+      '<div class="filtros">' + sugeridos.map(function (t) {
+        return '<button class="chip" type="button" data-sugerido="' + esc(t) + '">' +
+          esc(t) + '</button>';
+      }).join('') + '</div>' +
+      '<div class="campo"><label>¿Cuándo?</label><div class="filtros">' +
+      [['Hoy', 0], ['Mañana', 1], ['En 3 días', 3], ['En una semana', 7],
+       ['En un mes', 30]].map(function (o, i) {
+        return '<button class="chip" type="button" data-cuando="' + o[1] + '" ' +
+          'aria-pressed="' + (i === 0) + '">' + o[0] + '</button>';
+      }).join('') + '</div>' +
+      '<div class="campo--duo" style="margin-top:.6rem">' +
+      '<input id="rc-f" name="fecha" type="date" value="' + hoyISO() + '" />' +
+      '<input id="rc-h" name="hora" type="time" placeholder="Hora" />' +
+      '</div></div>' +
+      '<button class="btn btn--g" type="submit">Guardar recordatorio</button></form>');
+  }
+
   function clienteRapido() {
     abrirHoja('Cliente nuevo, rápido', '' +
       '<form data-form-rapido>' +
@@ -2790,9 +2985,8 @@
               'El respaldo trae ' + datos.clientes.length + ' clientes y ' +
               (datos.pedidos || []).length + ' pedidos.\n\n¿Seguir?')) return;
           BD = datos;
-          ['clientes', 'pedidos', 'gastos', 'rutas', 'ferias'].forEach(function (k) {
-            if (!Array.isArray(BD[k])) BD[k] = [];
-          });
+          ['clientes', 'pedidos', 'gastos', 'rutas', 'ferias', 'recordatorios']
+            .forEach(function (k) { if (!Array.isArray(BD[k])) BD[k] = []; });
           guardar(); pintar(); aviso('Respaldo restaurado');
         } catch (err) {
           aviso('Ese archivo no es un respaldo válido');
