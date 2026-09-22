@@ -1,0 +1,367 @@
+/* =========================================================================
+   CARLOUIS · Control — herramienta interna
+   Mismos colores y fuentes del sitio, pero con densidad de app: esto se usa
+   con una mano, en la calle y con sol. Botones grandes, texto grueso.
+   ========================================================================= */
+
+@font-face {
+  font-family: "Fraunces"; src: url("../assets/fonts/fraunces-latin.woff2") format("woff2");
+  font-weight: 100 900; font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+2000-206F, U+20A0-20AB, U+20AD-20CF;
+}
+@font-face {
+  font-family: "Karla"; src: url("../assets/fonts/karla-latin.woff2") format("woff2");
+  font-weight: 200 800; font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+2000-206F, U+20A0-20AB, U+20AD-20CF;
+}
+
+:root {
+  --ember-900: #4A1206;
+  --ember-800: #6B1608;
+  --ember-700: #8C2310;
+  --ember-600: #A82A10;
+  --gold-500: #E0A02E;
+  --gold-400: #EFBA5C;
+  --paper: #FBF7F0;
+  --paper-2: #F4EDE2;
+  --card: #FFFFFF;
+  --line: #E6DACA;
+  --ink: #241A15;
+  --ink-soft: #5A4A40;
+  --ink-mute: #8B7A6D;
+  --ok: #2F7A3E;
+  --warn: #B45309;
+  --bad: #B3261E;
+  --wa: #25D366;
+  --waze: #33CCFF;
+  --r: 14px;
+  --r-sm: 9px;
+  --sh: 0 2px 10px rgba(74, 18, 6, .07);
+  --sh-2: 0 8px 26px rgba(74, 18, 6, .14);
+  --tabs-h: calc(66px + env(safe-area-inset-bottom));
+  font-family: "Karla", system-ui, -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--paper); color: var(--ink);
+  font-size: 17.5px; line-height: 1.55;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior-y: none;
+  padding-bottom: var(--tabs-h);
+}
+.sprite { display: none; }
+svg { width: 22px; height: 22px; }
+
+/* ---------- Barra superior ---------------------------------------------- */
+.top {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: .6rem;
+  padding: calc(env(safe-area-inset-top) + .7rem) 1rem .7rem;
+  background: var(--ember-900); color: #FFF6E8;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, .18);
+}
+.top__titulo {
+  margin: 0; flex: 1; min-width: 0;
+  font-family: "Fraunces", Georgia, serif; font-size: 1.28rem; font-weight: 700;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.top__back {
+  display: grid; place-items: center; width: 34px; height: 34px; flex: none;
+  background: rgba(255, 246, 232, .14); color: inherit;
+  border: 0; border-radius: 50%; cursor: pointer;
+}
+.top__estado {
+  flex: none; padding: .2rem .55rem; border-radius: 999px;
+  background: var(--warn); color: #fff; font-size: .7rem; font-weight: 700;
+}
+
+/* ---------- Pestañas inferiores ----------------------------------------- */
+.tabs {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--card); border-top: 1px solid var(--line);
+}
+.tab {
+  display: grid; place-items: center; gap: 1px;
+  padding: .55rem .1rem .6rem;
+  color: var(--ink-mute); text-decoration: none; font-size: .72rem; font-weight: 700;
+  letter-spacing: .01em;
+}
+.tab svg { width: 24px; height: 24px; }
+.tab[aria-current="page"] { color: var(--ember-600); }
+
+/* ---------- Estructura -------------------------------------------------- */
+main { padding: 1rem 1rem 1.5rem; max-width: 720px; margin-inline: auto; }
+.seccion { margin-bottom: 1.6rem; }
+.seccion > h3 {
+  margin: 0 0 .6rem; font-family: "Fraunces", Georgia, serif;
+  font-size: 1.02rem; color: var(--ember-800);
+}
+.fila { display: flex; gap: .55rem; align-items: center; }
+.fila--sep { justify-content: space-between; }
+.crece { flex: 1; min-width: 0; }
+.mut { color: var(--ink-soft); font-size: .92rem; }
+.vacio {
+  padding: 2.2rem 1rem; text-align: center; color: var(--ink-mute);
+  background: var(--paper-2); border: 1px dashed var(--line); border-radius: var(--r);
+}
+.vacio p { margin: 0 0 .9rem; }
+
+/* ---------- Tarjetas ---------------------------------------------------- */
+.tarjeta {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--r); box-shadow: var(--sh);
+  padding: .85rem .9rem; margin-bottom: .6rem;
+}
+.tarjeta--btn { display: block; width: 100%; text-align: left; cursor: pointer; font: inherit; color: inherit; }
+.tarjeta__t { font-weight: 700; font-size: 1.08rem; margin: 0 0 .12rem; }
+.tarjeta__s { margin: 0; color: var(--ink-soft); font-size: .93rem; }
+
+/* ---------- Cifras del panel -------------------------------------------- */
+.cifras { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: .6rem; }
+.cifra {
+  padding: .85rem .9rem; border-radius: var(--r);
+  background: var(--card); border: 1px solid var(--line); box-shadow: var(--sh);
+}
+.cifra b {
+  display: block; font-family: "Fraunces", Georgia, serif;
+  font-size: 1.7rem; line-height: 1.15; color: var(--ember-800);
+}
+.cifra span { display: block; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-mute); }
+.cifra--ok b { color: var(--ok); }
+.cifra--bad b { color: var(--bad); }
+
+/* ---------- Botones ----------------------------------------------------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .45rem;
+  min-height: 54px; padding: .7rem 1.2rem;
+  border: 1px solid transparent; border-radius: 999px;
+  background: var(--ember-600); color: #fff;
+  font: inherit; font-weight: 700; font-size: 1.02rem;
+  text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.btn:active { transform: scale(.985); }
+.btn svg { width: 19px; height: 19px; }
+.btn--g { width: 100%; }
+.btn--sec { background: var(--card); color: var(--ember-700); border-color: var(--line); }
+.btn--gold { background: var(--gold-500); color: var(--ember-900); }
+.btn--wa { background: var(--wa); color: #06351A; }
+.btn--waze { background: var(--waze); color: #05384A; }
+.btn--ok { background: var(--ok); }
+.btn--mal { background: transparent; color: var(--bad); border-color: var(--line); }
+.btn--sm { min-height: 46px; padding: .5rem .95rem; font-size: .92rem; }
+.icono {
+  display: grid; place-items: center; width: 46px; height: 46px; flex: none;
+  background: transparent; color: inherit; border: 0; border-radius: 50%; cursor: pointer;
+}
+.acciones { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .7rem; }
+.acciones .btn { flex: 1 1 auto; }
+
+/* Botón flotante de agregar */
+.fab {
+  position: fixed; right: 1rem; z-index: 25;
+  bottom: calc(var(--tabs-h) + .8rem);
+  width: 64px; height: 64px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--ember-600); color: #fff; border: 0;
+  box-shadow: var(--sh-2); cursor: pointer;
+}
+.fab svg { width: 30px; height: 30px; }
+
+/* ---------- Formularios ------------------------------------------------- */
+.campo { margin-bottom: .85rem; }
+.campo > label {
+  display: block; margin-bottom: .28rem;
+  font-size: .92rem; font-weight: 700; color: var(--ink-soft);
+}
+.campo input, .campo select, .campo textarea {
+  width: 100%; padding: .9rem .85rem;
+  font: inherit; font-size: 1.08rem; color: var(--ink);
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--r-sm);
+}
+.campo input:focus, .campo select:focus, .campo textarea:focus {
+  outline: 2px solid var(--gold-500); outline-offset: 1px; border-color: var(--gold-500);
+}
+.campo textarea { min-height: 72px; resize: vertical; }
+.campo--duo { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.pista { margin: .3rem 0 0; font-size: .77rem; color: var(--ink-mute); }
+
+/* ---------- Filtros ----------------------------------------------------- */
+.filtros { display: flex; gap: .4rem; overflow-x: auto; padding-bottom: .4rem; margin-bottom: .8rem; }
+.filtros::-webkit-scrollbar { display: none; }
+.chip {
+  flex: none; padding: .6rem 1.05rem; border-radius: 999px;
+  background: var(--card); border: 1px solid var(--line);
+  font: inherit; font-size: .95rem; font-weight: 600; color: var(--ink-soft);
+  cursor: pointer; white-space: nowrap;
+}
+.chip[aria-pressed="true"] { background: var(--ember-600); border-color: var(--ember-600); color: #fff; }
+.buscador { margin-bottom: .8rem; }
+.buscador input {
+  width: 100%; padding: .7rem .85rem; font: inherit; font-size: 1rem;
+  background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+}
+
+/* ---------- Etiquetas de estado ----------------------------------------- */
+.et {
+  display: inline-block; padding: .16rem .55rem; border-radius: 999px;
+  font-size: .7rem; font-weight: 800; letter-spacing: .02em; text-transform: uppercase;
+}
+.et--pend { background: #FEF3C7; color: #92400E; }
+.et--entr { background: #DCFCE7; color: #166534; }
+.et--pag  { background: #E0F2FE; color: #075985; }
+.et--sin  { background: #FEE2E2; color: #991B1B; }
+
+/* ---------- Líneas de pedido -------------------------------------------- */
+.linea {
+  display: grid; grid-template-columns: 1fr auto auto; gap: .5rem; align-items: center;
+  padding: .5rem 0; border-bottom: 1px solid var(--line);
+}
+.linea:last-child { border-bottom: 0; }
+.linea__n { font-weight: 600; font-size: .92rem; }
+.contador { display: flex; align-items: center; gap: .3rem; }
+.contador button {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: var(--paper-2); border: 1px solid var(--line); color: var(--ember-700);
+  font: inherit; font-size: 1.5rem; font-weight: 700; line-height: 1; cursor: pointer;
+}
+.contador span { min-width: 34px; font-size: 1.1rem; text-align: center; font-weight: 700; }
+.total {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-top: .8rem; padding-top: .7rem; border-top: 2px solid var(--ember-900);
+  font-family: "Fraunces", Georgia, serif; font-size: 1.25rem; font-weight: 700;
+}
+
+/* ---------- Paradas de ruta --------------------------------------------- */
+.parada {
+  display: grid; grid-template-columns: auto 1fr; gap: .75rem;
+  padding: .8rem .85rem; margin-bottom: .6rem;
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--r); box-shadow: var(--sh);
+}
+.parada--hecha { opacity: .55; }
+.parada--hecha .parada__nom { text-decoration: line-through; }
+.parada__n {
+  display: grid; place-items: center; width: 30px; height: 30px; flex: none;
+  background: var(--ember-600); color: #fff; border-radius: 50%;
+  font-weight: 800; font-size: .88rem;
+}
+.parada--hecha .parada__n { background: var(--ok); }
+.parada__nom { font-weight: 700; margin: 0 0 .1rem; }
+.parada__dir { margin: 0 0 .5rem; font-size: .85rem; color: var(--ink-mute); }
+.parada__btns { display: flex; flex-wrap: wrap; gap: .4rem; }
+
+/* ---------- Hoja modal -------------------------------------------------- */
+.hoja { position: fixed; inset: 0; z-index: 60; }
+.hoja__fondo { position: absolute; inset: 0; background: rgba(36, 26, 21, .55); }
+.hoja__panel {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  max-height: 92vh; display: flex; flex-direction: column;
+  background: var(--paper); border-radius: 20px 20px 0 0;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, .3);
+  animation: sube .22s cubic-bezier(.2, .8, .3, 1);
+}
+@keyframes sube { from { transform: translateY(14%); opacity: .6; } }
+.hoja__barra {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .85rem 1rem; border-bottom: 1px solid var(--line);
+}
+.hoja__barra h2 {
+  margin: 0; flex: 1; font-family: "Fraunces", Georgia, serif;
+  font-size: 1.1rem; color: var(--ember-800);
+}
+.hoja__cuerpo {
+  padding: 1rem 1rem calc(1.2rem + env(safe-area-inset-bottom));
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+
+/* ---------- Aviso emergente --------------------------------------------- */
+.aviso {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: calc(var(--tabs-h) + 1rem); z-index: 70;
+  max-width: calc(100vw - 2rem);
+  padding: .7rem 1.1rem; border-radius: 999px;
+  background: var(--ember-900); color: #FFF6E8;
+  font-size: .88rem; font-weight: 600; box-shadow: var(--sh-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+/* ---------- Candado de entrada ------------------------------------------ */
+.candado {
+  position: fixed; inset: 0; z-index: 90;
+  display: grid; place-items: center; padding: 1.2rem;
+  background: linear-gradient(160deg, var(--ember-900), #300B04);
+}
+.candado__caja {
+  width: 100%; max-width: 320px; padding: 1.6rem 1.3rem;
+  background: var(--paper); border-radius: 20px; box-shadow: var(--sh-2);
+}
+.candado__marca {
+  margin: 0 0 1.1rem; text-align: center;
+  font-family: "Fraunces", Georgia, serif; font-size: 1.5rem;
+  color: var(--ember-800); letter-spacing: .04em;
+}
+.candado__caja label {
+  display: block; margin-bottom: .3rem; font-weight: 700; font-size: .95rem; color: var(--ink-soft);
+}
+.candado__caja input {
+  width: 100%; margin-bottom: 1rem; padding: .95rem;
+  font: inherit; font-size: 1.5rem; text-align: center; letter-spacing: .35em;
+  border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--card);
+}
+.candado__err { margin: .8rem 0 0; text-align: center; color: var(--bad); font-weight: 700; }
+
+/* ---------- Ruta rápida por zona ---------------------------------------- */
+/* El caso real: "hoy voy para Alajuela". Un toque y la ruta queda armada. */
+.zonas { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .6rem; }
+.zona-btn {
+  display: grid; gap: .1rem; padding: 1rem .9rem; text-align: left;
+  background: var(--card); border: 2px solid var(--line); border-radius: var(--r);
+  font: inherit; color: inherit; cursor: pointer; box-shadow: var(--sh);
+}
+.zona-btn:active { border-color: var(--ember-600); }
+.zona-btn b { font-size: 1.15rem; color: var(--ember-800); }
+.zona-btn span { font-size: .9rem; color: var(--ink-soft); }
+.zona-btn em { font-style: normal; font-weight: 700; color: var(--ember-600); }
+
+/* ---------- Pagos parciales --------------------------------------------- */
+.pago {
+  display: flex; justify-content: space-between; align-items: baseline; gap: .6rem;
+  padding: .5rem 0; border-bottom: 1px solid var(--line); font-size: .95rem;
+}
+.pago:last-child { border-bottom: 0; }
+.saldo {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-top: .6rem; padding-top: .6rem; border-top: 2px solid var(--gold-500);
+  font-family: "Fraunces", Georgia, serif; font-size: 1.15rem; font-weight: 700;
+}
+.saldo--cero { border-top-color: var(--ok); color: var(--ok); }
+
+/* ---------- Sub-pestañas de Dinero -------------------------------------- */
+.subtabs { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; margin-bottom: 1rem; }
+.subtab {
+  padding: .7rem .5rem; text-align: center; border-radius: 999px;
+  background: var(--card); border: 1px solid var(--line);
+  font: inherit; font-weight: 700; font-size: .98rem; color: var(--ink-soft); cursor: pointer;
+}
+.subtab[aria-pressed="true"] { background: var(--ember-900); border-color: var(--ember-900); color: #FFF6E8; }
+
+/* Logo de la marca en la barra y en el candado */
+.top__logo { height: 26px; width: auto; flex: none; }
+.top__logo + .top__titulo { font-size: 1.05rem; }
+.candado__logo { display: block; height: 34px; width: auto; margin: 0 auto 1.2rem; }
+
+/* Encabezado de grupo en la lista de clientes */
+.grupo {
+  margin: 1.1rem 0 .5rem; padding-bottom: .3rem;
+  border-bottom: 2px solid var(--gold-500);
+  font-family: "Fraunces", Georgia, serif; font-size: 1rem; font-weight: 700;
+  color: var(--ember-800);
+}
+.grupo:first-child { margin-top: 0; }

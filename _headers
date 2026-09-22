@@ -28,3 +28,9 @@
 # El HTML siempre se revalida para que los cambios salgan de inmediato.
 /*.html
   Cache-Control: public, max-age=0, must-revalidate
+
+# La herramienta interna de Carlouis. La cabecera manda sobre la meta, así que
+# aunque alguien enlace la URL, Google no la indexa.
+/app/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: public, max-age=0, must-revalidate

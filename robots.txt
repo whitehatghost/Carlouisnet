@@ -4,4 +4,7 @@ Allow: /
 # Páginas sin valor de búsqueda
 Disallow: /gracias.html
 
+# Herramienta interna, no es para buscadores
+Disallow: /app/
+
 Sitemap: https://www.carlouis.net/sitemap.xml
