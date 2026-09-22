@@ -10,7 +10,10 @@ una vive en tools/lugares.py.
 import io, os, re, sys, json
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from lugares import PROVINCIAS
-from lugares_gam import CANTONES
+from lugares_gam import CANTONES as _C1
+from lugares_gam2 import CANTONES2 as _C2
+
+CANTONES = _C1 + _C2
 from productos import PRODUCTOS
 from guias import GUIAS
 
