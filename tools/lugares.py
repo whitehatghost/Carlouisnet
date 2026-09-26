@@ -18,10 +18,9 @@ PROVINCIAS = [
         "slug": "salsas-artesanales-san-jose",
         "nombre": "San José",
         "geo": "CR-SJ",
-        "titulo": "Salsas Artesanales en San José | Envío a los 20 Cantones | CARLOUIS",
+        "titulo": "Salsas Artesanales en San José | 20 Cantones | CARLOUIS",
         "desc": ("Salsas de habanero, pestos, alioli y conservas artesanales con entrega en San José: "
-                 "Escazú, Santa Ana, Curridabat, Montes de Oca y los 20 cantones. Mismo precio que en "
-                 "todo el país, 1 a 2 días en el GAM."),
+                 "Escazú, Santa Ana, Curridabat y los 20 cantones. 1 a 2 días en el GAM."),
         "h1": "Salsas artesanales en San José",
         "lead": ("Entregamos en los 20 cantones de la provincia de San José. Dentro del Gran Área "
                  "Metropolitana coordinamos la entrega en 1 o 2 días hábiles, y el precio es el "
@@ -94,9 +93,8 @@ PROVINCIAS = [
         "nombre": "Alajuela",
         "geo": "CR-A",
         "titulo": "Salsas Artesanales en Alajuela | Acá las Hacemos | CARLOUIS",
-        "desc": ("CARLOUIS produce en Alajuela. Salsas de habanero, chimichurri, pestos y conservas "
-                 "artesanales con entrega en los 16 cantones y retiro sin costo los sábados en la "
-                 "Feria La Verbena, Plaza Real Alajuela."),
+        "desc": ("Salsas de habanero, chimichurri, pestos y conservas hechos en Alajuela. Entrega en "
+                 "los 16 cantones y retiro los sábados en la Feria La Verbena, Plaza Real."),
         "h1": "Salsas artesanales en Alajuela",
         "lead": ("Acá es donde se cocina todo lo que vendemos. Si estás en Alajuela, sos la persona "
                  "que más cerca tiene el producto: entrega coordinada, o retiro sin costo el sábado "
@@ -164,10 +162,9 @@ PROVINCIAS = [
         "slug": "salsas-artesanales-heredia",
         "nombre": "Heredia",
         "geo": "CR-H",
-        "titulo": "Salsas Artesanales en Heredia | Envío a los 10 Cantones | CARLOUIS",
+        "titulo": "Salsas Artesanales en Heredia | 10 Cantones | CARLOUIS",
         "desc": ("Salsas de habanero, pestos, alioli y conservas artesanales con entrega en Heredia: "
-                 "Belén, Flores, Santo Domingo, Barva, San Rafael y los 10 cantones. Mismo precio en "
-                 "todo el país."),
+                 "Belén, Flores, Santo Domingo, Barva y los 10 cantones."),
         "h1": "Salsas artesanales en Heredia",
         "lead": ("Heredia nos queda al lado y es zona de entrega frecuente. Llegamos a los 10 cantones, "
                  "desde Belén y Flores hasta Sarapiquí, con el mismo precio que en el resto del país."),
@@ -232,8 +229,7 @@ PROVINCIAS = [
         "geo": "CR-C",
         "titulo": "Salsas Artesanales en Cartago | Envío a los 8 Cantones | CARLOUIS",
         "desc": ("Salsas de habanero, pestos, alioli y conservas artesanales con entrega en Cartago: "
-                 "La Unión, Paraíso, Oreamuno, Turrialba, El Guarco y los 8 cantones. Mismo precio "
-                 "en todo el país."),
+                 "La Unión, Paraíso, Oreamuno, Turrialba y los 8 cantones."),
         "h1": "Salsas artesanales en Cartago",
         "lead": ("Llegamos a los 8 cantones de Cartago, desde La Unión y Cartago centro hasta "
                  "Turrialba y Jiménez. Mismo precio que en el resto del país, sin cargo por envío."),
@@ -297,10 +293,9 @@ PROVINCIAS = [
         "slug": "salsas-artesanales-guanacaste",
         "nombre": "Guanacaste",
         "geo": "CR-G",
-        "titulo": "Salsas Artesanales en Guanacaste | Envío a los 11 Cantones | CARLOUIS",
+        "titulo": "Salsas Artesanales en Guanacaste | 11 Cantones | CARLOUIS",
         "desc": ("Salsas de habanero, chimichurri y conservas artesanales con envío a Guanacaste: "
-                 "Liberia, Santa Cruz, Nicoya, Carrillo, Tilarán y los 11 cantones. Empaque "
-                 "reforzado, mismo precio que en todo el país."),
+                 "Liberia, Santa Cruz, Nicoya, Tilarán y los 11 cantones. Empaque reforzado."),
         "h1": "Salsas artesanales en Guanacaste",
         "lead": ("Enviamos a los 11 cantones de Guanacaste por encomienda, entre 2 y 4 días hábiles, "
                  "con empaque reforzado para el trayecto. El precio es el mismo que paga alguien en "
@@ -368,10 +363,9 @@ PROVINCIAS = [
         "slug": "salsas-artesanales-puntarenas",
         "nombre": "Puntarenas",
         "geo": "CR-P",
-        "titulo": "Salsas Artesanales en Puntarenas | Envío a los 13 Cantones | CARLOUIS",
+        "titulo": "Salsas Artesanales en Puntarenas | 13 Cantones | CARLOUIS",
         "desc": ("Salsas de habanero, pestos y conservas artesanales con envío a Puntarenas: Quepos, "
-                 "Garabito, Osa, Monteverde, Golfito, Corredores y los 13 cantones. Empaque "
-                 "reforzado, mismo precio en todo el país."),
+                 "Jacó, Osa, Monteverde, Golfito y los 13 cantones. Empaque reforzado."),
         "h1": "Salsas artesanales en Puntarenas",
         "lead": ("Enviamos a los 13 cantones de Puntarenas, del Pacífico Central al Sur y a Monteverde, "
                  "por encomienda en 2 a 4 días hábiles y al mismo precio que en todo el país."),
@@ -439,8 +433,7 @@ PROVINCIAS = [
         "geo": "CR-L",
         "titulo": "Salsas Artesanales en Limón | Envío a los 6 Cantones | CARLOUIS",
         "desc": ("Salsas de habanero, chimichurri y conservas artesanales con envío al Caribe: Limón, "
-                 "Pococí, Siquirres, Talamanca, Matina y Guácimo. Empaque reforzado y el mismo precio "
-                 "que en todo el país."),
+                 "Pococí, Siquirres, Talamanca, Matina y Guácimo. Empaque reforzado."),
         "h1": "Salsas artesanales en Limón",
         "lead": ("Enviamos a los 6 cantones de la provincia de Limón por encomienda, entre 2 y 4 días "
                  "hábiles, con empaque reforzado y sin recargo por distancia."),

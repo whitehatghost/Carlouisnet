@@ -27,9 +27,8 @@ CSP = ("default-src 'self'; img-src 'self' data: https://*.google-analytics.com 
        "base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none';")
 
 TITULO = "Salsas Artesanales al Por Mayor en Costa Rica | CARLOUIS"
-DESC = ("Proveedor de salsas, pestos y conservas artesanales al por mayor en Costa Rica. "
-        "Para restaurantes, sodas, hoteles, tiendas gourmet y supermercados. "
-        "Producción en Alajuela, entrega a todo el país.")
+DESC = ("Salsas, pestos y conservas artesanales al por mayor en Costa Rica para restaurantes, "
+        "sodas, hoteles y tiendas gourmet. Hechos en Alajuela, entrega a todo el país.")
 
 PARA_QUIEN = [
     ("i-bag", "Restaurantes y sodas",
@@ -269,6 +268,10 @@ def pagina():
           </ul>
           <p style="margin-top:var(--sp-5);font-size:.9rem;color:var(--ink-mute)">
             Consulte por presentaciones de mayor tamaño para cocina y por producción bajo marca propia.
+          </p>
+          <p style="margin-top:var(--sp-3);font-size:.9rem;color:var(--ink-mute)">
+            ¿Compra para un supermercado o una cadena?
+            <a href="proveedor-salsas-artesanales-costa-rica.html">Lea la ficha para compradores de góndola</a>.
           </p>
         </div>
       </div>

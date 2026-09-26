@@ -106,7 +106,7 @@ def ld_guia(g):
         "description": {json.dumps(g["desc"], ensure_ascii=False)},
         "image": "{BASE}assets/img/{g["img"]}.jpg",
         "datePublished": "{g["fecha"]}",
-        "dateModified": "{g["fecha"]}",
+        "dateModified": "{g.get("modificado", g["fecha"])}",
         "inLanguage": "es-CR",
         "mainEntityOfPage": "{BASE}{g["slug"]}.html",
         "author": {{ "@type": "Organization", "name": "CARLOUIS Gourmet", "url": "{BASE}" }},

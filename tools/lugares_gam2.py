@@ -26,9 +26,8 @@ CANTONES2 = [
         "provincia_slug": "salsas-artesanales-san-jose",
         "geo": "CR-SJ",
         "titulo": "Salsas Artesanales en Coronado | Para Queso y Tabla | CARLOUIS",
-        "desc": ("Conservas, pestos y salsas artesanales con entrega en Vázquez de Coronado: "
-                 "San Isidro, Dulce Nombre, Patalillo y Cascajal. Lo que mejor acompaña el queso "
-                 "de la zona. Entrega en 1 a 2 días."),
+        "desc": ("Conservas, pestos y salsas artesanales con entrega en Coronado: San Isidro, Dulce "
+                 "Nombre, Patalillo y Cascajal. Para acompañar el queso de la zona."),
         "h1": "Salsas artesanales en Coronado",
         "lead": ("Entregamos en todo Vázquez de Coronado: San Isidro, Dulce Nombre, Patalillo, "
                  "Cascajal y Jesús. Normalmente en 1 o 2 días hábiles."),
@@ -93,8 +92,7 @@ CANTONES2 = [
         "geo": "CR-SJ",
         "titulo": "Salsas Artesanales en San Pedro y Montes de Oca | CARLOUIS",
         "desc": ("Salsas, pestos y mayonesas artesanales con entrega en San Pedro, Montes de Oca, "
-                 "Sabanilla y Los Yoses. Para cocina de entre semana y para sodas. Entrega en 1 a "
-                 "2 días, sin cargo."),
+                 "Sabanilla y Los Yoses. Para la casa y para sodas. 1 a 2 días."),
         "h1": "Salsas artesanales en San Pedro",
         "lead": ("Entregamos en todo Montes de Oca: San Pedro, Sabanilla, Mercedes y San Rafael, "
                  "más Los Yoses y Barrio Dent. Normalmente en 1 o 2 días hábiles."),
@@ -230,7 +228,7 @@ CANTONES2 = [
         "provincia": "San José",
         "provincia_slug": "salsas-artesanales-san-jose",
         "geo": "CR-SJ",
-        "titulo": "Salsas Artesanales en Moravia y Tibás | Producto Hecho a Mano | CARLOUIS",
+        "titulo": "Salsas Artesanales en Moravia y Tibás | CARLOUIS",
         "desc": ("Salsas, pestos y conservas artesanales con entrega en Moravia, San Vicente, "
                  "Trinidad y Tibás. Producto costarricense hecho en lotes pequeños. Entrega en 1 a "
                  "2 días."),
@@ -370,10 +368,9 @@ CANTONES2 = [
         "provincia": "Alajuela",
         "provincia_slug": "salsas-artesanales-alajuela",
         "geo": "CR-A",
-        "titulo": "Salsas Artesanales en Grecia y Sarchí | Somos de Alajuela | CARLOUIS",
+        "titulo": "Salsas Artesanales en Grecia y Sarchí | CARLOUIS",
         "desc": ("Salsas de habanero, chimichurri, pestos y conservas artesanales con entrega en "
-                 "Grecia, Sarchí, Naranjo y Poás. Producimos en Alajuela, a media hora. Retiro sin "
-                 "costo en feria."),
+                 "Grecia, Sarchí, Naranjo y Poás. Hechas en Alajuela, a media hora."),
         "h1": "Salsas artesanales en Grecia",
         "lead": ("Somos de Alajuela, así que Grecia nos queda cerca. Entregamos en Grecia centro, "
                  "San Isidro, Tacares, Puente de Piedra, y también en Sarchí, Naranjo y Poás."),
@@ -440,8 +437,7 @@ CANTONES2 = [
         "geo": "CR-A",
         "titulo": "Salsas Artesanales en Atenas y Orotina | CARLOUIS",
         "desc": ("Salsas de habanero, chimichurri y conservas artesanales con entrega en Atenas, "
-                 "Orotina, San Mateo y Turrúcares. A 20 minutos de donde se producen. Ideales para "
-                 "casa de fin de semana."),
+                 "Orotina, San Mateo y Turrúcares. A 20 minutos de donde se hacen."),
         "h1": "Salsas artesanales en Atenas",
         "lead": ("Entregamos en Atenas, Orotina, San Mateo y Turrúcares. Estamos a unos 20 minutos, "
                  "así que es de las entregas más rápidas que hacemos."),

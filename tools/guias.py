@@ -16,6 +16,12 @@ GUIAS = [
         lede="Todo el mundo sabe que el chimichurri va con carne. Lo que casi nadie "
              "aprovecha es todo lo demás que puede hacer un buen frasco.",
         intro=[
+            # Respuesta directa primero: es lo que Google toma para el recuadro
+            # destacado cuando alguien pregunta "¿con qué se come el chimichurri?".
+            "<strong>Respuesta corta:</strong> el chimichurri se come con carne asada, pollo y "
+            "chorizo, pero funciona igual de bien con papas, pan tostado, huevos, vegetales a "
+            "la parrilla, arroz y, en Costa Rica, con patacones, yuca y elote asado. Siempre "
+            "va encima de la comida ya servida, nunca en el fuego.",
             "El chimichurri nació como salsa de parrilla argentina y en Costa Rica se quedó "
             "encasillado ahí: sale del refrigerador cuando hay asado y vuelve a entrar hasta "
             "el siguiente. Es un desperdicio.",
@@ -37,8 +43,40 @@ GUIAS = [
                 ("Sándwich de carne fría", "En lugar de mostaza o mayonesa. Va especialmente bien con roast beef."),
                 ("Arroz", "Una cucharada al arroz blanco recién hecho, revuelto con el tenedor. El más barato de los trucos y de los que más impresiona."),
             ]),
+            # Esta sección es la que ningún sitio argentino o español puede
+            # escribir, y es la que diferencia la guía en búsquedas desde CR.
+            ("Con comida tica", [
+                ("Patacones", "Recién salidos del aceite, con una cucharadita de chimichurri encima en vez de sal. El vinagre corta la grasa del plátano frito y las hierbas le dan lo que no tiene. De las combinaciones que más gustan."),
+                ("Yuca frita o sancochada", "Igual que con la papa, pero la yuca absorbe todavía más. Revolvela caliente con el chimichurri y dejala reposar un minuto antes de servir."),
+                ("Elote asado", "El de la feria o el de la parrilla de la casa. En vez de mantequilla y sal, una capa de chimichurri. Queda entre lo tico y lo argentino, y funciona."),
+                ("Chicharrones", "El chimichurri es de las pocas cosas que alivianan un chicharrón. La acidez corta la grasa bocado a bocado."),
+                ("Tortilla con queso", "Tortilla palmeada recién hecha, queso tierno y chimichurri. Tres cosas y un desayuno distinto."),
+                ("Casado con bistec", "En lugar de la salsa de siempre, sobre el bistec o el pollo a la plancha ya servido. No toca el arroz ni los frijoles: va solo sobre la carne."),
+            ]),
+            ("Cómo usarlo bien", [
+                ("Nunca en el fuego", "El chimichurri no se cocina. El calor directo evapora el vinagre y amarga el perejil. Va sobre la comida caliente pero ya fuera de la sartén o la parrilla."),
+                ("La cantidad", "Una cucharada por porción de carne, una cucharadita para huevos o arroz. Es una salsa intensa: se agrega, no se ahoga la comida."),
+                ("Revolvé el frasco", "Las hierbas se asientan y el aceite sube. Antes de servir, revolvé bien con una cuchara limpia para que cada porción lleve de todo."),
+                ("Dejalo respirar", "Sacalo del refrigerador unos minutos antes. En frío el aceite de oliva se espesa y el sabor se apaga; a temperatura ambiente vuelve a abrir."),
+            ]),
         ],
+        # Las primeras preguntas son las que la gente de verdad escribe en Google,
+        # sacadas de Search Console, con las mismas palabras.
         faq=[
+            ("¿Cómo se come el chimichurri?",
+             "Frío o a temperatura ambiente, encima de la comida ya servida. Una cucharada sobre la carne recién salida de la parrilla, o revuelto con papas, arroz o vegetales calientes. No se cocina ni se calienta."),
+            ("¿Cómo se usa el chimichurri?",
+             "Como salsa para terminar un plato, como aliño y como marinada. Para servir va encima al final; para marinar, se deja la carne dos horas en refrigeración con una porción aparte, que no se reutiliza."),
+            ("¿Con qué se acompaña el chimichurri?",
+             "Con carnes asadas, pollo, chorizo y cerdo, y también con papas, pan, huevos, vegetales a la parrilla y arroz. En Costa Rica va muy bien con patacones, yuca y elote asado."),
+            ("¿Para qué se usa el chimichurri?",
+             "Para darle sabor a la carne y cortar su grasa: el vinagre limpia el paladar y las hierbas refrescan. Por eso también sirve para aliñar ensaladas, vegetales y cualquier plato que se sienta pesado."),
+            ("¿Qué lleva el chimichurri argentino?",
+             "Perejil, ajo, orégano, vinagre, aceite y sal. El argentino de verdad no lleva tomate, culantro ni chile picante: cuando le agregan eso ya es otra salsa."),
+            ("¿Es lo mismo el chimichurri en polvo?",
+             "No. El que viene en polvo es una mezcla de hierbas secas para condimentar o hidratar en casa. El chimichurri de frasco ya viene hecho con hierbas, ajo, vinagre y aceite, listo para servir, y tiene otro sabor: más fresco y con más acidez."),
+            ("¿Se consigue chimichurri artesanal en el supermercado?",
+             "El de supermercado suele ser industrial y lleva espesantes para rendir. El de CARLOUIS no está en supermercados: se pide por WhatsApp con envío a todo el país o se compra los sábados en la feria La Verbena, en Alajuela."),
             ("¿El chimichurri se calienta?",
              "No. Se sirve a temperatura ambiente sobre la comida caliente. Al calentarlo se evapora el vinagre y las hierbas se amargan."),
             ("¿Cuánto dura abierto?",
@@ -50,6 +88,9 @@ GUIAS = [
         ],
         productos=["chimichurri-argentino", "chile-morron-asado", "alioli"],
         cta="¿Querés probar un chimichurri hecho a mano?",
+        # Se amplió con las preguntas que salen en Search Console y la sección
+        # de comida tica. Publicada el 16 de junio, revisada acá.
+        modificado="2026-09-25",
     ),
 
     dict(

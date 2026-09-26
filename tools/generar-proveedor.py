@@ -33,10 +33,9 @@ CSP = ("default-src 'self'; img-src 'self' data: https://*.google-analytics.com 
        "https://*.googletagmanager.com; style-src 'self' 'unsafe-inline'; font-src 'self'; "
        "base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none';")
 
-TITULO = "Proveedor de Salsas Artesanales para Supermercados | Costa Rica | CARLOUIS"
-DESC = ("Productor costarricense de salsas artesanales, pestos y conservas gourmet que busca "
-        "espacio en góndola de supermercados y cadenas. Doce productos de marca propia, "
-        "producción en Alajuela. Contacto directo con el productor.")
+TITULO = "Proveedor de Salsas Artesanales para Supermercados | CARLOUIS"
+DESC = ("Productor costarricense de salsas artesanales, pestos y conservas con marca propia, "
+        "hechos en Alajuela, que busca espacio en góndola de supermercados y cadenas.")
 
 PORQUE = [
     ("i-flame", "Producto nacional con marca propia",

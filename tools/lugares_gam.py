@@ -20,9 +20,8 @@ CANTONES = [
         "provincia_slug": "salsas-artesanales-san-jose",
         "geo": "CR-SJ",
         "titulo": "Salsas Artesanales en Escazú | Entrega a Domicilio | CARLOUIS",
-        "desc": ("Salsas de habanero, pestos, alioli y conservas artesanales con entrega en Escazú: "
-                 "San Rafael, San Antonio y Escazú centro. Producto costarricense hecho en lotes "
-                 "pequeños, entrega en 1 a 2 días."),
+        "desc": ("Salsas de habanero, pestos, alioli y conservas artesanales con entrega a domicilio "
+                 "en Escazú: San Rafael, San Antonio y centro. Entrega en 1 a 2 días."),
         "h1": "Salsas artesanales en Escazú",
         "lead": ("Entregamos en los tres distritos de Escazú —San Rafael, San Antonio y Escazú "
                  "centro— normalmente en 1 o 2 días hábiles, coordinando por WhatsApp."),
@@ -88,9 +87,8 @@ CANTONES = [
         "provincia_slug": "salsas-artesanales-san-jose",
         "geo": "CR-SJ",
         "titulo": "Salsas Artesanales en Santa Ana y Lindora | CARLOUIS",
-        "desc": ("Salsas de habanero, pestos, alioli y conservas artesanales con entrega en Santa "
-                 "Ana, Lindora, Pozos y Piedades. Hechas en Alajuela, entrega en 1 a 2 días y sin "
-                 "cargo por envío."),
+        "desc": ("Salsas de habanero, pestos, alioli y conservas artesanales con entrega en Santa Ana, "
+                 "Lindora, Pozos y Piedades. 1 a 2 días, sin cargo por envío."),
         "h1": "Salsas artesanales en Santa Ana",
         "lead": ("Entregamos en todo el cantón: Santa Ana centro, Pozos, Lindora, Piedades, Brasil y "
                  "Salitral. Normalmente en 1 o 2 días hábiles."),
@@ -158,8 +156,7 @@ CANTONES = [
         "geo": "CR-SJ",
         "titulo": "Salsas Artesanales en Curridabat y Granadilla | CARLOUIS",
         "desc": ("Salsas de habanero, pestos, alioli y conservas artesanales con entrega en "
-                 "Curridabat, Granadilla, Sánchez y Tirrases. Hechas en Costa Rica, entrega en 1 a 2 "
-                 "días sin cargo por envío."),
+                 "Curridabat, Granadilla, Sánchez y Tirrases. 1 a 2 días, sin cargo por envío."),
         "h1": "Salsas artesanales en Curridabat",
         "lead": ("Entregamos en los cuatro distritos del cantón: Curridabat centro, Granadilla, "
                  "Sánchez y Tirrases. Normalmente en 1 o 2 días hábiles."),
@@ -222,10 +219,9 @@ CANTONES = [
         "provincia": "Heredia",
         "provincia_slug": "salsas-artesanales-heredia",
         "geo": "CR-H",
-        "titulo": "Salsas Artesanales en Belén, Heredia | San Antonio y La Asunción | CARLOUIS",
-        "desc": ("Salsas de habanero, pestos, alioli y conservas artesanales con entrega en Belén: "
-                 "San Antonio, La Ribera y La Asunción. Hechas en Alajuela, a 15 minutos. Entrega en "
-                 "1 a 2 días sin cargo."),
+        "titulo": "Salsas Artesanales en Belén, Heredia | CARLOUIS",
+        "desc": ("Salsas de habanero, pestos, alioli y conservas artesanales con entrega en Belén: San "
+                 "Antonio, La Ribera y La Asunción. A 15 minutos de Alajuela."),
         "h1": "Salsas artesanales en Belén",
         "lead": ("Belén nos queda a 15 minutos. Entregamos en San Antonio, La Ribera y La Asunción, "
                  "normalmente en 1 o 2 días hábiles y sin cargo por envío."),

@@ -19,10 +19,9 @@ nunca la honestidad de lo que dicen estos párrafos.
 SEO = {
 
     "tomates-deshidratados": {
-        "title": "Tomate Seco y Deshidratado en Aceite de Oliva | Costa Rica | CARLOUIS",
-        "desc": ("Tomate seco artesanal conservado en aceite de oliva, hecho en Costa Rica. "
-                 "También llamado tomate deshidratado o tomate en aceite. Para pastas, bruschettas "
-                 "y tablas. Frasco de ₡6.000 con envío a todo el país."),
+        "title": "Tomate Seco Deshidratado en Aceite | Costa Rica | CARLOUIS",
+        "desc": ("Tomate seco o deshidratado en aceite de oliva, artesanal y hecho en Costa Rica. Para "
+                 "pastas, bruschettas y tablas. Frasco de ₡6.000, envío a todo el país."),
         "otros_nombres": ["tomate seco", "tomates secos", "tomate deshidratado en aceite",
                           "tomate en aceite de oliva", "tomate confitado", "sun-dried tomato"],
         "contexto_h2": "Qué es un tomate deshidratado en aceite",
@@ -47,9 +46,8 @@ SEO = {
 
     "chimichurri-argentino": {
         "title": "Chimichurri Argentino Artesanal en Costa Rica | CARLOUIS",
-        "desc": ("Chimichurri argentino artesanal hecho en Costa Rica con perejil, ajo, orégano y "
-                 "aceite de oliva. Para asados, carne a la parrilla y pollo. Sin aditivos, frasco "
-                 "de ₡5.000 con envío a todo el país."),
+        "desc": ("Chimichurri argentino artesanal hecho en Costa Rica: perejil, ajo, orégano y aceite "
+                 "de oliva. Para asados, carne y pollo. Frasco de ₡5.000, envío al país."),
         "otros_nombres": ["chimichurri argentino", "salsa chimichurri", "chimichurri para asado",
                           "chimichurri casero", "chimichurri para carne"],
         "contexto_h2": "Qué lleva un chimichurri argentino de verdad",
@@ -224,7 +222,7 @@ SEO = {
     },
 
     "chile-morron-asado": {
-        "title": "Chile Morrón Asado en Conserva | Pimiento Asado Costa Rica | CARLOUIS",
+        "title": "Chile Morrón Asado en Conserva | Costa Rica | CARLOUIS",
         "otros_nombres": ["pimiento asado", "pimiento morrón asado", "chile dulce asado",
                           "pimientos en conserva", "roasted pepper"],
         "contexto_h2": "Por qué asar un chile morrón le cambia el sabor",
