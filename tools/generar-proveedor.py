@@ -136,13 +136,13 @@ FAQ = [
      "ventas tercerizada."),
 ]
 
+# Las mismas cuatro categorías que muestra productos.html. Antes esta página
+# decía "cinco" con una agrupación propia, y no coincidía con el catálogo.
 CATEGORIAS = [
-    ("Salsas picantes de habanero", ["salsa-habanero-fire", "salsa-pina-habanero"]),
-    ("Pestos", ["pesto-de-albahaca", "pesto-de-tomate"]),
-    ("Cremas y emulsiones", ["alioli", "mayonesa-de-chipotle", "mayonesa-de-culantro"]),
-    ("Conservas vegetales", ["tomates-deshidratados", "chile-morron-asado",
-                             "salsa-de-chile-dulce"]),
-    ("Especialidades", ["chimichurri-argentino", "salsa-de-mora"]),
+    ("Picantes", ["salsa-habanero-fire", "salsa-pina-habanero", "salsa-de-chile-dulce"]),
+    ("Pestos y salsas", ["pesto-de-albahaca", "pesto-de-tomate", "chimichurri-argentino"]),
+    ("Cremas y mayonesas", ["alioli", "mayonesa-de-chipotle", "mayonesa-de-culantro"]),
+    ("Conservas", ["tomates-deshidratados", "chile-morron-asado", "salsa-de-mora"]),
 ]
 
 POR_SLUG = {p["slug"]: p for p in PRODUCTOS}
@@ -335,7 +335,7 @@ def pagina():
         <div class="container">
           <div class="section-head section-head--center" data-reveal>
             <h2>La línea completa</h2>
-            <p>Doce productos en cinco categorías. Tocá cualquiera para ver su ficha.</p>
+            <p>Doce productos en cuatro categorías. Tocá cualquiera para ver su ficha.</p>
           </div>
           <div class="value-grid">
 %(cats)s

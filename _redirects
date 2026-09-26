@@ -1,0 +1,16 @@
+# Netlify publica TODO lo que está en el repositorio. Estas rutas son de uso
+# interno —generadores, estrategia, análisis de competencia— y no tienen por
+# qué ser públicas. El "404!" con signo de exclamación fuerza la respuesta
+# aunque el archivo exista.
+#
+# Lo que NO se bloquea acá, a propósito:
+#   /app/*                 la herramienta de Carlouis; es pública por diseño
+#   /8d08f8c0....txt       la llave de IndexNow; Bing tiene que poder leerla
+#   /assets/recetario-*    los recetarios son del sitio y son para clientes
+
+/tools/*              /404.html   404!
+/SEO.md               /404.html   404!
+/README.md            /404.html   404!
+/SUPABASE.md          /404.html   404!
+/_redirects           /404.html   404!
+/_headers             /404.html   404!

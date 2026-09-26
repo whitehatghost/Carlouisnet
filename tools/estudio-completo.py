@@ -378,7 +378,7 @@ def build(salida):
     E += [P("8. Dónde está parada CARLOUIS hoy", "h1"), rule(EMBER, 1.2),
           P("Dónde gana", "h2")]
     for t_, d in [
-        ("Amplitud de catálogo", "Doce productos en cinco categorías. Ningún competidor artesanal cubre tanto: Chile Monoloco y Bendito Chile solo hacen picantes; Verde Salvia solo pestos."),
+        ("Amplitud de catálogo", "Doce productos en cuatro categorías. Ningún competidor artesanal cubre tanto: Chile Monoloco y Bendito Chile solo hacen picantes; Verde Salvia solo pestos."),
         ("Base técnica", "El sitio más liviano y mejor marcado del sector, con diferencia. Es una ventaja ya construida."),
         ("Contenido de uso", "Nueve guías que responden qué hacer con cada producto. Ningún competidor tiene una sola."),
         ("Presencia física", "La feria de los sábados genera prueba de producto, clientes recurrentes y material real para publicar."),

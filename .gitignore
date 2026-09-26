@@ -1,0 +1,15 @@
+# Netlify publica TODO lo que está en este repositorio en carlouis.net.
+# Cualquier archivo que se suba acá queda público, así que lo interno no sube.
+
+# Documentos de estrategia, precios y análisis de competencia.
+/Estudio-*.pdf
+/Plan-*.pdf
+/Propuesta-*.pdf
+
+# Página de aniversario: espera la aprobación de Luis.
+# El día que la apruebe se borra esta línea y sale con el próximo commit.
+/aniversario.html
+
+# Python
+__pycache__/
+*.pyc

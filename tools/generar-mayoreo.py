@@ -36,7 +36,7 @@ PARA_QUIEN = [
      "Salsas de mesa y de cocina con sabor propio, que no se consiguen en el supermercado. "
      "Diferencian un plato sin subir el costo por porción."),
     ("i-box", "Tiendas gourmet y delicatessen",
-     "Línea completa de doce productos en cinco categorías, con historia de marca y "
+     "Línea completa de doce productos en cuatro categorías, con historia de marca y "
      "producción local para contar al cliente."),
     ("i-truck", "Supermercados y cadenas",
      "Producto costarricense, artesanal y diferenciado, para las góndolas de gourmet "
@@ -252,8 +252,8 @@ def pagina():
             justamente lo que hace que el producto valga.
           </p>
           <p>
-            Trabajamos con una línea de <strong>doce productos en cinco categorías</strong>:
-            picantes de habanero, pestos, cremas, conservas y salsas dulces. Se puede empezar con
+            Trabajamos con una línea de <strong>doce productos en cuatro categorías</strong>:
+            picantes, pestos y salsas, cremas y mayonesas, y conservas. Se puede empezar con
             dos o tres y crecer según rote.
           </p>
           <div class="btn-row">

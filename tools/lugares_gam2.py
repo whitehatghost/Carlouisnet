@@ -253,7 +253,7 @@ CANTONES2 = [
         "angulo_h2": "Producto de tienda y producto de casa",
         "angulo": [
             "Por el lado de tienda, la línea completa funciona como surtido: doce productos en "
-            "cinco categorías, todos de marca propia y producidos en Alajuela. Para una tienda de "
+            "cuatro categorías, todos de marca propia y producidos en Alajuela. Para una tienda de "
             "artesanía o de producto nacional eso arma una góndola con historia verificable, no con "
             "una etiqueta genérica.",
 

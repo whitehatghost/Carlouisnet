@@ -302,7 +302,7 @@ def build(salida):
 
     E.append(P("Fortalezas", "h2"))
     for t, d in [
-        ("Amplitud de catálogo", "Doce productos en cinco categorías. Ningún competidor artesanal cubre tanto: Chile Monoloco y Bendito Chile solo hacen picantes; Verde Salvia solo pestos."),
+        ("Amplitud de catálogo", "Doce productos en cuatro categorías. Ningún competidor artesanal cubre tanto: Chile Monoloco y Bendito Chile solo hacen picantes; Verde Salvia solo pestos."),
         ("Base técnica superior", "Sitio más rápido, con más contenido y mejor marcado que los líderes actuales. Es una ventaja que ya está construida y pagada."),
         ("Presencia física", "La feria de los sábados genera prueba de producto, clientes recurrentes y contenido real para publicar."),
         ("Precio único nacional", "Simplifica la decisión de compra y es un argumento que ningún competidor comunica con claridad."),
