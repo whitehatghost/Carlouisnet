@@ -236,7 +236,16 @@ GUIAS += [
              "Sí, y es la mejor forma de estirar un frasco. En cubetera de hielo: un cubo por porción, se descongela a temperatura ambiente."),
             ("¿Cuánto pesto va por porción de pasta?",
              "Dos cucharadas colmadas por persona. El de tomate rinde un poco más: con una cucharada y media alcanza."),
+            ("¿Con qué se come el pesto?",
+             "Con pasta, pero también con pizza, pollo al horno, papas, sándwiches, huevos, sopas y ensaladas. Siempre fuera del fuego, sobre la comida caliente."),
+            ("¿Cómo se usa el pesto de frasco?",
+             "Directo del frasco, sin calentarlo. Revolvé bien antes de servir porque el aceite sube, y agregalo a la comida ya fuera del fuego."),
+            ("¿Para qué sirve el pesto de albahaca?",
+             "Para pastas, pizza, bruschettas, sándwiches, pollo y papas. También como base de un aderezo de ensalada con aceite de oliva y limón."),
+            ("¿Dónde comprar pesto artesanal en Costa Rica?",
+             "El de CARLOUIS no está en supermercados: se pide por WhatsApp con envío a todo el país, o se compra los sábados en la feria La Verbena de Alajuela."),
         ],
+        modificado="2026-09-25",
         productos=["pesto-de-albahaca", "pesto-de-tomate", "tomates-deshidratados"],
         cta="Pedí tu pesto hecho en lotes pequeños",
     ),
@@ -492,6 +501,256 @@ GUIAS += [
     ),
 ]
 
+# Guías de setiembre 2026: búsquedas del autocompletado de Google en Costa Rica.
+GUIAS += [
+    dict(
+        slug="que-hacer-con-tomates-secos",
+        titulo="Qué hacer con tomates secos en aceite: 10 usos",
+        h1="Qué hacer con tomates secos en aceite",
+        desc="Diez formas de usar los tomates secos o deshidratados en aceite: pastas, pizza, arroz, sándwiches y tablas. Y qué hacer con el aceite del frasco.",
+        img="tomates", w=800, h=472,
+        lede="Un frasco de tomates secos se abre para una receta y después se queda en "
+             "la refrigeradora. Esto es todo lo demás que se puede hacer con él.",
+        intro=[
+            "<strong>Respuesta corta:</strong> los tomates secos en aceite se usan directo del "
+            "frasco, sin hidratar: picados en pastas, arroces y huevos; enteros en pizzas, "
+            "focaccias, sándwiches y tablas de queso; licuados como pesto rojo. Y el aceite del "
+            "frasco sirve para saltear y aliñar.",
+            "Tomate seco, tomate deshidratado y tomate en aceite son lo mismo con distintos "
+            "nombres: tomate al que se le quitó el agua hasta concentrar el sabor, y que "
+            "después se conserva en aceite. Por eso sabe más dulce y más intenso que un tomate "
+            "fresco, y por eso rinde tanto: con dos o tres pedazos se sazona un plato.",
+        ],
+        secciones=[
+            ("En la cocina de todos los días", [
+                ("Pasta en diez minutos", "Saltear ajo en dos cucharadas del aceite del frasco, agregar tomates secos picados, la pasta escurrida y un chorrito del agua de cocción. Queso rallado al final. No necesita nada más."),
+                ("Arroz", "Picados finos y revueltos en el arroz blanco recién hecho, con un poco de su aceite. Le da color y sabor sin cocinar nada aparte."),
+                ("Huevos", "Revueltos u omelette, con tomate seco picado y queso. Es el desayuno de siempre con otra cara."),
+                ("Ensaladas", "En lugar del tomate fresco, sobre todo en invierno cuando el tomate no sabe a nada. Con lechuga, queso y un aliño hecho con el mismo aceite del frasco."),
+            ]),
+            ("Para quedar bien", [
+                ("Pizza y focaccia", "Encima de la masa antes de hornear. Con mozzarella y albahaca es la pizza más fácil de hacer bien."),
+                ("Tabla de quesos", "Al lado de un queso maduro, con aceitunas y pan. Es de las conservas que más rápido se acaban en una <a href='tabla-de-quesos-y-bocas.html'>tabla</a>."),
+                ("Bruschetta", "Pan tostado, queso crema o ricotta, un tomate seco encima y un hilo de su aceite."),
+                ("Pesto rojo", "Licuar tomates secos con queso, nueces y parte de su aceite. O, más rápido, usar el <a href='pesto-de-tomate.html'>pesto de tomate</a> ya hecho."),
+            ]),
+            ("Con comida tica", [
+                ("Gallo pinto", "Dos o tres tomates secos picados al final, cuando el pinto ya está listo. No es tradicional, pero funciona: le da un fondo dulce que combina con la natilla."),
+                ("Tortilla con queso", "Tortilla caliente, queso tierno o Turrialba y tomate seco. Se derrite el queso y el tomate hace el resto."),
+                ("Arroz con pollo", "Picado fino al final de la cocción, con una cucharada de su aceite. Le sube el sabor sin cambiar la receta."),
+            ]),
+            ("El aceite del frasco no se bota", [
+                ("Para saltear", "Queda cargado de sabor a tomate. Sirve para empezar cualquier sofrito."),
+                ("Para aliñar", "Con sal y un chorrito de limón o vinagre, es un aderezo listo para ensalada."),
+                ("Para mojar pan", "Solo, en un platito. Es de lo primero que se acaba en la mesa."),
+            ]),
+            ("Cómo guardarlos", [
+                ("Siempre cubiertos de aceite", "Lo que queda fuera del aceite se seca y se echa a perder antes. Si bajó el nivel, agregá un poco de aceite de oliva."),
+                ("Refrigerados después de abrir", "Y con cuchara limpia cada vez. Es la regla de todas las <a href='como-conservar-salsas-artesanales.html'>conservas artesanales</a>."),
+                ("Si el aceite se pone blanco", "Es normal: el aceite de oliva se solidifica en frío. Unos minutos fuera de la refrigeradora y vuelve a estar líquido."),
+            ]),
+        ],
+        faq=[
+            ("¿Qué se puede hacer con tomates secos en aceite?",
+             "Pastas, arroces, huevos, ensaladas, pizzas, focaccias, bruschettas, sándwiches, tablas de queso y pesto rojo. Se usan directo del frasco, sin hidratar."),
+            ("¿Hay que hidratar los tomates secos en aceite?",
+             "No. Los que vienen en aceite ya están suaves y listos para comer. Solo se hidratan los que se venden secos, sin aceite."),
+            ("¿Es lo mismo tomate seco que tomate deshidratado?",
+             "Sí. Son el mismo producto con distinto nombre: tomate al que se le quitó el agua para concentrar el sabor. En aceite se llama también tomate en conserva o tomate en aceite de oliva."),
+            ("¿Para qué sirve el aceite de los tomates secos?",
+             "Para saltear, aliñar ensaladas y mojar pan. Queda con sabor a tomate y es de lo mejor del frasco."),
+            ("¿Cuánto duran los tomates secos abiertos?",
+             "Refrigerados y siempre cubiertos por el aceite, se mantienen bien bastante tiempo. Usá cuchara limpia y no los dejés fuera del aceite."),
+            ("¿Dónde comprar tomates secos en aceite en Costa Rica?",
+             "Los de CARLOUIS no están en supermercados: se piden por WhatsApp con envío a todo el país, o se compran los sábados en la feria La Verbena de Alajuela."),
+        ],
+        productos=["tomates-deshidratados", "pesto-de-tomate", "chile-morron-asado"],
+        cta="Pedí tus tomates secos en aceite de oliva",
+    ),
+
+    dict(
+        slug="que-es-el-alioli",
+        titulo="Qué es el alioli y con qué se come",
+        h1="Qué es el alioli y con qué se come",
+        desc="Qué es el alioli, en qué se diferencia de la mayonesa con ajo y con qué se come: papas, mariscos, pan, hamburguesas y comida tica. Guía de CARLOUIS.",
+        img="alioli", w=867, h=423,
+        lede="En Costa Rica se volvió famoso por las papas, pero el alioli da para mucho "
+             "más. Primero, qué es exactamente.",
+        intro=[
+            "<strong>Respuesta corta:</strong> el alioli es una salsa cremosa de ajo y aceite, "
+            "de origen mediterráneo. Se come con papas fritas, mariscos, pescado, pan tostado, "
+            "vegetales asados, hamburguesas y pollo. Va frío, como dip o encima de la comida ya "
+            "servida.",
+            "El nombre lo dice todo: en catalán <em>all i oli</em> significa ajo y aceite. La "
+            "versión tradicional es solo eso, emulsionado a mano hasta quedar denso. Las "
+            "versiones modernas le suman otros ingredientes para hacerla más estable y "
+            "cremosa. Lo que no cambia es que el ajo manda.",
+        ],
+        secciones=[
+            ("Alioli, mayonesa y mayonesa de ajo", [
+                ("La diferencia", "La mayonesa es una emulsión de huevo y aceite, y el ajo, si lo lleva, es un saborizante. En el alioli el ajo es el protagonista desde el principio. Por eso sabe distinto aunque se parezca."),
+                ("Cómo se nota", "Un alioli bien hecho tiene textura más densa y un ajo que se siente claro. Una mayonesa con ajo sabe primero a mayonesa."),
+                ("¿Pica?", "No. El ajo crudo tiene un picor propio, pero no es picante de chile. El <a href='alioli.html'>alioli de CARLOUIS</a> tiene el ajo marcado pero calibrado para que no sea agresivo."),
+            ]),
+            ("Con qué se come", [
+                ("Papas fritas y papas asadas", "El uso número uno. Como dip o revueltas en caliente con una cucharada."),
+                ("Mariscos y pescado", "Camarones a la plancha, pescado frito, calamares. Es su pareja clásica en el Mediterráneo."),
+                ("Pan tostado", "Solo, o como base antes del tomate. Una tostada con alioli y tomate es una entrada completa."),
+                ("Hamburguesas y sándwiches", "En lugar de mayonesa. Cambia el sándwich sin tener que cambiar nada más."),
+                ("Vegetales asados", "Brócoli, coliflor, zucchini o espárragos, recién salidos del horno."),
+                ("Pollo apanado", "Como dip, al lado. Con un poco de limón encima queda mejor todavía."),
+            ]),
+            ("Con comida tica", [
+                ("Patacones", "El dip que más compite con el frijol molido. El ajo y el plátano frito se llevan muy bien."),
+                ("Yuca frita", "Igual que con las papas, pero la yuca aguanta todavía más salsa."),
+                ("Pescado frito", "El de playa, con limón. Una cucharada de alioli al lado y no hace falta la salsa rosada."),
+                ("Chifrijo y bocas", "Un poco al lado de los chicharrones o de las bocas de la tarde, para quien no quiere picante."),
+            ]),
+            ("Cómo usarlo bien", [
+                ("Siempre frío", "El alioli no se cocina: con calor se corta. Va sobre la comida ya servida o como dip."),
+                ("Cuchara limpia", "Nunca metás al frasco la misma cuchara que ya tocó comida. Es lo que más acorta la vida de una salsa cremosa."),
+                ("Refrigerado siempre", "Al no llevar preservantes, el alioli artesanal vive en la refrigeradora desde que se abre."),
+            ]),
+        ],
+        faq=[
+            ("¿Qué es el alioli?",
+             "Una salsa cremosa de ajo y aceite, de origen mediterráneo. Su nombre viene del catalán all i oli, que significa ajo y aceite."),
+            ("¿Con qué se come el alioli?",
+             "Con papas fritas, mariscos, pescado, pan tostado, vegetales asados, hamburguesas y pollo. En Costa Rica también con patacones y yuca frita."),
+            ("¿Para qué sirve el alioli?",
+             "Como dip, como aderezo de sándwiches y hamburguesas en lugar de mayonesa, y como salsa fría para mariscos y vegetales."),
+            ("¿Es lo mismo alioli que mayonesa de ajo?",
+             "No. En la mayonesa el ajo es un saborizante; en el alioli es el protagonista. El alioli es más denso y el ajo se siente mucho más."),
+            ("¿El alioli pica?",
+             "No es picante de chile. Tiene el sabor fuerte del ajo, y en el de CARLOUIS está calibrado para que se sienta sin ser agresivo."),
+            ("¿Qué lleva el alioli de CARLOUIS?",
+             "Es un alioli cremoso con el ajo como protagonista, hecho en lotes pequeños y sin preservantes. Si tenés alguna alergia, escribinos por WhatsApp y te damos la lista exacta de ingredientes."),
+            ("¿Dónde comprar alioli artesanal en Costa Rica?",
+             "El de CARLOUIS no está en supermercados: se pide por WhatsApp con envío a todo el país, o se compra los sábados en la feria La Verbena de Alajuela."),
+        ],
+        productos=["alioli", "mayonesa-de-culantro", "mayonesa-de-chipotle"],
+        cta="Pedí tu alioli artesanal",
+    ),
+
+    dict(
+        slug="salsa-de-mora-para-carnes",
+        titulo="Salsa de mora para carnes, postres y quesos",
+        h1="Salsa de mora: para carnes, postres y quesos",
+        desc="Cómo usar la salsa de mora con cerdo, res y pollo, en postres, obleas y helado, y en tablas de queso. Guía de CARLOUIS, Costa Rica.",
+        img="salsa-mora", w=558, h=458,
+        lede="La mora es de las pocas frutas que funcionan igual de bien en un postre que "
+             "al lado de un lomo de cerdo. Todo depende de cómo se use.",
+        intro=[
+            "<strong>Respuesta corta:</strong> la salsa de mora va con cerdo, pato y carnes "
+            "de sabor fuerte, con quesos maduros y azules, y en postres como helado, "
+            "cheesecake, obleas y pancakes. En carnes se pone al final o al servir; en postres, "
+            "fría o apenas tibia.",
+            "Lo que la hace tan versátil es la acidez. La mora tiene un ácido natural que corta "
+            "la grasa de la carne igual que lo "
+            "haría un vino, y que en un postre evita que todo sea puro azúcar.",
+            "La <a href='salsa-de-mora.html'>salsa de mora de CARLOUIS</a> es la única dulce "
+            "de la línea y tiene textura de salsa, no de mermelada: está pensada para bañar.",
+        ],
+        secciones=[
+            ("Con carnes", [
+                ("Lomo o chuleta de cerdo", "La combinación más clásica. Se sella la carne, se termina de cocinar, y en los últimos dos minutos se agregan dos cucharadas de salsa de mora a la sartén con un chorrito de agua o vino. Se reduce y se sirve encima."),
+                ("Costillas", "Como glaseado al final, pincelada en los últimos minutos del horno o la parrilla. Antes de eso se quema, porque tiene azúcar."),
+                ("Res", "Con un lomito o un corte a la plancha, servida al lado. Mezclada con un poco de pimienta negra queda una salsa de restaurante."),
+                ("Pato y carnes de caza", "Son los que mejor aguantan el dulce-ácido. Es su uso más tradicional."),
+                ("Pollo", "Con pechuga a la plancha o muslos al horno, al lado. Si al pollo le falta carácter, la mora se lo da."),
+            ]),
+            ("En postres", [
+                ("Helado", "Sobre helado de vainilla o de leche. Fría, directo del frasco."),
+                ("Obleas", "Con dulce de leche o leche condensada y un hilo de salsa de mora. La acidez le baja el empalago al dulce de leche."),
+                ("Cheesecake y panna cotta", "Encima, al servir. Es la cobertura más fácil de hacer bien."),
+                ("Pancakes y waffles", "En lugar de miel o sirope."),
+                ("Yogur natural", "Una cucharada al desayuno, con granola."),
+            ]),
+            ("Con quesos", [
+                ("Quesos maduros y azules", "El contraste con un queso fuerte es de lo que más recomendamos en ferias. Funciona igual que un chutney."),
+                ("Queso crema o de cabra", "En una tostada, con la salsa encima. Entrada de dos ingredientes."),
+                ("En la tabla", "Un platito de salsa de mora al centro de una <a href='tabla-de-quesos-y-bocas.html'>tabla de quesos</a> y la gente arma sus propias combinaciones."),
+            ]),
+        ],
+        faq=[
+            ("¿Con qué carne va la salsa de mora?",
+             "Sobre todo con cerdo, pato y carnes de caza. También con res y pollo, servida al lado o reducida en la sartén al final de la cocción."),
+            ("¿Cómo se usa la salsa de mora para cerdo?",
+             "Se sella y cocina el cerdo, y en los últimos dos minutos se agregan dos cucharadas de salsa con un chorrito de agua o vino. Se reduce un minuto y se sirve encima."),
+            ("¿Sirve la salsa de mora para obleas y helado?",
+             "Sí. En obleas con dulce de leche le baja lo empalagoso, y sobre helado se usa fría, directo del frasco."),
+            ("¿Es lo mismo salsa de mora que mermelada de mora?",
+             "No. La salsa es más líquida, para bañar, y conserva más la acidez de la mora. La mermelada es más espesa y más dulce, para untar."),
+            ("¿La salsa de mora es picante?",
+             "No. Es la única dulce de la línea CARLOUIS y no pica nada."),
+            ("¿Dónde comprar salsa de mora artesanal en Costa Rica?",
+             "La de CARLOUIS no está en supermercados: se pide por WhatsApp con envío a todo el país, o se compra los sábados en la feria La Verbena de Alajuela."),
+        ],
+        productos=["salsa-de-mora", "salsa-de-chile-dulce", "tomates-deshidratados"],
+        cta="Pedí tu salsa de mora",
+    ),
+
+    dict(
+        slug="salsa-pina-habanero-alitas-cerdo",
+        titulo="Salsa piña habanero para alitas, cerdo y costillas",
+        h1="Salsa piña habanero: alitas, cerdo y costillas",
+        desc="Cómo usar la salsa de piña habanero en alitas, cerdo, costillas y tacos: cuándo ponerla, cuánto pica y por qué la piña va tan bien con la grasa.",
+        img="pina-habanero", w=1024, h=1536,
+        lede="La piña con cerdo es una combinación que ya existe en media América Latina. "
+             "El habanero es lo que la vuelve adictiva.",
+        intro=[
+            "<strong>Respuesta corta:</strong> la salsa de piña habanero se usa como glaseado "
+            "para alitas, costillas y cerdo en los últimos minutos de cocción, y como salsa "
+            "encima de tacos, pollo y camarones. Es dulce al inicio y pica al final: nivel 3 "
+            "de 5, picante medio.",
+            "Funciona por una razón simple: la piña tiene azúcar y ácido, y las dos cosas son "
+            "justo lo que necesita una carne grasosa. El azúcar se carameliza al calor y el "
+            "ácido corta la grasa. El habanero llega después, cuando ya estás en el segundo "
+            "bocado.",
+        ],
+        secciones=[
+            ("Alitas", [
+                ("Al horno o en freidora de aire", "Se cocinan las alitas solas, con sal, hasta que estén doradas. Al final se revuelven en un bowl con la salsa, dos o tres cucharadas por cada medio kilo, y vuelven cinco minutos al calor para que se pegue."),
+                ("Fritas", "Igual: primero se fríen, después se bañan. Si se ponen crudas en la salsa, el azúcar se quema antes de que la alita se cocine."),
+                ("Para servir", "Con apio, zanahoria y un dip frío al lado. La <a href='mayonesa-de-culantro.html'>mayonesa de culantro</a> o el <a href='alioli.html'>alioli</a> apagan el picante para quien lo necesite."),
+            ]),
+            ("Cerdo y costillas", [
+                ("Costillas", "Se cocinan lento primero, al horno tapadas o a la parrilla indirecta. En los últimos diez minutos se pincelan con la salsa, dos o tres veces. Así se forma la capa brillante sin quemarse."),
+                ("Chuleta o lomo", "Se sella, se termina de cocinar y se glasea con la salsa en el último minuto, fuera del fuego fuerte."),
+                ("Carnitas y cerdo desmechado", "Revuelto con la carne ya lista. Una cucharada por porción."),
+                ("En la parrillada", "Es la salsa que proponemos para cerdo en la guía de <a href='como-hacer-una-parrillada.html'>cómo hacer una parrillada</a>."),
+            ]),
+            ("Más usos", [
+                ("Tacos", "Encima, al servir. Con cerdo o pollo no necesitan nada más."),
+                ("Camarones", "Salteados y terminados con una cucharada al final."),
+                ("Quesos maduros", "Sobre queso amarillo fuerte, como un chutney."),
+                ("Con comida tica", "Sobre un chicharrón, al lado de un arroz con pollo o en un gallo de cerdo en tortilla."),
+            ]),
+            ("Cuánto pica", [
+                ("Nivel 3 de 5", "Se siente el habanero, pero la piña lo equilibra. Si aguantás una salsa de chipotle comercial, esta la manejás. En la <a href='escala-de-picante.html'>escala de picante</a> está explicado cada nivel."),
+                ("Si querés más", "La <a href='salsa-habanero-fire.html'>Habanero Fire</a> es la brava de la línea. Se pueden mezclar."),
+                ("Si querés menos", "La <a href='salsa-de-chile-dulce.html'>salsa de chile dulce</a> hace el mismo trabajo de glaseado con mucho menos picante."),
+            ]),
+        ],
+        faq=[
+            ("¿Cómo se usa la salsa piña habanero para alitas?",
+             "Se cocinan las alitas primero y al final se revuelven con la salsa, dos o tres cucharadas por medio kilo. Cinco minutos más al calor para que se pegue."),
+            ("¿Cuándo se le pone la salsa de piña al cerdo?",
+             "Al final. Tiene azúcar, así que si se pone desde el principio se quema. En costillas, en los últimos diez minutos; en chuletas, en el último minuto."),
+            ("¿Qué tan picante es la salsa piña habanero?",
+             "Nivel 3 de 5, picante medio. Dulce al inicio y el habanero aparece al final."),
+            ("¿Sirve para alitas en freidora de aire?",
+             "Sí. Se cocinan las alitas solas en la freidora y al final se bañan con la salsa y vuelven unos minutos."),
+            ("¿Con qué más se come la salsa de piña habanero?",
+             "Con tacos, pollo a la parrilla, camarones y quesos maduros. También como dip para bocas."),
+            ("¿Dónde comprar salsa piña habanero en Costa Rica?",
+             "La de CARLOUIS no está en supermercados: se pide por WhatsApp con envío a todo el país, o se compra los sábados en la feria La Verbena de Alajuela."),
+        ],
+        productos=["salsa-pina-habanero", "salsa-habanero-fire", "salsa-de-chile-dulce"],
+        cta="Pedí tu salsa piña habanero",
+    ),
+]
+
 # Fechas de publicación, escalonadas. La más nueva primero en el índice.
 FECHAS = {
     "con-que-se-come-el-chimichurri":   ("2026-06-16", "16 de junio de 2026"),
@@ -503,6 +762,10 @@ FECHAS = {
     "tabla-de-quesos-y-bocas":          ("2026-08-19", "19 de agosto de 2026"),
     "salsas-para-comida-tica":          ("2026-08-25", "25 de agosto de 2026"),
     "regalos-gourmet-costa-rica":       ("2026-08-30", "30 de agosto de 2026"),
+    "que-hacer-con-tomates-secos":      ("2026-09-25", "25 de setiembre de 2026"),
+    "que-es-el-alioli":                 ("2026-09-25", "25 de setiembre de 2026"),
+    "salsa-de-mora-para-carnes":        ("2026-09-25", "25 de setiembre de 2026"),
+    "salsa-pina-habanero-alitas-cerdo": ("2026-09-25", "25 de setiembre de 2026"),
 }
 for g in GUIAS:
     g["fecha"], g["fecha_txt"] = FECHAS[g["slug"]]

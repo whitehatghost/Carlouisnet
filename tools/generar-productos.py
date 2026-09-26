@@ -19,6 +19,25 @@ for _p in PRODUCTOS:
     else:
         _p["otros_nombres"], _p["contexto_h2"], _p["contexto"] = [], "", []
 
+# Guías que hablan de cada producto. Sin este enlace, la guía de chimichurri
+# (la página con más impresiones del sitio) no recibía nada de la ficha del
+# producto, que es donde más autoridad hay.
+from guias import GUIAS
+GUIAS_DE = {}
+for _g in GUIAS:
+    for _i, _s in enumerate(_g["productos"]):
+        GUIAS_DE.setdefault(_s, []).append((_i, _g["slug"], _g["h1"]))
+
+
+def guias_de(p):
+    gs = sorted(GUIAS_DE.get(p["slug"], []))[:3]
+    if not gs:
+        return ""
+    enl = " &middot; ".join('<a href="%s.html">%s</a>' % (sl, h1) for _, sl, h1 in gs)
+    return ('          <p data-reveal style="margin-top:var(--sp-6);text-align:center">'
+            '<strong>Más ideas:</strong> %s</p>\n' % enl)
+
+
 BASE = "https://www.carlouis.net/"
 WA = "https://wa.me/50688252608"
 
@@ -276,7 +295,7 @@ def pagina(p):
           <div class="value-grid">
 {usos(p)}
           </div>
-        </div>
+{guias_de(p)}        </div>
       </section>
 {contexto(p)}
       <section class="section">

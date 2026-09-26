@@ -38,7 +38,7 @@
 
   <url>
     <loc>https://www.carlouis.net/salsa-pina-habanero.html</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -49,7 +49,7 @@
 
   <url>
     <loc>https://www.carlouis.net/salsa-habanero-fire.html</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -71,7 +71,7 @@
 
   <url>
     <loc>https://www.carlouis.net/pesto-de-albahaca.html</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -82,7 +82,7 @@
 
   <url>
     <loc>https://www.carlouis.net/pesto-de-tomate.html</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -93,7 +93,7 @@
 
   <url>
     <loc>https://www.carlouis.net/alioli.html</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -104,7 +104,7 @@
 
   <url>
     <loc>https://www.carlouis.net/mayonesa-de-chipotle.html</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -115,7 +115,7 @@
 
   <url>
     <loc>https://www.carlouis.net/mayonesa-de-culantro.html</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -148,7 +148,7 @@
 
   <url>
     <loc>https://www.carlouis.net/salsa-de-chile-dulce.html</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -159,7 +159,7 @@
 
   <url>
     <loc>https://www.carlouis.net/salsa-de-mora.html</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <image:image>
@@ -184,7 +184,7 @@
 
   <url>
     <loc>https://www.carlouis.net/guias.html</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -212,7 +212,7 @@
 
   <url>
     <loc>https://www.carlouis.net/recetas-con-pesto.html</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -227,6 +227,34 @@
   <url>
     <loc>https://www.carlouis.net/tabla-de-quesos-y-bocas.html</loc>
     <lastmod>2026-08-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://www.carlouis.net/que-hacer-con-tomates-secos.html</loc>
+    <lastmod>2026-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://www.carlouis.net/que-es-el-alioli.html</loc>
+    <lastmod>2026-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://www.carlouis.net/salsa-de-mora-para-carnes.html</loc>
+    <lastmod>2026-09-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://www.carlouis.net/salsa-pina-habanero-alitas-cerdo.html</loc>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
