@@ -4,8 +4,8 @@
     python tools/generar-6-anos.py
 
 Es distinta de aniversario.html (la Caja 6 Años con precio, que no se aprobó).
-Lo que Luis aprobó es un SORTEO de una sola canasta con 6 productos a elección
-de quien gane: se participa en Instagram y se sortea el lunes 12 de octubre.
+Lo que Luis aprobó es un SORTEO de una sola canasta de 6 frascos con los cuatro
+productos por los que más los conocen (pesto de tomate, alioli, salsa de chile dulce y tomates deshidratados): se participa en Instagram y se sortea el lunes 12 de octubre.
 Después del sorteo: cambiar la sección #sorteo por el nombre de quien ganó y volver a correr.
 
 Además de celebrar, trabaja la marca en Google: responde "desde cuándo existe",
@@ -37,7 +37,7 @@ CSP = ("default-src 'self'; img-src 'self' data: https://*.google-analytics.com 
 
 TITULO = "CARLOUIS cumple 6 años | Salsas artesanales desde 2020"
 DESC = ("CARLOUIS cumple 6 años haciendo salsas artesanales en Alajuela, Costa Rica, y lo "
-        "celebra sorteando una canasta con 6 productos a tu elección. Así se participa.")
+        "celebra sorteando una canasta con 6 frascos de sus favoritos. Así se participa.")
 
 POR_SLUG = {p["slug"]: p for p in PRODUCTOS}
 
@@ -62,7 +62,7 @@ FAQ = [
     ("¿Cómo participo en el sorteo de los 6 años?",
      "Seguí a @carlouis_cr en Instagram, dale like a la publicación del aniversario y etiquetá a dos amigos en los comentarios. El sorteo es el lunes 12 de octubre de 2026."),
     ("¿Qué se gana en el sorteo?",
-     "Una canasta con seis productos CARLOUIS que escoge la persona ganadora, entre las doce recetas de la línea."),
+     "Una canasta con seis frascos CARLOUIS de los cuatro productos por los que más nos conocen: pesto de tomate, alioli, salsa de chile dulce y tomates deshidratados."),
     ("¿Desde cuándo existe CARLOUIS?",
      "Desde el 29 de setiembre de 2020. En 2026 cumplimos seis años haciendo salsas, pestos y conservas artesanales en Costa Rica."),
     ("¿Dónde se hacen los productos CARLOUIS?",
@@ -228,7 +228,7 @@ def pagina():
           <p style="font-size:var(--step-1);max-width:62ch;margin-inline:auto">
             Seis años haciendo salsas, pestos y conservas artesanales en Alajuela, frasco por
             frasco y feria por feria. Lo celebramos dando las gracias y sorteando una canasta
-            con <strong>seis productos a tu elección</strong>.
+            con <strong>seis frascos de nuestros favoritos</strong>.
           </p>
           <div class="btn-row" style="justify-content:center;margin-top:var(--sp-5)">
             <a class="btn btn--gold" href="#sorteo">Cómo participar</a>
@@ -240,10 +240,9 @@ def pagina():
         <div class="container">
           <div class="section-head section-head--center" data-reveal>
             <span class="eyebrow"><svg aria-hidden="true"><use href="#i-star"/></svg> Sorteo de aniversario</span>
-            <h2>Una canasta con 6 productos, los que vos escojás</h2>
+            <h2>Una canasta con 6 frascos de lo que más nos piden</h2>
             <p>
-              Seis años, seis frascos. Quien gane arma su canasta con los seis productos que
-              quiera de las doce recetas: picantes, pestos, cremas o conservas.
+              Seis años, seis frascos, de los cuatro por los que más nos conocen: <a href="pesto-de-tomate.html">pesto de tomate</a>, <a href="alioli.html">alioli</a>, <a href="salsa-de-chile-dulce.html">salsa de chile dulce</a> y <a href="tomates-deshidratados.html">tomates deshidratados</a>.
             </p>
           </div>
           <div class="cta on-dark" data-reveal style="text-align:left">
@@ -342,6 +341,11 @@ def pagina():
               <strong>Todos los sábados</strong>, de 6:00 a.m. a 1:00 p.m., en la
               <a href="encuentranos.html">Feria Orgánica La Verbena, Plaza Real Alajuela</a>. Ahí
               se prueba todo antes de comprar.
+            </p>
+            <p>
+              <strong>Del 2 al 4 de octubre</strong>, de 7:00 a.m. a 5:00 p.m., en
+              <a href="feria-terrazas-lindora.html">Terrazas Lindora, Santa Ana</a>, con
+              degustación. Es la semana del aniversario.
             </p>
             <p>
               <strong>En ferias de temporada</strong>, como la de
