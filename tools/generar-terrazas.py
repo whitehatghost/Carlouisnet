@@ -4,7 +4,7 @@
     python tools/generar-terrazas.py
 
 Datos confirmados por Luis y Carlina: viernes 2 a domingo 4 de octubre, de
-7:00 a.m. a 5:00 p.m. No se afirma en qué punto de Terrazas queda el stand:
+11:00 a.m. a 7:00 p.m. No se afirma en qué punto de Terrazas queda el stand:
 para eso está el WhatsApp.
 
 Cuando pase la feria: cambiar PASADA a True y volver a correr. La página queda
@@ -38,7 +38,7 @@ if PASADA:
     EYEBROW = "Feria finalizada &middot; Lindora, Santa Ana"
 else:
     TITULO = "CARLOUIS en Terrazas Lindora | 2, 3 y 4 de octubre"
-    DESC = ("Del viernes 2 al domingo 4 de octubre, de 7 a.m. a 5 p.m., CARLOUIS estará en "
+    DESC = ("Del viernes 2 al domingo 4 de octubre, de 11 a.m. a 7 p.m., CARLOUIS estará en "
             "Terrazas Lindora, Santa Ana, con degustación de salsas artesanales.")
     H1 = "Vení a probarnos en Terrazas Lindora"
     EYEBROW = "Próxima feria &middot; Lindora, Santa Ana"
@@ -49,7 +49,7 @@ WA_APARTAR = WA + "?text=Hola%2C%20voy%20a%20pasar%20por%20Terrazas%20Lindora%20
 
 FAQ = [
     ("¿Cuándo está CARLOUIS en Terrazas Lindora?",
-     "El viernes 2, el sábado 3 y el domingo 4 de octubre de 2026, de 7:00 a.m. a 5:00 p.m."),
+     "El viernes 2, el sábado 3 y el domingo 4 de octubre de 2026, de 11:00 a.m. a 7:00 p.m."),
     ("¿Dónde queda Terrazas Lindora?",
      "En Lindora, Santa Ana. Desde esta página lo abrís directo en Waze o en Google Maps. Si no das con el stand, escribinos al 8825 2608."),
     ("¿Se puede probar antes de comprar?",
@@ -90,8 +90,8 @@ def ld():
         "@type": "Event",
         "name": "CARLOUIS Gourmet en Terrazas Lindora: degustación de salsas artesanales",
         "description": %(desc)s,
-        "startDate": "2026-10-02T07:00:00-06:00",
-        "endDate": "2026-10-04T17:00:00-06:00",
+        "startDate": "2026-10-02T11:00:00-06:00",
+        "endDate": "2026-10-04T19:00:00-06:00",
         "eventStatus": "https://schema.org/EventScheduled",
         "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
         "image": "%(base)sassets/img/carlouis-6-anos-og.jpg",
@@ -213,8 +213,8 @@ def pagina():
           <span class="eyebrow"><svg aria-hidden="true"><use href="#i-calendar"/></svg> %(eyebrow)s</span>
           <h1>%(h1)s</h1>
           <p style="font-size:var(--step-1);max-width:62ch;margin-inline:auto">
-            Del <strong>viernes 2 al domingo 4 de octubre</strong>, de <strong>7:00 a.m. a
-            5:00 p.m.</strong>, estamos en Terrazas Lindora, Santa Ana, con degustación de
+            Del <strong>viernes 2 al domingo 4 de octubre</strong>, de <strong>11:00 a.m. a
+            7:00 p.m.</strong>, estamos en Terrazas Lindora, Santa Ana, con degustación de
             toda la línea. Justo en la semana de nuestro sexto aniversario.
           </p>
           <div class="btn-row" style="justify-content:center;margin-top:var(--sp-5)">
@@ -230,7 +230,7 @@ def pagina():
         <div class="container container--narrow article-body">
           <div class="article-meta">
             <span><svg aria-hidden="true"><use href="#i-calendar"/></svg> 2 &ndash; 4 de octubre de 2026</span>
-            <span><svg aria-hidden="true"><use href="#i-clock"/></svg> 7:00 a.m. a 5:00 p.m.</span>
+            <span><svg aria-hidden="true"><use href="#i-clock"/></svg> 11:00 a.m. a 7:00 p.m.</span>
             <span><svg aria-hidden="true"><use href="#i-pin"/></svg> Lindora, Santa Ana</span>
           </div>
 
