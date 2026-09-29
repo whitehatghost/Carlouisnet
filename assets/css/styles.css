@@ -1096,6 +1096,7 @@ strong, b { font-weight: 700; }
 }
 @media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
 @media (max-width: 560px) { .announce { font-size: 0.85rem; padding: 0.6rem 1rem; } }
+@media (max-width: 560px) { .announce__extra { display: none; } }
 
 /* Aviso de evento en el menú */
 .nav__list a .live-dot { display: inline-block; margin-left: 0.4rem; vertical-align: middle; }
