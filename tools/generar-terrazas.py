@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Genera la página de la feria en Terrazas Lindora (2, 3 y 4 de octubre de 2026).
+"""Genera la página de CARLOUIS en la Feria de Culturas de Terrazas Lindora
+(2, 3 y 4 de octubre de 2026). "Feria de Culturas" es el nombre con que Terrazas
+la promociona ("un recorrido por el mundo, sin salir de Terrazas Lindora"), así
+que es lo que la gente va a buscar.
 
     python tools/generar-terrazas.py
 
@@ -31,16 +34,16 @@ CSP = ("default-src 'self'; img-src 'self' data: https://*.google-analytics.com 
        "base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none';")
 
 if PASADA:
-    TITULO = "Así fue CARLOUIS en Terrazas Lindora | Octubre 2026"
-    DESC = ("Del 2 al 4 de octubre estuvimos en Terrazas Lindora, Santa Ana, con degustación "
-            "de salsas artesanales. Mirá dónde nos encontrás ahora.")
-    H1 = "Estuvimos en Terrazas Lindora"
+    TITULO = "Así fue la Feria de Culturas en Terrazas Lindora | CARLOUIS"
+    DESC = ("Del 2 al 4 de octubre estuvimos en la Feria de Culturas de Terrazas Lindora, "
+            "Santa Ana, con degustación de salsas artesanales. Mirá dónde estamos ahora.")
+    H1 = "Estuvimos en la Feria de Culturas de Terrazas Lindora"
     EYEBROW = "Feria finalizada &middot; Lindora, Santa Ana"
 else:
-    TITULO = "CARLOUIS en Terrazas Lindora | 2, 3 y 4 de octubre"
-    DESC = ("Del viernes 2 al domingo 4 de octubre, de 11 a.m. a 7 p.m., CARLOUIS estará en "
-            "Terrazas Lindora, Santa Ana, con degustación de salsas artesanales.")
-    H1 = "Vení a probarnos en Terrazas Lindora"
+    TITULO = "Feria de Culturas en Terrazas Lindora | CARLOUIS"
+    DESC = ("CARLOUIS estará en la Feria de Culturas de Terrazas Lindora del 2 al 4 de "
+            "octubre, de 11 a.m. a 7 p.m., con degustación de salsas artesanales.")
+    H1 = "Nos vemos en la Feria de Culturas de Terrazas Lindora"
     EYEBROW = "Próxima feria &middot; Lindora, Santa Ana"
 
 WAZE = "https://waze.com/ul?q=Terrazas%20Lindora%20Santa%20Ana&navigate=yes"
@@ -48,6 +51,8 @@ MAPS = "https://www.google.com/maps/search/?api=1&query=Terrazas+Lindora+Santa+A
 WA_APARTAR = WA + "?text=Hola%2C%20voy%20a%20pasar%20por%20Terrazas%20Lindora%20y%20quiero%20apartar%3A%20"
 
 FAQ = [
+    ("¿Qué es la Feria de Culturas de Terrazas Lindora?",
+     "Es la feria con que Terrazas Lindora propone un recorrido por el mundo sin salir del centro comercial. CARLOUIS participa con su stand de salsas artesanales hechas en Costa Rica."),
     ("¿Cuándo está CARLOUIS en Terrazas Lindora?",
      "El viernes 2, el sábado 3 y el domingo 4 de octubre de 2026, de 11:00 a.m. a 7:00 p.m."),
     ("¿Dónde queda Terrazas Lindora?",
@@ -88,7 +93,7 @@ def ld():
       },
       {
         "@type": "Event",
-        "name": "CARLOUIS Gourmet en Terrazas Lindora: degustación de salsas artesanales",
+        "name": "CARLOUIS en la Feria de Culturas de Terrazas Lindora",
         "description": %(desc)s,
         "startDate": "2026-10-02T11:00:00-06:00",
         "endDate": "2026-10-04T19:00:00-06:00",
@@ -208,14 +213,15 @@ def pagina():
             <a href="index.html" style="color:var(--gold-400);text-decoration:none">Inicio</a>
             <span style="color:#C4AE95"> / </span>
             <a href="eventos.html" style="color:var(--gold-400);text-decoration:none">Eventos</a>
-            <span style="color:#C4AE95"> / Terrazas Lindora</span>
+            <span style="color:#C4AE95"> / Feria de Culturas</span>
           </nav>
           <span class="eyebrow"><svg aria-hidden="true"><use href="#i-calendar"/></svg> %(eyebrow)s</span>
           <h1>%(h1)s</h1>
           <p style="font-size:var(--step-1);max-width:62ch;margin-inline:auto">
             Del <strong>viernes 2 al domingo 4 de octubre</strong>, de <strong>11:00 a.m. a
-            7:00 p.m.</strong>, estamos en Terrazas Lindora, Santa Ana, con degustación de
-            toda la línea. Justo en la semana de nuestro sexto aniversario.
+            7:00 p.m.</strong>, estamos en la <strong>Feria de Culturas</strong> de Terrazas
+            Lindora, Santa Ana, con degustación de toda la línea. Justo en la semana de nuestro
+            sexto aniversario.
           </p>
           <div class="btn-row" style="justify-content:center;margin-top:var(--sp-5)">
             <a class="btn btn--gold" href="%(waze)s" target="_blank" rel="noopener">
@@ -233,6 +239,31 @@ def pagina():
             <span><svg aria-hidden="true"><use href="#i-clock"/></svg> 11:00 a.m. a 7:00 p.m.</span>
             <span><svg aria-hidden="true"><use href="#i-pin"/></svg> Lindora, Santa Ana</span>
           </div>
+
+          <figure style="margin:0 0 var(--sp-6)">
+            <picture>
+              <source srcset="assets/img/feria-culturas-terrazas.webp" type="image/webp" />
+              <img src="assets/img/feria-culturas-terrazas.jpg" width="1024" height="754" loading="lazy"
+                   alt="Afiche de la Feria de Culturas en Terrazas Lindora: un recorrido por el mundo sin salir de Terrazas Lindora"
+                   style="width:100%%;height:auto;border-radius:var(--r-lg);box-shadow:var(--sh-2)" />
+            </picture>
+            <figcaption style="font-size:.88rem;color:var(--ink-mute);margin-top:.5rem">Afiche de la feria, de Terrazas Lindora.</figcaption>
+          </figure>
+
+          <h2>Un recorrido por el mundo, en frascos hechos en Costa Rica</h2>
+          <p>
+            La feria propone darle la vuelta al mundo sin salir de Terrazas, y nuestra mesa
+            calza perfecto: buena parte de lo que hacemos son recetas de otros países,
+            cocinadas en Alajuela, en lotes pequeños.
+          </p>
+          <ul>
+            <li><a href="chimichurri-argentino.html"><strong>Argentina</strong></a> &mdash; el chimichurri de parrilla, con perejil, ajo, orégano y aceite de oliva.</li>
+            <li><a href="pesto-de-albahaca.html"><strong>Italia</strong></a> &mdash; el pesto de albahaca, el <a href="pesto-de-tomate.html">pesto de tomate</a> y los <a href="tomates-deshidratados.html">tomates deshidratados</a> en aceite de oliva.</li>
+            <li><a href="alioli.html"><strong>El Mediterráneo</strong></a> &mdash; el alioli, que en catalán quiere decir ajo y aceite.</li>
+            <li><a href="mayonesa-de-chipotle.html"><strong>México</strong></a> &mdash; el chipotle, en nuestra mayonesa ahumada.</li>
+            <li><a href="salsa-habanero-fire.html"><strong>El Caribe</strong></a> &mdash; el chile habanero, en la Habanero Fire y la <a href="salsa-pina-habanero.html">Piña Habanero</a>.</li>
+            <li><a href="mayonesa-de-culantro.html"><strong>Costa Rica</strong></a> &mdash; y de acá, la mayonesa de culantro y la <a href="salsa-de-mora.html">salsa de mora</a>.</li>
+          </ul>
 
           <h2>Qué vas a probar</h2>
           <p>
