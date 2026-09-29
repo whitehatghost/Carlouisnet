@@ -3,9 +3,10 @@
 
     python tools/generar-6-anos.py
 
-Es distinta de aniversario.html, que es la página de la Caja 6 Años y espera la
-aprobación de Luis. Esta no vende ninguna oferta: cuenta qué es CARLOUIS hoy,
-dónde encontrarnos y qué probar. Solo afirma lo que el resto del sitio ya dice.
+Es distinta de aniversario.html (la Caja 6 Años con precio, que no se aprobó).
+Lo que Luis aprobó es un SORTEO de una sola canasta con 6 productos a elección
+de quien gane: se participa en Instagram y se sortea el lunes 12 de octubre.
+Después del sorteo: cambiar la sección #sorteo por el nombre de quien ganó y volver a correr.
 
 Además de celebrar, trabaja la marca en Google: responde "desde cuándo existe",
 "dónde se compra" y "dónde se hace", y pide reseñas, que es lo que más pesa en
@@ -21,6 +22,7 @@ WA = "https://wa.me/50688252608"
 RESENA = "https://g.page/r/CTFj8J32N0aUEBM/review"
 SLUG = "carlouis-cumple-6-anos"
 FECHA = "2026-09-29"
+INSTAGRAM = "https://instagram.com/carlouis_cr"
 
 INDEX = io.open("index.html", encoding="utf-8").read()
 SPRITE = re.search(r'(  <!-- Sprite de iconos.*?</svg>\n)', INDEX, re.S).group(1)
@@ -34,8 +36,8 @@ CSP = ("default-src 'self'; img-src 'self' data: https://*.google-analytics.com 
        "base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none';")
 
 TITULO = "CARLOUIS cumple 6 años | Salsas artesanales desde 2020"
-DESC = ("Este 29 de setiembre CARLOUIS cumple 6 años haciendo salsas, pestos y conservas "
-        "artesanales en Alajuela, Costa Rica. Dónde encontrarnos y qué probar.")
+DESC = ("CARLOUIS cumple 6 años haciendo salsas artesanales en Alajuela, Costa Rica, y lo "
+        "celebra sorteando una canasta con 6 productos a tu elección. Así se participa.")
 
 POR_SLUG = {p["slug"]: p for p in PRODUCTOS}
 
@@ -57,6 +59,10 @@ SEIS = [
 ]
 
 FAQ = [
+    ("¿Cómo participo en el sorteo de los 6 años?",
+     "Seguí a @carlouis_cr en Instagram, dale like a la publicación del aniversario y etiquetá a dos amigos en los comentarios. El sorteo es el lunes 12 de octubre de 2026."),
+    ("¿Qué se gana en el sorteo?",
+     "Una canasta con seis productos CARLOUIS que escoge la persona ganadora, entre las doce recetas de la línea."),
     ("¿Desde cuándo existe CARLOUIS?",
      "Desde el 29 de setiembre de 2020. En 2026 cumplimos seis años haciendo salsas, pestos y conservas artesanales en Costa Rica."),
     ("¿Dónde se hacen los productos CARLOUIS?",
@@ -221,9 +227,50 @@ def pagina():
           <h1>CARLOUIS cumple 6 años</h1>
           <p style="font-size:var(--step-1);max-width:62ch;margin-inline:auto">
             Seis años haciendo salsas, pestos y conservas artesanales en Alajuela, frasco por
-            frasco y feria por feria. Hoy no venimos a vender nada especial: venimos a dar
-            las gracias.
+            frasco y feria por feria. Lo celebramos dando las gracias y sorteando una canasta
+            con <strong>seis productos a tu elección</strong>.
           </p>
+          <div class="btn-row" style="justify-content:center;margin-top:var(--sp-5)">
+            <a class="btn btn--gold" href="#sorteo">Cómo participar</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--alt" id="sorteo">
+        <div class="container">
+          <div class="section-head section-head--center" data-reveal>
+            <span class="eyebrow"><svg aria-hidden="true"><use href="#i-star"/></svg> Sorteo de aniversario</span>
+            <h2>Una canasta con 6 productos, los que vos escojás</h2>
+            <p>
+              Seis años, seis frascos. Quien gane arma su canasta con los seis productos que
+              quiera de las doce recetas: picantes, pestos, cremas o conservas.
+            </p>
+          </div>
+          <div class="cta on-dark" data-reveal style="text-align:left">
+          <ol class="steps">
+            <li class="step">
+              <b>Seguí a @carlouis_cr en Instagram</b>
+              <p><a href="%(ig)s" target="_blank" rel="noopener" style="color:var(--gold-400)">instagram.com/carlouis_cr</a></p>
+            </li>
+            <li class="step">
+              <b>Dale like a la publicación de los 6 años</b>
+              <p>Es la publicación del aniversario, la del 6 dorado.</p>
+            </li>
+            <li class="step">
+              <b>Etiquetá a dos amigos en los comentarios</b>
+              <p>Cada comentario con dos amigos distintos cuenta como una participación.</p>
+            </li>
+          </ol>
+          </div>
+          <p data-reveal style="text-align:center;margin-top:var(--sp-5)">
+            <strong>Sorteo: lunes 12 de octubre de 2026.</strong> Anunciamos a quien gane en
+            Instagram y le escribimos para coordinar la entrega. Participan personas en Costa Rica.
+          </p>
+          <div class="btn-row" data-reveal style="justify-content:center">
+            <a class="btn btn--primary" href="%(ig)s" target="_blank" rel="noopener">
+              <svg aria-hidden="true"><use href="#i-instagram"/></svg> Participar en Instagram
+            </a>
+          </div>
         </div>
       </section>
 
@@ -265,7 +312,7 @@ def pagina():
         <div class="container">
           <div class="section-head section-head--center" data-reveal>
             <h2>Seis para empezar</h2>
-            <p>Si nunca nos has probado, o si siempre llevás lo mismo, estas son seis por donde arrancar.</p>
+            <p>Si nunca nos has probado, o si ya estás pensando qué escoger para tu canasta, estas son seis por donde arrancar.</p>
           </div>
           <div class="post-grid">
 %(seis)s
@@ -372,7 +419,7 @@ def pagina():
 </html>
 ''' % {
         "csp": CSP, "titulo": TITULO, "desc": DESC, "base": BASE, "slug": SLUG, "fecha": FECHA,
-        "ld": ld(), "sprite": SPRITE, "nav": nav, "wa": WA, "footer": FOOTER, "resena": RESENA,
+        "ld": ld(), "ig": INSTAGRAM, "sprite": SPRITE, "nav": nav, "wa": WA, "footer": FOOTER, "resena": RESENA,
         "cats": cats, "seis": seis, "faqs": faqs,
     }
 
