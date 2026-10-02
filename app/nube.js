@@ -27,10 +27,11 @@
 
   // Tipos que viajan. 'stock' va aparte porque no es una lista de registros
   // sino un solo objeto; se manda como un registro único.
-  var TIPOS = ['cliente', 'pedido', 'gasto', 'ruta', 'feria', 'recordatorio'];
+  var TIPOS = ['cliente', 'pedido', 'gasto', 'ruta', 'feria', 'recordatorio', 'producto'];
   var PLURAL = {
     cliente: 'clientes', pedido: 'pedidos', gasto: 'gastos',
-    ruta: 'rutas', feria: 'ferias', recordatorio: 'recordatorios'
+    ruta: 'rutas', feria: 'ferias', recordatorio: 'recordatorios',
+    producto: 'productos'
   };
 
   var Nube = {

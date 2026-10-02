@@ -123,7 +123,7 @@
   /* ---------- almacenamiento -------------------------------------------- */
 
   var VACIO = { v: 1, clientes: [], pedidos: [], gastos: [], rutas: [], ferias: [],
-               recordatorios: [], stock: {} };
+               recordatorios: [], productos: [], stock: {} };
   var BD;
 
   // Llave de cifrado en memoria. Nunca se guarda en el teléfono: se deriva de
@@ -132,7 +132,7 @@
   var LLAVE_AES = null;
 
   function normalizar() {
-    ['clientes', 'pedidos', 'gastos', 'rutas', 'ferias', 'recordatorios'].forEach(function (k) {
+    ['clientes', 'pedidos', 'gastos', 'rutas', 'ferias', 'recordatorios', 'productos'].forEach(function (k) {
       if (!Array.isArray(BD[k])) BD[k] = [];
     });
     if (!BD.stock || typeof BD.stock !== 'object') BD.stock = {};
@@ -236,7 +236,7 @@
   var _huellas = {};
   function sellar() {
     var ahora = new Date().toISOString();
-    ['clientes', 'pedidos', 'gastos', 'rutas', 'ferias', 'recordatorios']
+    ['clientes', 'pedidos', 'gastos', 'rutas', 'ferias', 'recordatorios', 'productos']
       .forEach(function (k) {
         (BD[k] || []).forEach(function (x) {
           if (!x.id) return;
@@ -284,7 +284,20 @@
       .catch(function () { return false; });
   }
 
-  var CATALOGO = window.CATALOGO || [];
+  // El catálogo base viene de productos.js (lo mismo que el sitio). A eso se
+  // le suma lo que se agregue desde el teléfono: pan pita, combos, lo que sea.
+  var CATALOGO_BASE = window.CATALOGO || [];
+  var CATALOGO = CATALOGO_BASE.slice();
+  function armarCatalogo() {
+    var extras = ((BD && BD.productos) || []).filter(function (x) {
+      return !x._borrado && x.nombre;
+    }).map(function (x) {
+      return { slug: x.slug || ('extra-' + x.id), nombre: x.nombre,
+               precio: Number(x.precio) || 0, unidad: '', cat: 'Otros',
+               extra: true, id: x.id };
+    });
+    CATALOGO = CATALOGO_BASE.concat(extras);
+  }
   function cliente(cid) {
     for (var i = 0; i < BD.clientes.length; i++) {
       if (BD.clientes[i].id === cid) return BD.clientes[i];
@@ -1386,8 +1399,8 @@
     var lista = CATALOGO.slice();
     lista.sort(function (a, b) {
       var ia = PRIMERO_EN_CAJA.indexOf(a.slug), ib = PRIMERO_EN_CAJA.indexOf(b.slug);
-      if (ia < 0) ia = 99 + CATALOGO.indexOf(a);
-      if (ib < 0) ib = 99 + CATALOGO.indexOf(b);
+      if (ia < 0) ia = (a.extra ? 20 : 99) + CATALOGO.indexOf(a);
+      if (ib < 0) ib = (b.extra ? 20 : 99) + CATALOGO.indexOf(b);
       return ia - ib;
     });
     return lista;
@@ -1501,6 +1514,8 @@
         '<button type="button" data-caja="+" data-slug="' + esc(p.slug) + '" aria-label="Agregar uno">+</button>' +
         '</div><b data-cs="' + esc(p.slug) + '">' + (n ? money(n * p.precio) : '') + '</b></div>';
     });
+    h2 += '<div class="acciones"><button class="btn btn--sec btn--g" type="button" data-nuevo-producto>' +
+      '<svg aria-hidden="true"><use href="#i-plus"/></svg> Agregar otro producto</button></div>';
     // El total y el botón de cobrar van fijos abajo: se ven siempre, sin bajar.
     h2 += '<div class="cobro-fijo"><div class="cobro-fijo__t"><span>A cobrar</span>' +
       '<b data-ctotal>' + money(totalCaja()) + '</b></div>' +
@@ -1757,6 +1772,7 @@
   var panelDinero = 'resumen';
 
   function pintar() {
+    armarCatalogo();
     var ruta = (location.hash || '#/hoy').replace(/^#\//, '').split('/');
     var sec = ruta[0] || 'hoy', arg = ruta[1], sub = ruta[2];
     var html = '', titulo = TITULOS[sec] || 'CARLOUIS', atras = false;
@@ -2175,6 +2191,19 @@
     }
     if (t.closest('[data-cobrar-feria]')) { cobrarFeria(); return; }
     if (t.closest('[data-gasto-feria]')) { gastoDeFeria(); return; }
+    if (t.closest('[data-nuevo-producto]')) { hojaProducto(); return; }
+    var qp = t.closest('[data-quitar-producto]');
+    if (qp) {
+      var qid = qp.getAttribute('data-quitar-producto'), qn = '';
+      (BD.productos || []).forEach(function (x) { if (x.id === qid) qn = x.nombre; });
+      if (!confirm('¿Quitar ' + qn + ' de la lista?' + String.fromCharCode(10, 10) +
+                   'Las ventas que ya se hicieron no se borran.')) return;
+      BD.productos = BD.productos.filter(function (x) { return x.id !== qid; });
+      _borrados.push({ tipo: 'producto', id: qid });
+      delete cajaFeria['extra-' + qid];
+      guardar(); cerrarHoja(); pintar(); aviso('Producto quitado');
+      return;
+    }
     if (t.closest('[data-cerrar-feria]')) { cerrarFeria(); return; }
 
     // Ruta rápida: "voy para Alajuela"
@@ -2339,6 +2368,19 @@
       var selF = f.querySelector('[data-metodo][aria-pressed="true"]');
       var rec5 = Number((f.querySelector('#pg-recibido') || {}).value || 0);
       aplicarCobroFeria(selF ? selF.getAttribute('data-metodo') : 'Efectivo', rec5);
+      return;
+    }
+
+    if (f.matches('[data-form-producto]')) {
+      e.preventDefault();
+      var pn = f.nombre.value.trim(), pp = Math.round(Number(f.precio.value));
+      if (!pn) return aviso('Poné el nombre');
+      if (!pp || pp <= 0) return aviso('Poné el precio');
+      var repetido = CATALOGO.some(function (p) { return p.nombre.toLowerCase() === pn.toLowerCase(); });
+      if (repetido) return aviso('Ya hay un producto con ese nombre');
+      var pid9 = id();
+      BD.productos.push({ id: pid9, slug: 'extra-' + pid9, nombre: pn, precio: pp });
+      guardar(); cerrarHoja(); pintar(); aviso(pn + ' agregado');
       return;
     }
 
@@ -2576,6 +2618,28 @@
     cerrarHoja();
     pintar();
     aviso('Cobrado ' + money(cobrado));
+  }
+
+  function hojaProducto() {
+    var extras = (BD.productos || []).filter(function (x) { return !x._borrado; });
+    var h = '<form data-form-producto>' +
+      '<div class="campo"><label for="np-n">¿Cómo se llama?</label>' +
+      '<input id="np-n" name="nombre" placeholder="Pan pita" required /></div>' +
+      '<div class="campo"><label for="np-p">Precio en colones</label>' +
+      '<input id="np-p" name="precio" type="number" inputmode="numeric" min="1" placeholder="2500" required /></div>' +
+      '<button class="btn btn--g" type="submit">Guardar producto</button></form>';
+    if (extras.length) {
+      h += '<div class="seccion" style="margin-top:1.4rem"><h3>Agregados por ustedes</h3>';
+      extras.forEach(function (x) {
+        h += '<div class="linea"><span class="linea__n">' + esc(x.nombre) + '<br><span class="mut">' +
+          money(Number(x.precio) || 0) + '</span></span><span></span>' +
+          '<button class="btn btn--mal btn--sm" type="button" data-quitar-producto="' + esc(x.id) +
+          '">Quitar</button></div>';
+      });
+      h += '</div>';
+    }
+    abrirHoja('Agregar producto', h);
+    var c = $('#np-n'); if (c) c.focus();
   }
 
   function gastoDeFeria() {
@@ -3129,7 +3193,7 @@
               'El respaldo trae ' + datos.clientes.length + ' clientes y ' +
               (datos.pedidos || []).length + ' pedidos.\n\n¿Seguir?')) return;
           BD = datos;
-          ['clientes', 'pedidos', 'gastos', 'rutas', 'ferias', 'recordatorios']
+          ['clientes', 'pedidos', 'gastos', 'rutas', 'ferias', 'recordatorios', 'productos']
             .forEach(function (k) { if (!Array.isArray(BD[k])) BD[k] = []; });
           guardar(); pintar(); aviso('Respaldo restaurado');
         } catch (err) {
@@ -3254,7 +3318,8 @@
     // Los borrados viajan como registros marcados.
     _borrados.forEach(function (b) {
       var lista = { cliente: 'clientes', pedido: 'pedidos', gasto: 'gastos',
-                    ruta: 'rutas', feria: 'ferias', recordatorio: 'recordatorios' }[b.tipo];
+                    ruta: 'rutas', feria: 'ferias', recordatorio: 'recordatorios',
+                    producto: 'productos' }[b.tipo];
       if (lista) BD[lista].push({ id: b.id, _borrado: true,
                                   _actualizado: new Date().toISOString() });
     });
@@ -3264,7 +3329,8 @@
       // Ya subidos, se sacan de la lista local para no arrastrarlos siempre.
       pendientes.forEach(function (b) {
         var lista = { cliente: 'clientes', pedido: 'pedidos', gasto: 'gastos',
-                      ruta: 'rutas', feria: 'ferias', recordatorio: 'recordatorios' }[b.tipo];
+                      ruta: 'rutas', feria: 'ferias', recordatorio: 'recordatorios',
+                    producto: 'productos' }[b.tipo];
         if (!lista) return;
         BD[lista] = BD[lista].filter(function (x) {
           return !(x.id === b.id && x._borrado);
