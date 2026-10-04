@@ -123,7 +123,7 @@
   /* ---------- almacenamiento -------------------------------------------- */
 
   var VACIO = { v: 1, clientes: [], pedidos: [], gastos: [], rutas: [], ferias: [],
-               recordatorios: [], productos: [], stock: {} };
+               recordatorios: [], productos: [], entradas: [], stock: {} };
   var BD;
 
   // Llave de cifrado en memoria. Nunca se guarda en el teléfono: se deriva de
@@ -132,13 +132,93 @@
   var LLAVE_AES = null;
 
   function normalizar() {
-    ['clientes', 'pedidos', 'gastos', 'rutas', 'ferias', 'recordatorios', 'productos'].forEach(function (k) {
+    ['clientes', 'pedidos', 'gastos', 'rutas', 'ferias', 'recordatorios', 'productos', 'entradas'].forEach(function (k) {
       if (!Array.isArray(BD[k])) BD[k] = [];
     });
     if (!BD.stock || typeof BD.stock !== 'object') BD.stock = {};
+
+    if (!Array.isArray(BD._tumbas)) BD._tumbas = [];
+    registrarHuellas();
+    // Sin nube, el inventario único se estrena de una vez. Con nube se espera a
+    // la primera sincronización, para no pisar el que ya haya creado otro
+    // teléfono (ver sincronizar()).
+    if (!localStorage.getItem('carlouis.nube.sesion')) pasarAInventarioUnico();
+    invalidarInventario();
   }
 
-  function hay(slug) { return Number(BD.stock[slug] || 0); }
+  /* Paso del contador viejo al inventario único. Lo que marcaba el contador se
+     convierte en una entrada inicial, para que la cuenta nueva arranque en el
+     mismo número; como lo vendido ya se resta solo, acá se le suma de vuelta.
+     Si otro teléfono ya lo hizo (llegaron sus entradas 'ini-'), se usan esas. */
+  function pasarAInventarioUnico() {
+    if (BD.invUnico) return false;
+    var yaPaso = BD.entradas.some(function (x) { return String(x.id).indexOf('ini-') === 0; });
+    if (!yaPaso) {
+      var vend = {}, otras = {};
+      BD.pedidos.forEach(function (p) {
+        (p.lineas || []).forEach(function (l) { vend[l.slug] = (vend[l.slug] || 0) + Number(l.cant || 0); });
+      });
+      BD.entradas.forEach(function (x) { otras[x.slug] = (otras[x.slug] || 0) + Number(x.cant || 0); });
+      Object.keys(BD.stock).forEach(function (s) {
+        var cant = Number(BD.stock[s] || 0) + (vend[s] || 0) - (otras[s] || 0);
+        if (cant) BD.entradas.push({ id: 'ini-' + s, slug: s, cant: cant,
+                                     fecha: hoyISO(), nota: 'Inventario inicial' });
+      });
+    }
+    BD.invUnico = true;
+    invalidarInventario();
+    return true;
+  }
+
+  /* Un solo inventario para todos. No se guarda un número: se calcula como
+     lo que ha entrado (BD.entradas) menos lo que se ha vendido (los pedidos).
+     Así da igual quién venda o desde cuál teléfono: las cuentas se suman. */
+  var _inv = null;
+  function inventario() {
+    if (_inv) return _inv;
+    var m = {};
+    (BD.entradas || []).forEach(function (x) {
+      if (x._borrado || !x.slug) return;
+      m[x.slug] = (m[x.slug] || 0) + Number(x.cant || 0);
+    });
+    (BD.pedidos || []).forEach(function (p) {
+      if (p._borrado) return;
+      (p.lineas || []).forEach(function (l) {
+        m[l.slug] = (m[l.slug] || 0) - Number(l.cant || 0);
+      });
+    });
+    return (_inv = m);
+  }
+  function invalidarInventario() { _inv = null; }
+  function hay(slug) {
+    // Mientras este teléfono no haya pasado al inventario único (con nube,
+    // eso ocurre en la primera sincronización) sigue valiendo el contador viejo.
+    if (!BD.invUnico) return Number(BD.stock[slug] || 0);
+    return inventario()[slug] || 0;
+  }
+
+  // Entrada o ajuste a mano. Los toques seguidos de + y − sobre el mismo
+  // producto se juntan en un solo registro para no llenar la base de unos.
+  var _ultAjuste = {};
+  function ajustarStock(slug, delta, nota) {
+    var u = _ultAjuste[slug], ahora = Date.now(), reg = null;
+    if (!nota && u && ahora - u.t < 120000) {
+      BD.entradas.forEach(function (x) { if (x.id === u.id) reg = x; });
+    }
+    if (!BD.invUnico) {
+      BD.stock[slug] = Number(BD.stock[slug] || 0) + delta;
+      return;
+    }
+    if (reg) reg.cant = Number(reg.cant || 0) + delta;
+    else {
+      reg = { id: id(), slug: slug, cant: delta, fecha: hoyISO(),
+              nota: nota || 'Ajuste', por: quienSoy() || '' };
+      BD.entradas.push(reg);
+    }
+    if (nota) delete _ultAjuste[slug]; else _ultAjuste[slug] = { id: reg.id, t: ahora };
+    BD.stock[slug] = Number(BD.stock[slug] || 0) + delta;   // contador viejo, por compatibilidad
+    invalidarInventario();
+  }
 
   // Pendientes ordenados: primero los más atrasados.
   function pendientes() {
@@ -183,10 +263,13 @@
     return x.hora < String(ahora.getHours()).padStart(2, '0') + ':' +
                     String(ahora.getMinutes()).padStart(2, '0');
   }
+  // El inventario real sale de los pedidos (ver inventario()). Esto solo
+  // mantiene al día el contador viejo para teléfonos sin actualizar.
   function moverStock(lineas, signo) {
     (lineas || []).forEach(function (l) {
-      BD.stock[l.slug] = hay(l.slug) + signo * l.cant;
+      BD.stock[l.slug] = Number(BD.stock[l.slug] || 0) + signo * l.cant;
     });
+    invalidarInventario();
   }
   function bajoStock() {
     return CATALOGO.filter(function (p) { return hay(p.slug) <= 3; });
@@ -234,23 +317,47 @@
   // Sello de tiempo de lo que cambió, para que la nube sepa qué es más
   // reciente. Se compara contra una copia de la tanda anterior.
   var _huellas = {};
+  var SELLADAS = ['clientes', 'pedidos', 'gastos', 'rutas', 'ferias', 'recordatorios',
+                  'productos', 'entradas'];
+  function huella(x) {
+    var s = x._actualizado;
+    delete x._actualizado;
+    var h = JSON.stringify(x);
+    if (s !== undefined) x._actualizado = s;
+    return h;
+  }
   function sellar() {
     var ahora = new Date().toISOString();
-    ['clientes', 'pedidos', 'gastos', 'rutas', 'ferias', 'recordatorios', 'productos']
-      .forEach(function (k) {
-        (BD[k] || []).forEach(function (x) {
-          if (!x.id) return;
-          var h = JSON.stringify(x);
-          if (_huellas[x.id] !== h) {
-            _huellas[x.id] = h;
-            x._actualizado = ahora;
-          }
-        });
+    SELLADAS.forEach(function (k) {
+      (BD[k] || []).forEach(function (x) {
+        if (!x.id) return;
+        var h = huella(x);
+        if (_huellas[x.id] !== h || !x._actualizado) {
+          _huellas[x.id] = h;
+          x._actualizado = ahora;
+        }
       });
+    });
+  }
+  // Lo que se acaba de cargar o de recibir de la nube ya viene con su sello:
+  // se anota su huella para no volver a sellarlo como si fuera un cambio de acá.
+  function registrarHuellas() {
+    SELLADAS.forEach(function (k) {
+      (BD[k] || []).forEach(function (x) {
+        if (x.id && x._actualizado) _huellas[x.id] = huella(x);
+      });
+    });
+  }
+  // Lo borrado se anota como tumba hasta que la nube la reciba.
+  function tumba(tipo, idr) {
+    if (!Array.isArray(BD._tumbas)) BD._tumbas = [];
+    BD._tumbas.push({ tipo: tipo, id: idr, _actualizado: new Date().toISOString() });
   }
 
   function guardar() {
+    invalidarInventario();
     sellar();
+    programarSync();
     try {
       if (!LLAVE_AES) {
         localStorage.setItem(LLAVE, JSON.stringify(BD));
@@ -308,6 +415,11 @@
     if (!cid) return 'Venta en feria';
     var c = cliente(cid);
     return c ? c.nombre : 'Cliente borrado';
+  }
+  function textoDiaFeria(f) {
+    var dias = diasFeria(f), n = dias.indexOf(hoyISO()) + 1;
+    return (n ? ' · día ' + n + ' de ' + dias.length : '') +
+      ' · ' + money(resumenDia(f, hoyISO()).total) + ' hoy';
   }
   function feriaActiva() {
     for (var i = 0; i < BD.ferias.length; i++) {
@@ -589,10 +701,10 @@
     var h = '<div class="seccion">' + (fAct
       ? '<button class="feria-btn feria-btn--abierta" data-ir="#/feria">' +
         '<b>Seguir cobrando</b>' +
-        '<span>' + esc(fAct.nombre) + ' \u00b7 ' + money(ventasFeria(fAct.id).reduce(function (s, p) {
-          return s + totalPedido(p); }, 0)) + ' vendido</span></button>'
+        '<span>' + esc(fAct.nombre) + textoDiaFeria(fAct) + '</span></button>'
       : '<button class="feria-btn" data-ir="#/feria">' +
         '<b>Modo feria</b><span>Tocá acá para abrir la caja y vender</span></button>') +
+      '<div data-estado-nube>' + textoEstadoNube() + '</div>' +
       '</div>';
 
     h += '<div class="seccion"><div class="cifras">' +
@@ -1422,14 +1534,142 @@
     return lista.slice(0, 4);
   }
 
-  function abrirFeria(nombre, lugar, fecha) {
+  function abrirFeria(nombre, lugar, fecha, fechaFin) {
+    var desde = fecha || hoyISO();
     BD.ferias.push({
       id: id(), nombre: nombre || 'Feria', lugar: lugar || '',
-      fecha: fecha || hoyISO(), cerrada: false
+      fecha: desde, fechaFin: (fechaFin && fechaFin >= desde) ? fechaFin : desde,
+      cierres: {}, cerrada: false
     });
     cajaFeria = {};
     guardar(); pintar(); aviso('Caja abierta');
     window.scrollTo(0, 0);
+  }
+
+  /* Una feria dura de 1 a 7 días. Tiene fecha de inicio (fecha) y de fin
+     (fechaFin). Cada día se cierra por aparte y al final se hace el cierre de
+     feria, que es el acumulado. Los números NO se guardan en el cierre: salen
+     siempre de las ventas, así que nunca se desacomodan. El cierre solo marca
+     que ese día ya se contó. */
+
+  function sumaDias(iso, n) {
+    var p = iso.split('-');
+    var d = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]) + n);
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') +
+           '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function finFeria(f) {
+    return (f.fechaFin && f.fechaFin >= f.fecha) ? f.fechaFin : f.fecha;
+  }
+  // Los días de la feria: los planeados, más cualquier día con ventas o gastos
+  // que haya quedado por fuera (si la feria se alargó).
+  function diasFeria(f) {
+    var ini = f.fecha, fin = finFeria(f);
+    ventasFeria(f.id).concat(gastosFeria(f.id)).forEach(function (x) {
+      if (!x.fecha) return;
+      if (x.fecha < ini) ini = x.fecha;
+      if (x.fecha > fin) fin = x.fecha;
+    });
+    // Si sigue abierta pasado el último día, hoy cuenta como un día más.
+    if (!f.cerrada && hoyISO() > fin) fin = hoyISO();
+    var dias = [], d = ini, tope = 0;
+    while (d <= fin && tope++ < 62) { dias.push(d); d = sumaDias(d, 1); }
+    return dias;
+  }
+  function cuantasVentas(n) { return n + (n === 1 ? ' venta' : ' ventas'); }
+  function diaCerrado(f, dia) { return !!(f.cierres && f.cierres[dia]); }
+
+  function resumenVentas(ventas, gastos) {
+    var r = { n: ventas.length, total: 0, metodos: {}, vueltos: 0, gastos: 0, productos: {} };
+    ventas.forEach(function (p) {
+      r.total += totalPedido(p);
+      (p.pagos || []).forEach(function (x) {
+        r.metodos[x.metodo] = (r.metodos[x.metodo] || 0) + (x.monto || 0);
+        r.vueltos += x.vuelto || 0;
+      });
+      (p.lineas || []).forEach(function (l) {
+        r.productos[l.nombre] = (r.productos[l.nombre] || 0) + l.cant;
+      });
+    });
+    gastos.forEach(function (g) { r.gastos += g.monto || 0; });
+    r.neto = r.total - r.gastos;
+    return r;
+  }
+  function resumenDia(f, dia) {
+    var r = resumenVentas(
+      ventasFeria(f.id).filter(function (p) { return p.fecha === dia; }),
+      gastosFeria(f.id).filter(function (g) { return g.fecha === dia; }));
+    r.dia = dia;
+    return r;
+  }
+  function resumenFeria(f) {
+    var r = resumenVentas(ventasFeria(f.id), gastosFeria(f.id));
+    r.dias = diasFeria(f).map(function (d) { return resumenDia(f, d); });
+    return r;
+  }
+  function fechasFeria(f) {
+    var fin = finFeria(f);
+    return fin === f.fecha ? fechaCorta(f.fecha) : fechaCorta(f.fecha) + ' al ' + fechaCorta(fin);
+  }
+  function feriaPorId(fid) {
+    for (var i = 0; i < BD.ferias.length; i++) if (BD.ferias[i].id === fid) return BD.ferias[i];
+    return null;
+  }
+
+  // Trozos de HTML que comparten el cierre del día y el cierre de feria.
+  function htmlCifras(r, etiqueta) {
+    return '<div class="cifras">' +
+      '<div class="cifra cifra--ok"><b>' + money(r.total) + '</b><span>' + etiqueta + '</span></div>' +
+      '<div class="cifra"><b>' + r.n + '</b><span>ventas</span></div>' +
+      '<div class="cifra"><b>' + money(r.gastos) + '</b><span>gastos</span></div>' +
+      '<div class="cifra' + (r.neto >= 0 ? ' cifra--ok' : ' cifra--bad') + '"><b>' +
+      money(r.neto) + '</b><span>neto</span></div></div>';
+  }
+  function htmlMetodos(r) {
+    var ks = Object.keys(r.metodos).filter(function (k) { return r.metodos[k]; });
+    if (!ks.length) return '';
+    var h = '<div class="seccion"><h3>Cómo pagaron</h3><div class="tarjeta">';
+    ks.sort(function (a, b) { return r.metodos[b] - r.metodos[a]; }).forEach(function (k) {
+      h += '<div class="linea"><span class="linea__n">' + esc(k) + '</span><span></span><b>' +
+        money(r.metodos[k]) + '</b></div>';
+    });
+    if (r.vueltos) {
+      h += '<div class="linea"><span class="linea__n mut">Dado en vueltos</span><span></span><b class="mut">' +
+        money(r.vueltos) + '</b></div>';
+    }
+    return h + '</div></div>';
+  }
+  function htmlProductos(r, titulo) {
+    var ks = Object.keys(r.productos);
+    if (!ks.length) return '';
+    var h = '<div class="seccion"><h3>' + titulo + '</h3><div class="tarjeta">';
+    ks.sort(function (a, b) { return r.productos[b] - r.productos[a]; }).forEach(function (k) {
+      h += '<div class="linea"><span class="linea__n">' + esc(k) + '</span><span></span><b>' +
+        r.productos[k] + '</b></div>';
+    });
+    return h + '</div></div>';
+  }
+  // La lista de días con su total y el acumulado que va corriendo.
+  function htmlDias(f, rf, tocable) {
+    var hoy = hoyISO(), acum = 0;
+    var h = '<div class="seccion"><h3>Día por día</h3>';
+    rf.dias.forEach(function (rd, i) {
+      acum += rd.total;
+      var estado = diaCerrado(f, rd.dia) || f.cerrada ? 'cerrado'
+        : rd.dia === hoy ? 'hoy, caja abierta'
+        : rd.dia > hoy ? 'todavía no llega'
+        : 'sin cerrar';
+      var cuerpo = '<div class="fila fila--sep"><div class="crece">' +
+        '<p class="tarjeta__t">Día ' + (i + 1) + ' · ' + fechaLarga(rd.dia) + '</p>' +
+        '<p class="tarjeta__s">' + cuantasVentas(rd.n) + ' · ' + estado +
+        ' · acumulado ' + money(acum) + '</p></div>' +
+        '<b style="color:var(--ok)">' + money(rd.total) + '</b></div>';
+      h += tocable
+        ? '<button class="tarjeta tarjeta--btn" type="button" data-ver-dia="' + rd.dia +
+          '" data-feria-id="' + esc(f.id) + '">' + cuerpo + '</button>'
+        : '<div class="tarjeta">' + cuerpo + '</div>';
+    });
+    return h + '</div>';
   }
 
   V.feria = function () {
@@ -1453,20 +1693,22 @@
         '<input id="fe-nom" name="nombre" placeholder="Feria La Verbena" required /></div>' +
         '<div class="campo"><label for="fe-lug">Lugar</label>' +
         '<input id="fe-lug" name="lugar" placeholder="Plaza Real Alajuela" /></div>' +
-        '<div class="campo"><label for="fe-fec">Día</label>' +
+        '<div class="campo"><label for="fe-fec">Empieza</label>' +
         '<input id="fe-fec" name="fecha" type="date" value="' + hoyISO() + '" /></div>' +
+        '<div class="campo"><label for="fe-fin">Termina</label>' +
+        '<input id="fe-fin" name="fechaFin" type="date" value="' + hoyISO() + '" /></div>' +
         '<button class="btn btn--g btn--gold" type="submit">Abrir la caja</button></form></details>';
 
       if (pasadas.length) {
         h += '<div class="seccion" style="margin-top:1.6rem"><h3>Ferias anteriores</h3>';
         pasadas.forEach(function (x) {
-          var v = ventasFeria(x.id).reduce(function (s, p) { return s + totalPedido(p); }, 0);
-          var g = gastosFeria(x.id).reduce(function (s, y) { return s + y.monto; }, 0);
-          h += '<div class="tarjeta"><div class="fila fila--sep">' +
+          var rx = resumenVentas(ventasFeria(x.id), gastosFeria(x.id));
+          h += '<button class="tarjeta tarjeta--btn" type="button" data-ver-feria="' + esc(x.id) + '">' +
+            '<div class="fila fila--sep">' +
             '<div class="crece"><p class="tarjeta__t">' + esc(x.nombre) + '</p>' +
-            '<p class="tarjeta__s">' + fechaCorta(x.fecha) + ' · ' +
-            ventasFeria(x.id).length + ' ventas' + (g ? ' · gastos ' + money(g) : '') + '</p></div>' +
-            '<b style="color:var(--ok)">' + money(v - g) + '</b></div></div>';
+            '<p class="tarjeta__s">' + fechasFeria(x) + ' · ' + cuantasVentas(rx.n) +
+            (rx.gastos ? ' · gastos ' + money(rx.gastos) : '') + ' · tocá para ver el cierre</p></div>' +
+            '<b style="color:var(--ok)">' + money(rx.neto) + '</b></div></button>';
         });
         h += '</div>';
       }
@@ -1474,34 +1716,57 @@
     }
 
     // Caja abierta
-    var vendido = ventasFeria(f.id).reduce(function (s, p) { return s + totalPedido(p); }, 0);
-    var nVentas = ventasFeria(f.id).length;
-    var gastoF = gastosFeria(f.id).reduce(function (s, g) { return s + g.monto; }, 0);
+    var hoy = hoyISO(), fin = finFeria(f);
+    var dias = diasFeria(f), nDia = dias.indexOf(hoy) + 1;
+    var rHoy = resumenDia(f, hoy), rTot = resumenFeria(f);
+    var ultimoDia = hoy >= fin;
+
+    var cab = '<div class="feria-dia"><b>' +
+      (nDia ? 'Día ' + nDia + ' de ' + dias.length : 'Feria del ' + fechasFeria(f)) + '</b>' +
+      '<span>' + fechaLarga(hoy) +
+      (hoy > fin ? ' · terminaba el ' + fechaCorta(fin)
+        : hoy < f.fecha ? ' · empieza el ' + fechaCorta(f.fecha) : '') +
+      '</span></div>';
+
+    var acumulado = '<div class="seccion"><h3>Acumulado de la feria</h3>' +
+      htmlCifras(rTot, 'vendido en la feria') + '</div>' + htmlDias(f, rTot, true);
+
+    var botonCierreFeria = '<button class="btn btn--g ' + (ultimoDia ? 'btn--gold' : 'btn--sec') +
+      '" type="button" data-cierre-feria>Cierre de feria (acumulado)</button>';
+
+    // El día de hoy ya se cerró: no se cobra más hasta mañana, o se reabre.
+    if (diaCerrado(f, hoy)) {
+      return cab +
+        '<div class="seccion"><div class="tarjeta"><p class="tarjeta__t">El día de hoy ya está cerrado</p>' +
+        '<p class="tarjeta__s">Vendido hoy: ' + money(rHoy.total) + ' en ' + cuantasVentas(rHoy.n) + '. ' +
+        (ultimoDia ? 'Era el último día: falta el cierre de feria.'
+                   : 'Mañana la caja se abre sola para el día siguiente.') + '</p></div>' +
+        '<div class="acciones">' +
+        '<button class="btn btn--sec" type="button" data-ver-dia="' + hoy + '" data-feria-id="' +
+        esc(f.id) + '">Ver el cierre de hoy</button>' +
+        '<button class="btn btn--sec" type="button" data-reabrir-dia="' + hoy + '">Reabrir el día</button>' +
+        '</div><div class="acciones">' + botonCierreFeria + '</div></div>' +
+        acumulado;
+    }
 
     // Los números del día van debajo de la caja: arriba, lo que se toca para vender.
     var est = '<div class="seccion"><h3>Cómo va el día</h3><div class="cifras">' +
-      '<div class="cifra cifra--ok"><b>' + money(vendido) + '</b><span>vendido hoy</span></div>' +
-      '<div class="cifra"><b>' + nVentas + '</b><span>ventas</span></div>' +
-      '<div class="cifra"><b>' + money(nVentas ? vendido / nVentas : 0) + '</b><span>promedio</span></div>' +
-      '<div class="cifra' + (vendido - gastoF >= 0 ? ' cifra--ok' : ' cifra--bad') + '"><b>' +
-      money(vendido - gastoF) + '</b><span>neto del día</span></div>' +
+      '<div class="cifra cifra--ok"><b>' + money(rHoy.total) + '</b><span>vendido hoy</span></div>' +
+      '<div class="cifra"><b>' + rHoy.n + '</b><span>ventas hoy</span></div>' +
+      '<div class="cifra"><b>' + money(rHoy.n ? rHoy.total / rHoy.n : 0) + '</b><span>promedio</span></div>' +
+      '<div class="cifra' + (rHoy.neto >= 0 ? ' cifra--ok' : ' cifra--bad') + '"><b>' +
+      money(rHoy.neto) + '</b><span>neto del día</span></div>' +
       '</div></div>';
 
-    var vueltoDado = ventasFeria(f.id).reduce(function (s2, p) {
-      return s2 + (p.pagos || []).reduce(function (s3, x) { return s3 + (x.vuelto || 0); }, 0);
-    }, 0);
-    var enEfectivo = ventasFeria(f.id).reduce(function (s2, p) {
-      return s2 + (p.pagos || []).reduce(function (s3, x) {
-        return s3 + (x.metodo === 'Efectivo' ? x.monto : 0); }, 0);
-    }, 0);
-    if (enEfectivo || vueltoDado) {
+    var enEfectivo = rHoy.metodos.Efectivo || 0;
+    if (enEfectivo || rHoy.vueltos) {
       est += '<div class="seccion"><div class="cifras">' +
-        '<div class="cifra"><b>' + money(enEfectivo) + '</b><span>en efectivo, en la caja</span></div>' +
-        '<div class="cifra"><b>' + money(vueltoDado) + '</b><span>dado en vueltos</span></div>' +
+        '<div class="cifra"><b>' + money(enEfectivo) + '</b><span>en efectivo hoy, en la caja</span></div>' +
+        '<div class="cifra"><b>' + money(rHoy.vueltos) + '</b><span>dado en vueltos</span></div>' +
         '</div></div>';
     }
 
-    var h2 = '<div class="seccion caja-feria"><h3>Tocá lo que lleva el cliente</h3>';
+    var h2 = cab + '<div class="seccion caja-feria"><h3>Tocá lo que lleva el cliente</h3>';
     ordenCaja().forEach(function (p) {
       var n = cajaFeria[p.slug] || 0;
       h2 += '<div class="linea' + (n ? ' linea--lleva' : '') + '" data-linea="' + esc(p.slug) + '">' +
@@ -1523,28 +1788,125 @@
     h2 += '<div class="acciones">' +
       '<button class="btn btn--sec btn--sm" data-rapido>Anotar este cliente</button>' +
       '<button class="btn btn--sec btn--sm" data-gasto-feria>Anotar gasto de la feria</button>' +
-      '<button class="btn btn--mal btn--sm" data-cerrar-feria>Cerrar la feria</button>' +
       '</div></div>';
     h2 += est;
+    h2 += htmlProductos(rHoy, 'Lo que se ha vendido hoy');
 
-    if (nVentas) {
-      var porProd = {};
-      ventasFeria(f.id).forEach(function (p) {
-        (p.lineas || []).forEach(function (l) {
-          porProd[l.nombre] = (porProd[l.nombre] || 0) + l.cant;
-        });
-      });
-      h2 += '<div class="seccion"><h3>Lo que se ha vendido</h3><div class="tarjeta">';
-      Object.keys(porProd).sort(function (a, b) { return porProd[b] - porProd[a]; })
-        .forEach(function (k) {
-          h2 += '<div class="linea"><span class="linea__n">' + esc(k) + '</span>' +
-            '<span></span><b>' + porProd[k] + '</b></div>';
-        });
-      h2 += '</div></div>';
-    }
+    // Los cierres: el del día, todos los días; el de feria, al final.
+    h2 += '<div class="seccion"><h3>Cierres</h3>' +
+      '<div class="acciones"><button class="btn btn--g btn--mal" type="button" data-ver-dia="' + hoy +
+      '" data-feria-id="' + esc(f.id) + '">Cerrar el día de hoy</button></div>' +
+      '<div class="acciones">' + botonCierreFeria + '</div>' +
+      '<p class="mut" style="margin-top:.6rem">' +
+      (ultimoDia ? 'Hoy es el último día: cerrá el día y después hacé el cierre de feria.'
+                 : 'El cierre de feria se hace el último día (' + fechaLarga(fin) + ').') +
+      '</p></div>';
+    h2 += acumulado;
+
     // Espacio para que la barra fija de cobrar no tape lo último de la página.
     return h2 + '<div class="cobro-espacio"></div>';
   };
+
+  // ¿Cuántos días dura? Un toque por opción, de 1 a 7.
+  var feriaPorAbrir = null;
+  function hojaDiasFeria(nombre, lugar) {
+    feriaPorAbrir = { nombre: nombre, lugar: lugar };
+    var hoy = hoyISO();
+    var h = '<p class="mut" style="margin:0 0 .8rem">Empieza hoy, ' + fechaLarga(hoy) +
+      '. Cada día se cierra por aparte y al final se hace el cierre de feria.</p><div class="dias-btns">';
+    for (var n = 1; n <= 7; n++) {
+      h += '<button class="zona-btn" type="button" data-dias-feria="' + n + '"><b>' +
+        (n === 1 ? 'Solo hoy' : n + ' días') + '</b><span>' +
+        (n === 1 ? 'Un día' : 'Hasta el ' + fechaLarga(sumaDias(hoy, n - 1))) + '</span></button>';
+    }
+    abrirHoja('¿Cuántos días dura ' + nombre + '?', h + '</div>');
+  }
+
+  // Cierre de un día: lo que se vendió ese día y el acumulado hasta ahí.
+  function hojaDia(fid, dia) {
+    var f = feriaPorId(fid);
+    if (!f) return;
+    var r = resumenDia(f, dia), dias = diasFeria(f), n = dias.indexOf(dia) + 1;
+    var acum = 0;
+    resumenFeria(f).dias.forEach(function (rd) { if (rd.dia <= dia) acum += rd.total; });
+    var cerrado = diaCerrado(f, dia);
+
+    var h = htmlCifras(r, 'vendido este día') +
+      '<div class="total"><span>Acumulado de la feria</span><span>' + money(acum) + '</span></div>' +
+      htmlMetodos(r) + htmlProductos(r, 'Lo que se vendió este día');
+    if (!r.n && !r.gastos) h += '<p class="mut">Ese día no hubo ventas ni gastos.</p>';
+
+    if (!f.cerrada) {
+      h += cerrado
+        ? '<p class="mut" style="margin-top:1rem">Este día ya está cerrado' +
+          (f.cierres[dia].por ? ' por ' + esc(f.cierres[dia].por) : '') + '.</p>' +
+          '<button class="btn btn--g btn--sec" type="button" data-reabrir-dia="' + dia + '">Reabrir este día</button>'
+        : dia > hoyISO() ? ''
+        : '<button class="btn btn--g btn--mal" type="button" data-confirmar-cierre-dia="' + dia +
+          '" style="margin-top:1rem">Cerrar este día</button>';
+    }
+    abrirHoja((cerrado || f.cerrada ? 'Cierre del ' : 'Cerrar el ') +
+      (n ? 'día ' + n + ' · ' : '') + fechaLarga(dia), h);
+  }
+
+  // Cierre de feria: el acumulado de todos los días.
+  function hojaCierreFeria(fid) {
+    var f = feriaPorId(fid);
+    if (!f) return;
+    var r = resumenFeria(f);
+    var h = '<p class="mut" style="margin:0 0 .8rem">' + esc(f.nombre) +
+      (f.lugar ? ', ' + esc(f.lugar) : '') + ' · ' + fechasFeria(f) + '</p>' +
+      htmlCifras(r, 'vendido en la feria') + htmlDias(f, r, false) +
+      htmlMetodos(r) + htmlProductos(r, 'Lo que se vendió en toda la feria');
+
+    if (!f.cerrada) {
+      var faltan = r.dias.filter(function (rd) {
+        return rd.dia < hoyISO() && rd.n && !diaCerrado(f, rd.dia);
+      }).length;
+      h += '<p class="mut" style="margin-top:1rem">' +
+        (hoyISO() < finFeria(f) ? 'Ojo: la feria termina el ' + fechaLarga(finFeria(f)) + '. ' : '') +
+        (faltan ? 'Hay ' + faltan + ' día(s) sin cerrar; se cierran junto con la feria. ' : '') +
+        'Después del cierre de feria no se puede seguir cobrando en ella.</p>' +
+        '<button class="btn btn--g btn--mal" type="button" data-confirmar-cierre-feria="' + esc(f.id) +
+        '">Hacer el cierre de feria</button>';
+    }
+    abrirHoja((f.cerrada ? 'Cierre de ' : 'Cerrar ') + f.nombre, h);
+  }
+
+  function cerrarDia(dia) {
+    var f = feriaActiva();
+    if (!f) return;
+    if (!f.cierres) f.cierres = {};
+    f.cierres[dia] = { hora: new Date().toISOString(), por: quienSoy() || '' };
+    if (dia === hoyISO()) cajaFeria = {};
+    var r = resumenDia(f, dia);
+    guardar(); cerrarHoja(); pintar(); window.scrollTo(0, 0);
+    aviso('Día cerrado: ' + money(r.total));
+  }
+  function reabrirDia(dia) {
+    var f = feriaActiva();
+    if (!f || !f.cierres) return;
+    delete f.cierres[dia];
+    guardar(); cerrarHoja(); pintar();
+    aviso('Día reabierto');
+  }
+  function cerrarFeria(fid) {
+    var f = feriaPorId(fid);
+    if (!f || f.cerrada) return;
+    var r = resumenFeria(f);
+    if (!f.cierres) f.cierres = {};
+    r.dias.forEach(function (rd) {
+      if (rd.dia <= hoyISO() && !f.cierres[rd.dia]) {
+        f.cierres[rd.dia] = { hora: new Date().toISOString(), por: quienSoy() || '' };
+      }
+    });
+    f.cerrada = true;
+    f.cierreFeria = { hora: new Date().toISOString(), por: quienSoy() || '' };
+    cajaFeria = {};
+    guardar(); cerrarHoja();
+    ir('#/hoy');
+    aviso('Feria cerrada. Neto ' + money(r.neto));
+  }
 
   /* ---------- Gastos ----------------------------------------------------- */
   var CATS_GASTO = ['Ingredientes', 'Frascos y empaque', 'Etiquetas', 'Combustible',
@@ -1601,8 +1963,9 @@
       '<div class="cifra"><b>' + money(valor) + '</b><span>valor a precio de venta</span></div>' +
       '</div></div>';
 
-    h += '<p class="mut">Se descuenta solo cuando se vende. Si entró producción, ' +
-      'sumala acá con el más.</p>';
+    h += '<p class="mut">Es un solo inventario para todos: lo que venda Luis o Carlina, ' +
+      'en feria o por pedido, se descuenta de acá. Si entró producción, sumala con el más ' +
+      'o con «+ lote».</p>';
 
     CATALOGO.forEach(function (p) {
       var n = hay(p.slug);
@@ -1773,6 +2136,7 @@
 
   function pintar() {
     armarCatalogo();
+    invalidarInventario();
     var ruta = (location.hash || '#/hoy').replace(/^#\//, '').split('/');
     var sec = ruta[0] || 'hoy', arg = ruta[1], sub = ruta[2];
     var html = '', titulo = TITULOS[sec] || 'CARLOUIS', atras = false;
@@ -1965,12 +2329,11 @@
       var usos = BD.pedidos.filter(function (p) { return p.clienteId === cid; }).length;
       if (!confirm('¿Borrar este cliente?' + (usos ? '\n\nTiene ' + usos + ' pedido(s) en el historial. Los pedidos NO se borran.' : ''))) return;
       // Se marca en vez de quitarse, para que el otro teléfono se entere.
-      BD.clientes.forEach(function (c) { if (c.id === cid) c._borrado = true; });
       BD.clientes = BD.clientes.filter(function (c) { return c.id !== cid; });
       BD.rutas.forEach(function (r) {
         r.paradas = r.paradas.filter(function (p) { return p.clienteId !== cid; });
       });
-      _borrados.push({ tipo: 'cliente', id: cid });
+      tumba('cliente', cid);
       guardar(); ir('#/clientes'); aviso('Cliente borrado');
       return;
     }
@@ -1980,7 +2343,7 @@
       var pid3 = bp.getAttribute('data-borrar-pedido');
       BD.pedidos.forEach(function (p) { if (p.id === pid3) moverStock(p.lineas, 1); });
       BD.pedidos = BD.pedidos.filter(function (p) { return p.id !== pid3; });
-      _borrados.push({ tipo: 'pedido', id: pid3 });
+      tumba('pedido', pid3);
       guardar(); ir('#/pedidos'); aviso('Pedido borrado');
       return;
     }
@@ -1989,7 +2352,7 @@
       if (!confirm('¿Borrar este gasto?')) return;
       var gid = bg.getAttribute('data-borrar-gasto');
       BD.gastos = BD.gastos.filter(function (g) { return g.id !== gid; });
-      _borrados.push({ tipo: 'gasto', id: gid });
+      tumba('gasto', gid);
       guardar(); pintar();
       return;
     }
@@ -2125,7 +2488,7 @@
     if (brc) {
       var rid3 = brc.getAttribute('data-borrar-recordatorio');
       BD.recordatorios = BD.recordatorios.filter(function (x) { return x.id !== rid3; });
-      _borrados.push({ tipo: 'recordatorio', id: rid3 });
+      tumba('recordatorio', rid3);
       guardar(); pintar();
       return;
     }
@@ -2163,7 +2526,7 @@
     var stk = t.closest('[data-stock]');
     if (stk) {
       var ss = stk.getAttribute('data-slug');
-      BD.stock[ss] = hay(ss) + (stk.getAttribute('data-stock') === '+' ? 1 : -1);
+      ajustarStock(ss, stk.getAttribute('data-stock') === '+' ? 1 : -1);
       guardar();
       var celda = $('[data-sn="' + ss + '"]');
       celda.textContent = hay(ss);
@@ -2179,18 +2542,23 @@
       if (cuanto === null) return;
       var cn2 = Number(String(cuanto).replace(/[^0-9]/g, ''));
       if (!cn2) return;
-      BD.stock[ls] = hay(ls) + cn2;
+      ajustarStock(ls, cn2, 'Lote');
       guardar(); pintar(); aviso('Entraron ' + cn2);
       return;
     }
 
     var fr = t.closest('[data-feria-rapida]');
     if (fr) {
-      abrirFeria(fr.getAttribute('data-feria-rapida'), fr.getAttribute('data-lugar'));
+      hojaDiasFeria(fr.getAttribute('data-feria-rapida'), fr.getAttribute('data-lugar'));
       return;
     }
     if (t.closest('[data-cobrar-feria]')) { cobrarFeria(); return; }
     if (t.closest('[data-gasto-feria]')) { gastoDeFeria(); return; }
+    if (t.closest('[data-conectar-nube]')) {
+      localStorage.removeItem('carlouis.nube.no');
+      pedirCuenta(true);
+      return;
+    }
     if (t.closest('[data-nuevo-producto]')) { hojaProducto(); return; }
     var qp = t.closest('[data-quitar-producto]');
     if (qp) {
@@ -2199,12 +2567,34 @@
       if (!confirm('¿Quitar ' + qn + ' de la lista?' + String.fromCharCode(10, 10) +
                    'Las ventas que ya se hicieron no se borran.')) return;
       BD.productos = BD.productos.filter(function (x) { return x.id !== qid; });
-      _borrados.push({ tipo: 'producto', id: qid });
+      tumba('producto', qid);
       delete cajaFeria['extra-' + qid];
       guardar(); cerrarHoja(); pintar(); aviso('Producto quitado');
       return;
     }
-    if (t.closest('[data-cerrar-feria]')) { cerrarFeria(); return; }
+    var df = t.closest('[data-dias-feria]');
+    if (df && feriaPorAbrir) {
+      var nd = Number(df.getAttribute('data-dias-feria')) || 1;
+      var fpa = feriaPorAbrir; feriaPorAbrir = null;
+      cerrarHoja();
+      abrirFeria(fpa.nombre, fpa.lugar, hoyISO(), sumaDias(hoyISO(), nd - 1));
+      return;
+    }
+    var vd = t.closest('[data-ver-dia]');
+    if (vd) { hojaDia(vd.getAttribute('data-feria-id'), vd.getAttribute('data-ver-dia')); return; }
+    var ccd = t.closest('[data-confirmar-cierre-dia]');
+    if (ccd) { cerrarDia(ccd.getAttribute('data-confirmar-cierre-dia')); return; }
+    var rad = t.closest('[data-reabrir-dia]');
+    if (rad) { reabrirDia(rad.getAttribute('data-reabrir-dia')); return; }
+    if (t.closest('[data-cierre-feria]')) {
+      var fcf = feriaActiva();
+      if (fcf) hojaCierreFeria(fcf.id);
+      return;
+    }
+    var ccf = t.closest('[data-confirmar-cierre-feria]');
+    if (ccf) { cerrarFeria(ccf.getAttribute('data-confirmar-cierre-feria')); return; }
+    var vf = t.closest('[data-ver-feria]');
+    if (vf) { hojaCierreFeria(vf.getAttribute('data-ver-feria')); return; }
 
     // Ruta rápida: "voy para Alajuela"
     var rr = t.closest('[data-ruta-rapida]');
@@ -2359,7 +2749,7 @@
 
     if (f.matches('[data-form-feria]')) {
       e.preventDefault();
-      abrirFeria(f.nombre.value.trim(), f.lugar.value.trim(), f.fecha.value);
+      abrirFeria(f.nombre.value.trim(), f.lugar.value.trim(), f.fecha.value, f.fechaFin.value);
       return;
     }
 
@@ -2576,6 +2966,7 @@
   function cobrarFeria() {
     var f = feriaActiva();
     if (!f) return;
+    if (diaCerrado(f, hoyISO())) return aviso('El día de hoy ya está cerrado');
     var lineas = [];
     CATALOGO.forEach(function (p) {
       var n = cajaFeria[p.slug] || 0;
@@ -2651,23 +3042,6 @@
       '<div class="campo"><label for="gf-d">¿De qué?</label>' +
       '<input id="gf-d" name="descripcion" placeholder="Alquiler del puesto" /></div>' +
       '<button class="btn btn--g" type="submit">Guardar</button></form>');
-  }
-
-  function cerrarFeria() {
-    var f = feriaActiva();
-    if (!f) return;
-    var v = ventasFeria(f.id).reduce(function (s, p) { return s + totalPedido(p); }, 0);
-    var g = gastosFeria(f.id).reduce(function (s, x) { return s + x.monto; }, 0);
-    if (!confirm('¿Cerrar ' + f.nombre + '?' + String.fromCharCode(10, 10) +
-                 'Vendido: ' + money(v) + String.fromCharCode(10) +
-                 'Gastos: ' + money(g) + String.fromCharCode(10) +
-                 'Neto: ' + money(v - g) + String.fromCharCode(10, 10) +
-                 'Después de cerrar no se puede seguir cobrando en esta feria.')) return;
-    f.cerrada = true;
-    cajaFeria = {};
-    guardar();
-    ir('#/hoy');
-    aviso('Feria cerrada. Neto ' + money(v - g));
   }
 
   var yaEnviados = {};
@@ -2749,7 +3123,7 @@
            '-' + String(d.getDate()).padStart(2, '0');
   }
 
-  function pedirCuenta() {
+  function pedirCuenta(desdeAdentro) {
     var capa = document.createElement('div');
     capa.className = 'candado';
     capa.innerHTML =
@@ -2767,7 +3141,7 @@
       '<p class="candado__err" data-err hidden></p>' +
       '<div style="height:.7rem"></div>' +
       '<button class="btn btn--sec btn--g" type="button" data-sin-nube>' +
-      'Usarla solo en este teléfono</button>' +
+      'Ahora no (no se comparten los datos)</button>' +
       '</form>';
     document.body.appendChild(capa);
     document.body.style.overflow = 'hidden';
@@ -2777,7 +3151,7 @@
         capa.remove();
         document.body.style.overflow = '';
         localStorage.setItem('carlouis.nube.no', '1');
-        pedirPerfil();
+        if (!desdeAdentro) pedirPerfil();
       }
     });
 
@@ -2792,7 +3166,7 @@
         .then(function () {
           capa.remove();
           document.body.style.overflow = '';
-          pedirPerfil();
+          if (desdeAdentro) location.reload(); else pedirPerfil();
         })
         .catch(function (x) {
           btn.textContent = 'Entrar';
@@ -3193,7 +3567,7 @@
               'El respaldo trae ' + datos.clientes.length + ' clientes y ' +
               (datos.pedidos || []).length + ' pedidos.\n\n¿Seguir?')) return;
           BD = datos;
-          ['clientes', 'pedidos', 'gastos', 'rutas', 'ferias', 'recordatorios', 'productos']
+          ['clientes', 'pedidos', 'gastos', 'rutas', 'ferias', 'recordatorios', 'productos', 'entradas']
             .forEach(function (k) { if (!Array.isArray(BD[k])) BD[k] = []; });
           guardar(); pintar(); aviso('Respaldo restaurado');
         } catch (err) {
@@ -3305,38 +3679,55 @@
 
   /* ---------- base compartida -------------------------------------------- */
 
-  // Lo que se borró en este teléfono y todavía no se le avisó al otro.
-  var _borrados = [];
 
   function quienSoy() {
     var p = perfilActivo();
     return p ? p.nombre : null;
   }
 
-  function sincronizar() {
+  var _syncT = null;
+  function programarSync() {
     if (!window.Nube || !Nube.activa()) return;
-    // Los borrados viajan como registros marcados.
-    _borrados.forEach(function (b) {
-      var lista = { cliente: 'clientes', pedido: 'pedidos', gasto: 'gastos',
-                    ruta: 'rutas', feria: 'ferias', recordatorio: 'recordatorios',
-                    producto: 'productos' }[b.tipo];
-      if (lista) BD[lista].push({ id: b.id, _borrado: true,
-                                  _actualizado: new Date().toISOString() });
+    clearTimeout(_syncT);
+    _syncT = setTimeout(sincronizar, 1200);
+  }
+
+  function sincronizar() {
+    if (!window.Nube || !Nube.activa() || !BD) return;
+    var p = perfilActivo();
+    if (!p) return;
+    sellar();
+    Nube.sincronizar(BD, quienSoy(), guardar, p.id).then(function (r) {
+      // Ya con lo de los demás en la mano, se estrena el inventario único.
+      if (r && r.ok && pasarAInventarioUnico()) { guardar(); if (hoja.hidden) pintar(); }
+      pintarEstadoNube();
     });
-    var pendientes = _borrados.slice();
-    _borrados = [];
-    Nube.sincronizar(BD, quienSoy(), guardar).then(function () {
-      // Ya subidos, se sacan de la lista local para no arrastrarlos siempre.
-      pendientes.forEach(function (b) {
-        var lista = { cliente: 'clientes', pedido: 'pedidos', gasto: 'gastos',
-                      ruta: 'rutas', feria: 'ferias', recordatorio: 'recordatorios',
-                    producto: 'productos' }[b.tipo];
-        if (!lista) return;
-        BD[lista] = BD[lista].filter(function (x) {
-          return !(x.id === b.id && x._borrado);
-        });
-      });
-    });
+  }
+
+  // Una línea en Inicio que diga, sin tecnicismos, si se está compartiendo.
+  function textoEstadoNube() {
+    if (!window.Nube || !Nube.activa()) return '';
+    if (!localStorage.getItem('carlouis.nube.sesion')) {
+      return '<button class="zona-btn nube-aviso" type="button" data-conectar-nube>' +
+        '<b>Este teléfono NO está compartiendo los datos</b>' +
+        '<span>Lo que se anote acá no lo ven los demás, ni se ve lo de ellos. ' +
+        'Tocá para conectarlo a la cuenta de CARLOUIS.</span></button>';
+    }
+    if (Nube.sesionVencida) {
+      return '<button class="zona-btn nube-aviso" type="button" data-conectar-nube>' +
+        '<b>Hay que volver a entrar a la cuenta</b>' +
+        '<span>Mientras tanto este teléfono no comparte los datos. Tocá para entrar.</span></button>';
+    }
+    if (!navigator.onLine || Nube.estado === 'sin señal') {
+      return '<p class="nube-ok nube-ok--espera">Sin internet: todo queda guardado acá y se ' +
+        'comparte solo cuando vuelva la señal.</p>';
+    }
+    return '<p class="nube-ok">Datos compartidos con todos' +
+      (Nube.ultima ? ' · al día' : ' · sincronizando…') + '</p>';
+  }
+  function pintarEstadoNube() {
+    var e = $('[data-estado-nube]');
+    if (e) e.innerHTML = textoEstadoNube();
   }
 
   function engancharNube() {
@@ -3349,15 +3740,19 @@
       else aviso('Llegaron datos nuevos');
     };
 
+    Nube.alRecibir = registrarHuellas;
+
     Nube.alEstado = function (e) {
       var ind = $('[data-nube]');
       if (!ind) return;
       ind.hidden = (e === 'listo');
-      ind.textContent = e === 'sin señal' ? 'sin señal' : 'sincronizando';
-      ind.className = 'top__estado' + (e === 'sin señal' ? '' : ' top__estado--ok');
+      ind.textContent = e === 'sin señal' ? 'sin señal'
+        : e === 'sesion' ? 'entrar de nuevo' : 'sincronizando';
+      ind.className = 'top__estado' + (e === 'subiendo' ? ' top__estado--ok' : '');
+      if (e !== 'subiendo') pintarEstadoNube();
     };
 
-    Nube.arrancarReloj(BD, quienSoy(), guardar);
+    Nube.arrancarReloj(sincronizar);
   }
 
   /* ---------- conexión y service worker ---------------------------------- */

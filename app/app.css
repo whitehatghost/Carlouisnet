@@ -527,3 +527,23 @@ main { padding: 1rem 1rem 1.5rem; max-width: 720px; margin-inline: auto; }
 
 /* El aviso no debe tapar la barra de cobrar. */
 body:has(.cobro-fijo) .aviso { bottom: calc(var(--tabs-h) + 6rem); }
+
+/* ---------- Ferias de varios días ---------------------------------------- */
+.feria-dia {
+  display: flex; align-items: baseline; justify-content: space-between; gap: .6rem; flex-wrap: wrap;
+  margin: -.2rem 0 .8rem; padding: .7rem .9rem; border-radius: 14px;
+  background: var(--ember-900); color: #fff;
+}
+.feria-dia b { font-family: "Fraunces", Georgia, serif; font-size: 1.25rem; color: var(--gold-400); }
+.feria-dia span { font-size: .95rem; font-weight: 600; opacity: .9; }
+.dias-btns { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.dias-btns .zona-btn { width: 100%; min-height: 68px; }
+.dias-btns .zona-btn:first-child { grid-column: 1 / -1; border-color: var(--gold-500); }
+
+/* ---------- ¿Se están compartiendo los datos? ----------------------------- */
+.nube-aviso { width: 100%; border-color: var(--bad); background: #FEF2F2; }
+.nube-aviso b { color: var(--bad); }
+.nube-ok { margin: .1rem 0 0; font-size: .88rem; font-weight: 700; color: var(--ok); }
+.nube-ok::before { content: "\2713  "; }
+.nube-ok--espera { color: var(--warn); }
+.nube-ok--espera::before { content: "\23F3  "; }

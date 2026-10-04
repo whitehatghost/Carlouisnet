@@ -27,11 +27,11 @@
 
   // Tipos que viajan. 'stock' va aparte porque no es una lista de registros
   // sino un solo objeto; se manda como un registro único.
-  var TIPOS = ['cliente', 'pedido', 'gasto', 'ruta', 'feria', 'recordatorio', 'producto'];
+  var TIPOS = ['cliente', 'pedido', 'gasto', 'ruta', 'feria', 'recordatorio', 'producto', 'entrada'];
   var PLURAL = {
     cliente: 'clientes', pedido: 'pedidos', gasto: 'gastos',
     ruta: 'rutas', feria: 'ferias', recordatorio: 'recordatorios',
-    producto: 'productos'
+    producto: 'productos', entrada: 'entradas'
   };
 
   var Nube = {
@@ -64,6 +64,7 @@
     }).then(function (r) {
       return r.json().then(function (d) {
         if (!r.ok) throw new Error(d.error_description || d.msg || 'No se pudo entrar');
+        Nube.sesionVencida = false;
         guardarSesion(d);
         return d;
       });
@@ -75,6 +76,9 @@
     try {
       localStorage.removeItem(LLAVE_SESION);
       localStorage.removeItem(LLAVE_RELOJ);
+      Object.keys(localStorage).forEach(function (k) {
+        if (k.indexOf('carlouis.nube2.') === 0) localStorage.removeItem(k);
+      });
     } catch (e) {}
   };
 
@@ -86,7 +90,13 @@
       headers: { apikey: CFG.llave, 'Content-Type': 'application/json' },
       body: JSON.stringify({ refresh_token: Nube.sesion.refresh_token })
     }).then(function (r) {
-      if (!r.ok) throw new Error('sesión vencida');
+      // 400/401/403: el permiso guardado ya no sirve y hay que volver a entrar.
+      // Antes esto se veía igual que "sin señal" y nadie se enteraba.
+      if (!r.ok) {
+        if (r.status >= 400 && r.status < 500) Nube.sesionVencida = true;
+        throw new Error('sesión vencida');
+      }
+      Nube.sesionVencida = false;
       return r.json();
     }).then(guardarSesion);
   }
@@ -106,133 +116,218 @@
       body: o.body
     }).then(function (r) {
       if (r.status === 401) {
-        // Token vencido: se renueva y se reintenta una sola vez.
+        // Token vencido: se renueva y se reintenta una sola vez. Si aun con el
+        // permiso nuevo no deja, hay que volver a entrar.
+        if (o._reintento) {
+          Nube.sesionVencida = true;
+          throw new Error('sesión vencida');
+        }
         return refrescar().then(function () {
           return pedir(ruta, Object.assign({}, o, { _reintento: true }));
         });
       }
       if (!r.ok) return r.text().then(function (t) { throw new Error(t); });
-      return r.status === 204 ? null : r.json();
+      // Al subir, el servidor contesta "listo" SIN cuerpo (201 o 204). Antes eso
+      // se leía como JSON, reventaba, y la tanda se cortaba justo antes de bajar
+      // lo de los demás: cada teléfono subía lo suyo y nunca recibía nada.
+      return r.text().then(function (t) { return t ? JSON.parse(t) : null; });
     });
   }
 
   /* ---------- convertir entre el formato local y el de la base ---------- */
+
+  /* Cómo se decide qué viaja y quién gana.
+
+     Cada registro lleva en su contenido un sello `_actualizado`: la hora en que
+     ESE registro cambió de verdad en algún teléfono. Con eso:
+
+     - Solo se sube lo que cambió acá desde la última vez (no todo, siempre).
+       Antes cada teléfono resubía su copia completa cada 10 segundos, y la
+       copia vieja de uno le pisaba los cambios nuevos del otro.
+     - Al bajar, gana el sello más reciente, no "el último que subió".
+     - Lo borrado viaja como una tumba (BD._tumbas) hasta que el servidor la
+       tiene; antes los borrados nunca salían del teléfono.
+     - El punto desde donde se baja es la hora del SERVIDOR de lo último
+       recibido, no el reloj del teléfono, y se guarda por perfil.            */
 
   function aFilas(BD, quien) {
     var filas = [];
     TIPOS.forEach(function (tipo) {
       (BD[PLURAL[tipo]] || []).forEach(function (x) {
         if (!x.id) return;
-        filas.push({
-          id: tipo + ':' + x.id,
-          tipo: tipo,
-          contenido: x,
-          borrado: !!x._borrado,
-          por: quien || null
-        });
+        filas.push({ id: tipo + ':' + x.id, tipo: tipo, contenido: x,
+                     borrado: false, por: quien || null });
       });
     });
-    // El inventario es un objeto suelto, no una lista: va como un registro.
-    if (BD.stock && Object.keys(BD.stock).length) {
-      filas.push({ id: 'stock:unico', tipo: 'stock', contenido: BD.stock,
-                   borrado: false, por: quien || null });
-    }
+    (BD._tumbas || []).forEach(function (t) {
+      if (!PLURAL[t.tipo] || !t.id) return;
+      filas.push({ id: t.tipo + ':' + t.id, tipo: t.tipo,
+                   contenido: { id: t.id, _borrado: true, _actualizado: t._actualizado },
+                   borrado: true, por: quien || null });
+    });
     return filas;
   }
 
-  // Mete lo que vino del servidor dentro de BD, respetando lo más reciente.
-  function aplicar(BD, filas) {
+  function sello(f) { return (f.contenido && f.contenido._actualizado) || ''; }
+
+  // Mete lo que vino del servidor dentro de BD. `subidos` recuerda, por
+  // registro, cuál sello tiene el servidor: lo que no coincida se vuelve a subir.
+  function aplicar(BD, filas, subidos) {
     var cambios = 0;
     filas.forEach(function (f) {
       if (f.tipo === 'stock') {
-        // Para el inventario se toma el del servidor tal cual: es un solo
-        // registro y la marca de tiempo ya decidió cuál gana.
-        BD.stock = f.contenido || {};
-        cambios++;
+        // Contador viejo de inventario. Solo le sirve a un teléfono que
+        // todavía no pasó al inventario único.
+        if (!BD.invUnico) { BD.stock = f.contenido || {}; cambios++; }
         return;
       }
       var lista = BD[PLURAL[f.tipo]];
       if (!lista) return;
-      var x = f.contenido;
-      x._actualizado = f.actualizado;
-      if (f.borrado) x._borrado = true;
+      var x = f.contenido || {};
+      if (!x.id) return;
+      var remoto = x._actualizado || f.actualizado || '';
+      x._actualizado = remoto;
+
+      // ¿Lo borramos acá y todavía no se había avisado?
+      var tumbas = BD._tumbas || [], it = -1;
+      for (var q = 0; q < tumbas.length; q++) {
+        if (tumbas[q].tipo === f.tipo && tumbas[q].id === x.id) { it = q; break; }
+      }
+      if (it >= 0) {
+        if (f.borrado) { tumbas.splice(it, 1); subidos[f.id] = remoto; return; }
+        if (remoto <= (tumbas[it]._actualizado || '')) return;   // gana nuestro borrado
+        tumbas.splice(it, 1);                                    // lo editaron después: vuelve
+      }
 
       var i = -1;
       for (var k = 0; k < lista.length; k++) {
         if (lista[k].id === x.id) { i = k; break; }
       }
-      if (i < 0) {
-        if (!f.borrado) { lista.push(x); cambios++; }
-      } else {
-        var mio = lista[i]._actualizado || '';
-        if ((f.actualizado || '') >= mio) {
-          if (f.borrado) lista.splice(i, 1);
-          else lista[i] = x;
-          cambios++;
+
+      if (f.borrado) {
+        if (i >= 0) {
+          if (remoto >= (lista[i]._actualizado || '')) { lista.splice(i, 1); cambios++; }
+          else { delete subidos[f.id]; return; }                 // acá es más nuevo: se resube
         }
+        subidos[f.id] = remoto;
+        return;
       }
+      if (i < 0) { lista.push(x); subidos[f.id] = remoto; cambios++; return; }
+
+      var local = lista[i]._actualizado || '';
+      if (remoto > local) { lista[i] = x; subidos[f.id] = remoto; cambios++; }
+      else if (remoto === local) subidos[f.id] = remoto;
+      else delete subidos[f.id];                                 // acá es más nuevo: se resube
     });
     return cambios;
   }
 
-  /* ---------- la tanda de sincronización -------------------------------- */
+  /* ---------- sincronizar ----------------------------------------------- */
 
-  Nube.sincronizar = function (BD, quien, guardar) {
-    if (!Nube.activa() || !cargarSesion()) return Promise.resolve(0);
-    if (Nube.sincronizando) return Promise.resolve(0);
-    if (!navigator.onLine) {
-      if (Nube.alEstado) Nube.alEstado('sin señal');
-      return Promise.resolve(0);
-    }
+  var EPOCA = '1970-01-01T00:00:00.000Z';
+
+  function leerJSON(k) {
+    try { return JSON.parse(localStorage.getItem(k) || '{}') || {}; } catch (e) { return {}; }
+  }
+
+  function estado(e) { Nube.estado = e; if (Nube.alEstado) Nube.alEstado(e); }
+
+  Nube.sincronizar = function (BD, quien, guardar, perfil) {
+    var nada = { ok: false, cambios: 0 };
+    if (!Nube.activa() || !cargarSesion()) return Promise.resolve(nada);
+    if (Nube.sincronizando) return Promise.resolve(nada);
+    if (!navigator.onLine) { estado('sin señal'); return Promise.resolve(nada); }
 
     Nube.sincronizando = true;
-    if (Nube.alEstado) Nube.alEstado('subiendo');
+    estado('subiendo');
 
-    var desde = localStorage.getItem(LLAVE_RELOJ) || '1970-01-01T00:00:00Z';
-    var ahora = new Date().toISOString();
+    var K = 'carlouis.nube2.' + (perfil || 'x') + '.';
+    var cursor = localStorage.getItem(K + 'cursor') || EPOCA;
+    var subidos = leerJSON(K + 'subidos');
+    var cambios = 0, subidas = 0, maxMs = Date.parse(cursor) || 0;
 
-    // Primero subir: si el otro teléfono está bajando en este momento, que
-    // encuentre lo nuestro y no al revés.
-    var mios = aFilas(BD, quien);
-    var subir = mios.length
-      ? pedir('datos', {
-          method: 'POST',
-          headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
-          body: JSON.stringify(mios)
-        })
-      : Promise.resolve();
+    // Bajar por páginas: el servidor entrega máximo 1000 filas por pedido.
+    function bajar(desde, juntas) {
+      return pedir('datos?select=*&actualizado=gt.' + encodeURIComponent(cursor) +
+                   '&order=actualizado.asc,id.asc&limit=1000&offset=' + desde)
+        .then(function (filas) {
+          filas = filas || [];
+          juntas = juntas.concat(filas);
+          if (filas.length === 1000 && desde < 100000) return bajar(desde + 1000, juntas);
+          return juntas;
+        });
+    }
 
-    return subir
-      .then(function () {
-        return pedir('datos?select=*&actualizado=gt.' + encodeURIComponent(desde) +
-                     '&order=actualizado.asc');
-      })
+    return bajar(0, [])
       .then(function (filas) {
-        var n = aplicar(BD, filas || []);
-        localStorage.setItem(LLAVE_RELOJ, ahora);
-        if (n && guardar) guardar();
-        if (n && Nube.alCambiar) Nube.alCambiar();
-        if (Nube.alEstado) Nube.alEstado('listo');
-        return n;
+        filas.forEach(function (f) {
+          var ms = Date.parse(f.actualizado) || 0;
+          if (ms > maxMs) maxMs = ms;
+        });
+        cambios = aplicar(BD, filas, subidos);
+        if (cambios && Nube.alRecibir) Nube.alRecibir();
+
+        // Subir solo lo que acá es distinto de lo que tiene el servidor.
+        var sucias = aFilas(BD, quien).filter(function (f) {
+          return !sello(f) || subidos[f.id] !== sello(f);
+        });
+        var cadena = Promise.resolve();
+        var tanda = function (grupo) {
+          return function () {
+            return pedir('datos', {
+              method: 'POST',
+              headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+              body: JSON.stringify(grupo)
+            }).then(function () {
+              grupo.forEach(function (f) {
+                subidos[f.id] = sello(f);
+                subidas++;
+                if (f.borrado) {
+                  // La tumba ya llegó: se puede soltar.
+                  BD._tumbas = (BD._tumbas || []).filter(function (t) {
+                    return !(t.tipo === f.tipo && t.id === f.contenido.id);
+                  });
+                }
+              });
+            });
+          };
+        };
+        for (var i = 0; i < sucias.length; i += 400) {
+          cadena = cadena.then(tanda(sucias.slice(i, i + 400)));
+        }
+        return cadena;
+      })
+      .then(function () {
+        // 5 segundos de traslape: volver a bajar algo repetido no hace daño,
+        // saltarse algo sí.
+        var nuevo = new Date(Math.max(Date.parse(cursor) || 0, maxMs - 5000)).toISOString();
+        localStorage.setItem(K + 'cursor', nuevo);
+        localStorage.setItem(K + 'subidos', JSON.stringify(subidos));
+        if ((cambios || subidas) && guardar) guardar();
+        if (cambios && Nube.alCambiar) Nube.alCambiar();
+        Nube.ultima = Date.now();
+        estado('listo');
+        return { ok: true, cambios: cambios, subidas: subidas };
       })
       .catch(function (e) {
-        if (Nube.alEstado) Nube.alEstado('sin señal');
-        return 0;
+        // Lo que alcanzó a subir o bajar queda anotado para no repetirlo.
+        try { localStorage.setItem(K + 'subidos', JSON.stringify(subidos)); } catch (x) {}
+        if (cambios && guardar) guardar();
+        if (cambios && Nube.alCambiar) Nube.alCambiar();
+        estado(Nube.sesionVencida ? 'sesion' : 'sin señal');
+        return { ok: false, cambios: cambios };
       })
-      .then(function (n) { Nube.sincronizando = false; return n; });
+      .then(function (r) { Nube.sincronizando = false; return r; });
   };
 
-  // Mientras la app esté abierta y visible, revisar seguido. En una feria con
-  // dos teléfonos cobrando, diez segundos es la diferencia entre ver la venta
-  // del otro o no verla.
-  Nube.arrancarReloj = function (BD, quien, guardar) {
-    if (!Nube.activa()) return;
+  // `tarea` es la función de la app que sincroniza. Se corre cada 10 segundos
+  // con la app a la vista, al volver a ella y al recuperar señal.
+  Nube.arrancarReloj = function (tarea) {
+    if (!Nube.activa() || Nube._reloj) return;
     var tic = function () {
-      if (document.visibilityState === 'visible') {
-        Nube.sincronizar(BD, quien, guardar);
-      }
+      if (document.visibilityState === 'visible') tarea();
     };
-    setInterval(tic, 10000);
+    Nube._reloj = setInterval(tic, 10000);
     document.addEventListener('visibilitychange', tic);
     window.addEventListener('online', tic);
     tic();
