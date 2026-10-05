@@ -586,3 +586,8 @@ body:has(.cobro-fijo) .aviso { bottom: calc(var(--tabs-h) + 6rem); }
   .impresion tr { break-inside: avoid; }
   .imp__pie { margin-top: 18pt; font-size: 8.5pt; color: #5C4A3F; }
 }
+
+/* ---------- Cobro de feria: a quién se le vendió (opcional) --------------- */
+.cliente-cobro { margin: .2rem 0 1rem; border: 1px solid var(--line); border-radius: 14px; padding: 0 .9rem; background: var(--card); }
+.cliente-cobro summary { padding: .85rem 0; font-weight: 700; color: var(--ember-700); cursor: pointer; }
+.cliente-cobro[open] summary { border-bottom: 1px solid var(--line); margin-bottom: .8rem; }

@@ -9,7 +9,7 @@
    Al cambiar cualquier archivo hay que subir VERSION, si no el teléfono
    sigue mostrando la versión vieja. */
 
-var VERSION = 'carlouis-app-v16';
+var VERSION = 'carlouis-app-v17';
 
 var ARCHIVOS = [
   './',

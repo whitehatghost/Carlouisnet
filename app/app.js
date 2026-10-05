@@ -1529,6 +1529,7 @@
      ---------------------------------------------------------------------- */
 
   var cajaFeria = {};   // slug -> cantidad, lo que lleva el cliente de turno
+  var clienteCaja = null;   // cliente recién anotado en la feria: queda puesto en la venta que sigue
 
   function totalCaja() {
     var t = 0;
@@ -2939,6 +2940,12 @@
   });
 
   document.addEventListener('input', function (e) {
+    if (e.target.matches('[data-cliente-cobro]')) {
+      var cn2 = e.target.closest('form').querySelector('[data-cliente-nuevo]');
+      cn2.hidden = e.target.value !== '__nuevo';
+      if (!cn2.hidden) cn2.querySelector('input').focus();
+      return;
+    }
     if (e.target.id === 'pg-recibido') {
       var f3 = e.target.closest('form');
       pintarVuelto(f3 && f3.matches('[data-form-cobro-feria]')
@@ -3076,8 +3083,12 @@
       };
       BD.clientes.push(nuevo);
       guardar(); cerrarHoja();
-      if (location.hash.indexOf('#/feria') === 0) pintar(); else ir('#/clientes/' + nuevo.id);
-      aviso('Cliente guardado' + (cr ? ' con ubicación' : ''));
+      var enFeria = location.hash === '#/feria';
+      if (enFeria) { clienteCaja = nuevo.id; pintar(); }
+      else if (location.hash.indexOf('#/feria') === 0) pintar();
+      else ir('#/clientes/' + nuevo.id);
+      aviso(enFeria ? 'Cliente guardado: queda puesto en la venta que sigue'
+                    : 'Cliente guardado' + (cr ? ' con ubicación' : ''));
       return;
     }
 
@@ -3091,7 +3102,18 @@
       e.preventDefault();
       var selF = f.querySelector('[data-metodo][aria-pressed="true"]');
       var rec5 = Number((f.querySelector('#pg-recibido') || {}).value || 0);
-      aplicarCobroFeria(selF ? selF.getAttribute('data-metodo') : 'Efectivo', rec5);
+      var selC = f.querySelector('[data-cliente-cobro]'), cliVenta = null;
+      if (selC && selC.value === '__nuevo') {
+        var cnom = f.querySelector('[name="cliNombre"]').value.trim();
+        if (!cnom) return aviso('Poné el nombre del cliente, o escogé «No anotar cliente»');
+        var cnuevo = {
+          id: id(), nombre: cnom, tel: f.querySelector('[name="cliTel"]').value.trim(), zona: '',
+          direccion: '', notas: '', creado: hoyISO(), lat: null, lng: null
+        };
+        BD.clientes.push(cnuevo);
+        cliVenta = cnuevo.id;
+      } else if (selC && selC.value) cliVenta = selC.value;
+      aplicarCobroFeria(selF ? selF.getAttribute('data-metodo') : 'Efectivo', rec5, cliVenta);
       return;
     }
 
@@ -3320,6 +3342,7 @@
           'aria-pressed="' + (i === 0) + '">' + esc(m) + '</button>';
       }).join('') + '</div></div>' +
       bloqueEfectivo(tot) +
+      bloqueClienteCobro() +
       '<button class="btn btn--g btn--ok" type="submit">Listo, cobrado</button></form>');
 
     cobrarFeria._lineas = lineas;
@@ -3327,20 +3350,44 @@
     cobrarFeria._feria = f.id;
   }
 
-  function aplicarCobroFeria(metodo, recibido) {
+  // Opcional: a quién se le vendió, para que la compra quede en su historial.
+  // Viene cerrado; la venta de paso se cobra igual que siempre, sin tocarlo.
+  function bloqueClienteCobro() {
+    var lista = BD.clientes.slice().sort(function (a, b) { return a.nombre.localeCompare(b.nombre, 'es'); });
+    var puesto = clienteCaja && lista.some(function (c) { return c.id === clienteCaja; }) ? clienteCaja : '';
+    return '<details class="cliente-cobro"' + (puesto ? ' open' : '') + '>' +
+      '<summary>¿A quién le vendió? <span class="mut">(opcional)</span></summary>' +
+      '<div class="campo"><label for="cc-sel">Cliente</label>' +
+      '<select id="cc-sel" data-cliente-cobro>' +
+      '<option value="">No anotar cliente</option>' +
+      '<option value="__nuevo">+ Cliente nuevo…</option>' +
+      lista.map(function (c) {
+        return '<option value="' + esc(c.id) + '"' + (c.id === puesto ? ' selected' : '') + '>' +
+          esc(c.nombre) + (c.zona ? ' — ' + esc(c.zona) : '') + '</option>';
+      }).join('') + '</select></div>' +
+      '<div data-cliente-nuevo hidden>' +
+      '<div class="campo"><label for="cc-nom">Nombre</label>' +
+      '<input id="cc-nom" name="cliNombre" autocomplete="off" /></div>' +
+      '<div class="campo"><label for="cc-tel">Teléfono</label>' +
+      '<input id="cc-tel" name="cliTel" type="tel" inputmode="numeric" autocomplete="off" /></div>' +
+      '</div></details>';
+  }
+
+  function aplicarCobroFeria(metodo, recibido, clienteId) {
     var reg = { fecha: hoyISO(), monto: cobrarFeria._total, metodo: metodo };
     if (metodo === 'Efectivo' && recibido > cobrarFeria._total) {
       reg.recibido = recibido;
       reg.vuelto = recibido - cobrarFeria._total;
     }
     BD.pedidos.push({
-      id: id(), clienteId: null, feriaId: cobrarFeria._feria,
+      id: id(), clienteId: clienteId || null, feriaId: cobrarFeria._feria,
       fecha: hoyISO(), lineas: cobrarFeria._lineas, notas: '',
       estado: 'entregado', pagado: true, pagos: [reg]
     });
     moverStock(cobrarFeria._lineas, -1);
     var cobrado = cobrarFeria._total;
     cajaFeria = {};
+    clienteCaja = null;
     guardar();
     cerrarHoja();
     pintar();
