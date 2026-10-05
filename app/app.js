@@ -705,6 +705,8 @@
       : '<button class="feria-btn" data-ir="#/feria">' +
         '<b>Modo feria</b><span>Tocá acá para abrir la caja y vender</span></button>') +
       '<div data-estado-nube>' + textoEstadoNube() + '</div>' +
+      (BD.ferias.length ? '<button class="enlace-btn" type="button" data-ir="#/ferias">' +
+        'Récord de ferias \u203a</button>' : '') +
       '</div>';
 
     h += '<div class="seccion"><div class="cifras">' +
@@ -1700,17 +1702,10 @@
         '<button class="btn btn--g btn--gold" type="submit">Abrir la caja</button></form></details>';
 
       if (pasadas.length) {
-        h += '<div class="seccion" style="margin-top:1.6rem"><h3>Ferias anteriores</h3>';
-        pasadas.forEach(function (x) {
-          var rx = resumenVentas(ventasFeria(x.id), gastosFeria(x.id));
-          h += '<button class="tarjeta tarjeta--btn" type="button" data-ver-feria="' + esc(x.id) + '">' +
-            '<div class="fila fila--sep">' +
-            '<div class="crece"><p class="tarjeta__t">' + esc(x.nombre) + '</p>' +
-            '<p class="tarjeta__s">' + fechasFeria(x) + ' · ' + cuantasVentas(rx.n) +
-            (rx.gastos ? ' · gastos ' + money(rx.gastos) : '') + ' · tocá para ver el cierre</p></div>' +
-            '<b style="color:var(--ok)">' + money(rx.neto) + '</b></div></button>';
-        });
-        h += '</div>';
+        h += '<div class="seccion" style="margin-top:1.6rem"><h3>Últimas ferias</h3>';
+        pasadas.slice(0, 3).forEach(function (x) { h += tarjetaFeria(x); });
+        h += '<div class="acciones"><button class="btn btn--sec btn--g" type="button" data-ir="#/ferias">' +
+          'Ver el récord de todas las ferias</button></div></div>';
       }
       return h;
     }
@@ -1802,9 +1797,102 @@
                  : 'El cierre de feria se hace el último día (' + fechaLarga(fin) + ').') +
       '</p></div>';
     h2 += acumulado;
+    h2 += '<div class="acciones"><button class="btn btn--sec btn--g" type="button" data-ir="#/ferias">' +
+      'Ver el récord de ferias anteriores</button></div>';
 
     // Espacio para que la barra fija de cobrar no tape lo último de la página.
     return h2 + '<div class="cobro-espacio"></div>';
+  };
+
+  function tarjetaFeria(x) {
+    var rx = resumenVentas(ventasFeria(x.id), gastosFeria(x.id));
+    var nd = diasFeria(x).length;
+    return '<button class="tarjeta tarjeta--btn" type="button" data-ver-feria="' + esc(x.id) + '">' +
+      '<div class="fila fila--sep">' +
+      '<div class="crece"><p class="tarjeta__t">' + esc(x.nombre) +
+      (x.cerrada ? '' : ' <span class="et et--pend">abierta</span>') + '</p>' +
+      '<p class="tarjeta__s">' + fechasFeria(x) + ' · ' + nd + (nd === 1 ? ' día' : ' días') +
+      ' · ' + cuantasVentas(rx.n) + (rx.gastos ? ' · gastos ' + money(rx.gastos) : '') + '</p></div>' +
+      '<b style="color:var(--ok)">' + money(rx.total) + '</b></div></button>';
+  }
+
+  var MESES_L = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio',
+                 'agosto', 'setiembre', 'octubre', 'noviembre', 'diciembre'];
+
+  /* Récord de ferias: todas, de la más reciente a la más vieja, por mes. */
+  V.ferias = function () {
+    var todas = BD.ferias.slice().sort(function (a, b) {
+      return b.fecha.localeCompare(a.fecha);
+    });
+    if (!todas.length) {
+      return '<p class="mut">Todavía no hay ferias. Cuando abrás la primera caja, queda guardada acá.</p>';
+    }
+    var total = 0, neto = 0, dias = 0, mejor = null, mejorT = -1;
+    todas.forEach(function (x) {
+      var r = resumenVentas(ventasFeria(x.id), gastosFeria(x.id));
+      total += r.total; neto += r.neto; dias += diasFeria(x).length;
+      if (r.total > mejorT) { mejorT = r.total; mejor = x; }
+    });
+    var h = '<div class="seccion"><div class="cifras">' +
+      '<div class="cifra"><b>' + todas.length + '</b><span>' + (todas.length === 1 ? 'feria' : 'ferias') + '</span></div>' +
+      '<div class="cifra"><b>' + dias + '</b><span>días de feria</span></div>' +
+      '<div class="cifra cifra--ok"><b>' + money(total) + '</b><span>vendido en ferias</span></div>' +
+      '<div class="cifra' + (neto >= 0 ? ' cifra--ok' : ' cifra--bad') + '"><b>' + money(neto) +
+      '</b><span>neto, ya sin gastos</span></div></div>' +
+      (mejor && todas.length > 1 ? '<p class="mut" style="margin-top:.6rem">La mejor: ' + esc(mejor.nombre) +
+        ' (' + fechasFeria(mejor) + '), ' + money(mejorT) + '.</p>' : '') +
+      '</div>';
+
+    var mesActual = '';
+    todas.forEach(function (x) {
+      var mes = x.fecha.slice(0, 7);
+      if (mes !== mesActual) {
+        if (mesActual) h += '</div>';
+        mesActual = mes;
+        var delMes = todas.filter(function (y) { return y.fecha.slice(0, 7) === mes; });
+        var tMes = delMes.reduce(function (s, y) {
+          return s + resumenVentas(ventasFeria(y.id), gastosFeria(y.id)).total; }, 0);
+        h += '<div class="seccion"><h3>' + MESES_L[Number(mes.slice(5, 7)) - 1] + ' ' + mes.slice(0, 4) +
+          ' <span class="mut" style="font-weight:600">· ' + money(tMes) + '</span></h3>';
+      }
+      h += tarjetaFeria(x);
+    });
+    return h + '</div>';
+  };
+
+  /* Una feria, completa: se puede consultar cuando sea, cerrada o abierta. */
+  V.feriaDetalle = function (f) {
+    var r = resumenFeria(f);
+    var activa = feriaActiva();
+    var h = '<div class="feria-dia"><b>' + fechasFeria(f) + '</b><span>' +
+      (f.lugar ? esc(f.lugar) + ' · ' : '') +
+      (f.cerrada ? 'cerrada' + (f.cierreFeria && f.cierreFeria.por ? ' por ' + esc(f.cierreFeria.por) : '')
+                 : 'abierta') + '</span></div>';
+    if (!f.cerrada && activa && activa.id === f.id) {
+      h += '<div class="acciones" style="margin-bottom:.8rem"><button class="btn btn--g btn--ok" type="button" ' +
+        'data-ir="#/feria">Ir a la caja de esta feria</button></div>';
+    }
+    h += '<div class="seccion">' + htmlCifras(r, 'vendido en la feria') + '</div>' +
+      htmlDias(f, r, true) + htmlMetodos(r) + htmlProductos(r, 'Lo que se vendió en toda la feria');
+
+    var gs = gastosFeria(f.id);
+    if (gs.length) {
+      h += '<div class="seccion"><h3>Gastos de la feria</h3><div class="tarjeta">';
+      gs.forEach(function (g) {
+        h += '<div class="linea"><span class="linea__n">' + esc(g.descripcion || 'Gasto') +
+          '<br><span class="mut">' + fechaCorta(g.fecha) + '</span></span><span></span><b>' +
+          money(g.monto) + '</b></div>';
+      });
+      h += '</div></div>';
+    }
+    h += '<p class="mut">Tocá cualquier día para ver su cierre.</p>';
+    // Una feria que quedó abierta (por ejemplo, repetida en otro teléfono) se
+    // puede cerrar desde acá aunque no sea la de la caja.
+    if (!f.cerrada) {
+      h += '<div class="acciones"><button class="btn btn--g btn--mal" type="button" data-cierre-feria-id="' +
+        esc(f.id) + '">Hacer el cierre de esta feria</button></div>';
+    }
+    return h;
   };
 
   // ¿Cuántos días dura? Un toque por opción, de 1 a 7.
@@ -1840,10 +1928,10 @@
       h += cerrado
         ? '<p class="mut" style="margin-top:1rem">Este día ya está cerrado' +
           (f.cierres[dia].por ? ' por ' + esc(f.cierres[dia].por) : '') + '.</p>' +
-          '<button class="btn btn--g btn--sec" type="button" data-reabrir-dia="' + dia + '">Reabrir este día</button>'
+          '<button class="btn btn--g btn--sec" type="button" data-reabrir-dia="' + dia + '" data-feria-id="' + esc(f.id) + '">Reabrir este día</button>'
         : dia > hoyISO() ? ''
         : '<button class="btn btn--g btn--mal" type="button" data-confirmar-cierre-dia="' + dia +
-          '" style="margin-top:1rem">Cerrar este día</button>';
+          '" data-feria-id="' + esc(f.id) + '" style="margin-top:1rem">Cerrar este día</button>';
     }
     abrirHoja((cerrado || f.cerrada ? 'Cierre del ' : 'Cerrar el ') +
       (n ? 'día ' + n + ' · ' : '') + fechaLarga(dia), h);
@@ -1873,8 +1961,8 @@
     abrirHoja((f.cerrada ? 'Cierre de ' : 'Cerrar ') + f.nombre, h);
   }
 
-  function cerrarDia(dia) {
-    var f = feriaActiva();
+  function cerrarDia(dia, fid) {
+    var f = fid ? feriaPorId(fid) : feriaActiva();
     if (!f) return;
     if (!f.cierres) f.cierres = {};
     f.cierres[dia] = { hora: new Date().toISOString(), por: quienSoy() || '' };
@@ -1883,8 +1971,8 @@
     guardar(); cerrarHoja(); pintar(); window.scrollTo(0, 0);
     aviso('Día cerrado: ' + money(r.total));
   }
-  function reabrirDia(dia) {
-    var f = feriaActiva();
+  function reabrirDia(dia, fid) {
+    var f = fid ? feriaPorId(fid) : feriaActiva();
     if (!f || !f.cierres) return;
     delete f.cierres[dia];
     guardar(); cerrarHoja(); pintar();
@@ -1965,7 +2053,7 @@
 
     h += '<p class="mut">Es un solo inventario para todos: lo que venda Luis o Carlina, ' +
       'en feria o por pedido, se descuenta de acá. Si entró producción, sumala con el más ' +
-      'o con «+ lote».</p>';
+      'o con «+ lote». Para poner la cantidad exacta, tocá el número.</p>';
 
     CATALOGO.forEach(function (p) {
       var n = hay(p.slug);
@@ -1974,7 +2062,8 @@
         '<div class="contador">' +
         '<button type="button" data-stock="-" data-slug="' + esc(p.slug) + '" ' +
         'aria-label="Quitar uno">−</button>' +
-        '<span data-sn="' + esc(p.slug) + '" style="color:' +
+        '<span class="contar" role="button" tabindex="0" data-contar="' + esc(p.slug) +
+        '" data-sn="' + esc(p.slug) + '" aria-label="Poner la cantidad exacta" style="color:' +
         (n <= 0 ? 'var(--bad)' : n <= 3 ? 'var(--warn)' : 'inherit') + '">' + n + '</span>' +
         '<button type="button" data-stock="+" data-slug="' + esc(p.slug) + '" ' +
         'aria-label="Agregar uno">+</button>' +
@@ -1982,6 +2071,9 @@
         '<button class="btn btn--sec btn--sm" data-lote="' + esc(p.slug) + '">+ lote</button>' +
         '</div>';
     });
+    // Un producto nuevo se agrega acá mismo, sin salir del inventario.
+    h += '<div class="acciones"><button class="btn btn--g btn--gold" type="button" data-nuevo-producto="stock">' +
+      '<svg aria-hidden="true"><use href="#i-plus"/></svg> Agregar producto nuevo</button></div>';
     return h;
   };
 
@@ -2128,13 +2220,14 @@
 
   var TITULOS = {
     hoy: 'Hoy', clientes: 'Clientes', pedidos: 'Pedidos',
-    rutas: 'Rutas', dinero: 'Dinero', gastos: 'Gastos'
+    rutas: 'Rutas', dinero: 'Dinero', gastos: 'Gastos', ferias: 'Récord de ferias'
   };
 
   // Qué mitad de "Dinero" se está viendo.
   var panelDinero = 'resumen';
 
   function pintar() {
+    if (!BD) return;   // todavía no se ha entrado con un perfil
     armarCatalogo();
     invalidarInventario();
     var ruta = (location.hash || '#/hoy').replace(/^#\//, '').split('/');
@@ -2162,6 +2255,13 @@
       html = V.recordatorios();
       titulo = 'Recordatorios';
       atras = true;
+    } else if (sec === 'ferias') {
+      atras = true;
+      if (arg) {
+        var fd = feriaPorId(arg);
+        if (!fd) { location.replace('#/ferias'); return; }
+        html = V.feriaDetalle(fd); titulo = fd.nombre;
+      } else html = V.ferias();
     } else if (sec === 'feria') {
       html = V.feria();
       var fa = feriaActiva();
@@ -2559,7 +2659,23 @@
       pedirCuenta(true);
       return;
     }
-    if (t.closest('[data-nuevo-producto]')) { hojaProducto(); return; }
+    var np = t.closest('[data-nuevo-producto]');
+    if (np) { hojaProducto(np.getAttribute('data-nuevo-producto') === 'stock'); return; }
+
+    // Inventario: tocar el número para poner la cantidad exacta (un conteo).
+    var ct = t.closest('[data-contar]');
+    if (ct) {
+      var cslug = ct.getAttribute('data-contar'), cnom = cslug;
+      CATALOGO.forEach(function (p) { if (p.slug === cslug) cnom = p.nombre; });
+      var dicho = prompt('¿Cuántos hay de ' + cnom + '?', String(hay(cslug)));
+      if (dicho === null) return;
+      var real = Number(String(dicho).replace(/[^0-9]/g, ''));
+      if (String(dicho).replace(/[^0-9]/g, '') === '') return;
+      var dif = real - hay(cslug);
+      if (dif) { ajustarStock(cslug, dif, 'Conteo'); guardar(); }
+      pintar(); aviso(cnom + ': ' + real);
+      return;
+    }
     var qp = t.closest('[data-quitar-producto]');
     if (qp) {
       var qid = qp.getAttribute('data-quitar-producto'), qn = '';
@@ -2583,9 +2699,11 @@
     var vd = t.closest('[data-ver-dia]');
     if (vd) { hojaDia(vd.getAttribute('data-feria-id'), vd.getAttribute('data-ver-dia')); return; }
     var ccd = t.closest('[data-confirmar-cierre-dia]');
-    if (ccd) { cerrarDia(ccd.getAttribute('data-confirmar-cierre-dia')); return; }
+    if (ccd) { cerrarDia(ccd.getAttribute('data-confirmar-cierre-dia'), ccd.getAttribute('data-feria-id')); return; }
     var rad = t.closest('[data-reabrir-dia]');
-    if (rad) { reabrirDia(rad.getAttribute('data-reabrir-dia')); return; }
+    if (rad) { reabrirDia(rad.getAttribute('data-reabrir-dia'), rad.getAttribute('data-feria-id')); return; }
+    var cfi = t.closest('[data-cierre-feria-id]');
+    if (cfi) { hojaCierreFeria(cfi.getAttribute('data-cierre-feria-id')); return; }
     if (t.closest('[data-cierre-feria]')) {
       var fcf = feriaActiva();
       if (fcf) hojaCierreFeria(fcf.id);
@@ -2594,7 +2712,7 @@
     var ccf = t.closest('[data-confirmar-cierre-feria]');
     if (ccf) { cerrarFeria(ccf.getAttribute('data-confirmar-cierre-feria')); return; }
     var vf = t.closest('[data-ver-feria]');
-    if (vf) { hojaCierreFeria(vf.getAttribute('data-ver-feria')); return; }
+    if (vf) { ir('#/ferias/' + vf.getAttribute('data-ver-feria')); return; }
 
     // Ruta rápida: "voy para Alajuela"
     var rr = t.closest('[data-ruta-rapida]');
@@ -2770,6 +2888,8 @@
       if (repetido) return aviso('Ya hay un producto con ese nombre');
       var pid9 = id();
       BD.productos.push({ id: pid9, slug: 'extra-' + pid9, nombre: pn, precio: pp });
+      var pc = f.cantidad ? Math.round(Number(f.cantidad.value) || 0) : 0;
+      if (pc > 0) ajustarStock('extra-' + pid9, pc, 'Inventario inicial');
       guardar(); cerrarHoja(); pintar(); aviso(pn + ' agregado');
       return;
     }
@@ -3011,13 +3131,17 @@
     aviso('Cobrado ' + money(cobrado));
   }
 
-  function hojaProducto() {
+  function hojaProducto(conCantidad) {
     var extras = (BD.productos || []).filter(function (x) { return !x._borrado; });
     var h = '<form data-form-producto>' +
       '<div class="campo"><label for="np-n">¿Cómo se llama?</label>' +
       '<input id="np-n" name="nombre" placeholder="Pan pita" required /></div>' +
       '<div class="campo"><label for="np-p">Precio en colones</label>' +
       '<input id="np-p" name="precio" type="number" inputmode="numeric" min="1" placeholder="2500" required /></div>' +
+      (conCantidad
+        ? '<div class="campo"><label for="np-c">¿Cuántos hay ahora?</label>' +
+          '<input id="np-c" name="cantidad" type="number" inputmode="numeric" min="0" placeholder="0" /></div>'
+        : '') +
       '<button class="btn btn--g" type="submit">Guardar producto</button></form>';
     if (extras.length) {
       h += '<div class="seccion" style="margin-top:1.4rem"><h3>Agregados por ustedes</h3>';

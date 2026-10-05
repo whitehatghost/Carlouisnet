@@ -547,3 +547,11 @@ body:has(.cobro-fijo) .aviso { bottom: calc(var(--tabs-h) + 6rem); }
 .nube-ok::before { content: "\2713  "; }
 .nube-ok--espera { color: var(--warn); }
 .nube-ok--espera::before { content: "\23F3  "; }
+
+/* ---------- Récord de ferias e inventario -------------------------------- */
+.enlace-btn {
+  display: inline-block; margin-top: .5rem; padding: .5rem 0; min-height: 44px;
+  background: none; border: 0; font: inherit; font-weight: 700; font-size: .98rem;
+  color: var(--ember-700); cursor: pointer; text-decoration: underline;
+}
+.contar { cursor: pointer; text-decoration: underline dotted; text-underline-offset: 4px; padding: .5rem .1rem; }
