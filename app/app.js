@@ -1046,7 +1046,10 @@
       '<svg aria-hidden="true"><use href="#i-edit"/></svg> Editar</button>' +
       '<button class="btn btn--sec btn--sm" data-recordar-cliente="' + esc(cid) + '">' +
       'Recordarme algo</button>' +
-      '</div></div>';
+      '</div>' +
+      '<button class="btn btn--g" type="button" style="margin-top:.8rem" data-pedido-cliente="' + esc(cid) + '">' +
+      '<svg aria-hidden="true"><use href="#i-plus"/></svg> Hacerle un pedido</button>' +
+      '</div>';
 
     var sg2 = seguimiento(c);
     h += '<div class="seccion"><div class="cifras">' +
@@ -1084,9 +1087,31 @@
       h += '</div></div>';
     }
 
-    h += '<div class="seccion"><h3>Historial</h3>';
-    if (!peds.length) h += '<div class="vacio"><p>Sin pedidos todavía.</p></div>';
-    else peds.forEach(function (p) { h += tarjetaPedido(p, true); });
+    var validos = peds.filter(function (p) { return p.estado !== 'cancelado'; });
+    if (validos.length) {
+      var porProd = {};
+      validos.forEach(function (p) {
+        (p.lineas || []).forEach(function (l) {
+          var x = porProd[l.nombre] || (porProd[l.nombre] = { u: 0, veces: 0, monto: 0, ult: '' });
+          x.u += l.cant; x.veces++; x.monto += l.cant * (l.precio || 0);
+          if (p.fecha > x.ult) x.ult = p.fecha;
+        });
+      });
+      h += '<div class="seccion"><h3>Lo que compra</h3><div class="tarjeta">';
+      Object.keys(porProd).sort(function (a, b) { return porProd[b].u - porProd[a].u; })
+        .forEach(function (k) {
+          var x = porProd[k];
+          h += '<div class="linea"><span class="linea__n">' + esc(k) + '<br><span class="mut">' +
+            x.veces + (x.veces === 1 ? ' vez' : ' veces') + ' · última: ' + fechaCorta(x.ult) +
+            ' · ' + money(x.monto) + '</span></span><span></span><b>' + x.u + '</b></div>';
+        });
+      h += '</div></div>';
+    }
+
+    h += '<div class="seccion"><h3>Historial de compras</h3>';
+    if (!peds.length) {
+      h += '<div class="vacio"><p>Todavía no le ha comprado. Tocá «Hacerle un pedido» para anotar la primera.</p></div>';
+    } else peds.forEach(function (p) { h += tarjetaPedido(p, true); });
     h += '</div>';
     return h;
   };
@@ -1159,6 +1184,10 @@
       '</span>' + et + '</div>' +
       '<p class="tarjeta__s">' + (ocultarNombre ? '' : fechaCorta(p.fecha) + ' · ') +
       items + ' unidad' + (items === 1 ? '' : 'es') + ' · <b>' + money(totalPedido(p)) + '</b></p>' +
+      (ocultarNombre && (p.lineas || []).length
+        ? '<p class="tarjeta__s">' + p.lineas.map(function (l) {
+            return l.cant + ' ' + esc(l.nombre); }).join(' · ') + '</p>'
+        : '') +
       '</button>';
   }
 
@@ -2811,6 +2840,13 @@
       return;
     }
     if (t.closest('[data-cobrar-feria]')) { cobrarFeria(); return; }
+    var pcl = t.closest('[data-pedido-cliente]');
+    if (pcl) {
+      borrador = { clienteId: pcl.getAttribute('data-pedido-cliente'), fecha: hoyISO(), lineas: {}, notas: '' };
+      ir('#/pedidos/nuevo');
+      window.scrollTo(0, 0);
+      return;
+    }
     if (t.closest('[data-gasto-feria]')) { gastoDeFeria(); return; }
     if (t.closest('[data-conectar-nube]')) {
       localStorage.removeItem('carlouis.nube.no');
@@ -2979,7 +3015,7 @@
       BD.pedidos.push(ped);
       moverStock(lineas, -1);
       borrador = null;
-      guardar(); ir('#/pedidos/' + ped.id); aviso('Pedido guardado');
+      guardar(); location.replace('#/pedidos/' + ped.id); aviso('Pedido guardado');
       return;
     }
 
@@ -3039,7 +3075,8 @@
         lat: cr ? cr.lat : null, lng: cr ? cr.lng : null
       };
       BD.clientes.push(nuevo);
-      guardar(); cerrarHoja(); pintar();
+      guardar(); cerrarHoja();
+      if (location.hash.indexOf('#/feria') === 0) pintar(); else ir('#/clientes/' + nuevo.id);
       aviso('Cliente guardado' + (cr ? ' con ubicación' : ''));
       return;
     }
