@@ -1582,7 +1582,7 @@
   function diaCerrado(f, dia) { return !!(f.cierres && f.cierres[dia]); }
 
   function resumenVentas(ventas, gastos) {
-    var r = { n: ventas.length, total: 0, metodos: {}, vueltos: 0, gastos: 0, productos: {} };
+    var r = { n: ventas.length, total: 0, metodos: {}, vueltos: 0, gastos: 0, productos: {}, montos: {} };
     ventas.forEach(function (p) {
       r.total += totalPedido(p);
       (p.pagos || []).forEach(function (x) {
@@ -1591,6 +1591,7 @@
       });
       (p.lineas || []).forEach(function (l) {
         r.productos[l.nombre] = (r.productos[l.nombre] || 0) + l.cant;
+        r.montos[l.nombre] = (r.montos[l.nombre] || 0) + l.cant * (l.precio || 0);
       });
     });
     gastos.forEach(function (g) { r.gastos += g.monto || 0; });
@@ -1739,6 +1740,8 @@
         '<div class="acciones">' +
         '<button class="btn btn--sec" type="button" data-ver-dia="' + hoy + '" data-feria-id="' +
         esc(f.id) + '">Ver el cierre de hoy</button>' +
+        '<button class="btn btn--gold" type="button" data-pdf-dia="' + hoy + '" data-feria-id="' +
+        esc(f.id) + '">' + '<svg aria-hidden="true"><use href="#i-down"/></svg> ' + 'PDF del cierre de hoy</button>' +
         '<button class="btn btn--sec" type="button" data-reabrir-dia="' + hoy + '">Reabrir el día</button>' +
         '</div><div class="acciones">' + botonCierreFeria + '</div></div>' +
         acumulado;
@@ -1872,6 +1875,8 @@
       h += '<div class="acciones" style="margin-bottom:.8rem"><button class="btn btn--g btn--ok" type="button" ' +
         'data-ir="#/feria">Ir a la caja de esta feria</button></div>';
     }
+    h += '<div class="acciones" style="margin-bottom:.8rem"><button class="btn btn--g btn--gold" type="button" ' +
+      'data-pdf-feria="' + esc(f.id) + '">' + '<svg aria-hidden="true"><use href="#i-down"/></svg> ' + 'PDF del cierre de feria</button></div>';
     h += '<div class="seccion">' + htmlCifras(r, 'vendido en la feria') + '</div>' +
       htmlDias(f, r, true) + htmlMetodos(r) + htmlProductos(r, 'Lo que se vendió en toda la feria');
 
@@ -1894,6 +1899,156 @@
     }
     return h;
   };
+
+  /* ---------- Informes en PDF ---------------------------------------------- */
+
+  function filasProductos(r) {
+    return Object.keys(r.productos).sort(function (a, b) { return r.productos[b] - r.productos[a]; })
+      .map(function (k) { return [k, String(r.productos[k]), money(r.montos[k] || 0)]; });
+  }
+  function filasMetodos(r) {
+    var fs = Object.keys(r.metodos).filter(function (k) { return r.metodos[k]; })
+      .sort(function (a, b) { return r.metodos[b] - r.metodos[a]; })
+      .map(function (k) { return [k === 'Transfer.' ? 'Transferencia' : k, money(r.metodos[k])]; });
+    return fs;
+  }
+  function cifrasDe(r, etiqueta) {
+    return [[etiqueta, money(r.total)], ['Ventas', String(r.n)],
+            ['Gastos', money(r.gastos)], ['Neto', money(r.neto)]];
+  }
+  function fechaConAnio(iso) { return fechaLarga(iso) + ' de ' + iso.slice(0, 4); }
+  function ahoraTexto() {
+    var d = new Date();
+    return fechaCorta(hoyISO()) + ' ' + d.getFullYear() + ', ' +
+      String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  }
+
+  function bloquesFeria(f) {
+    var r = resumenFeria(f), fin = finFeria(f), acum = 0;
+    var b = [
+      { t: 'titulo', texto: 'Cierre de feria', sub: f.nombre + (f.lugar ? ' · ' + f.lugar : '') },
+      { t: 'meta', lineas: [
+        (fin === f.fecha ? 'Fecha: ' + fechaConAnio(f.fecha)
+                         : 'Del ' + fechaConAnio(f.fecha) + ' al ' + fechaConAnio(fin)) +
+          ' · ' + r.dias.length + (r.dias.length === 1 ? ' día' : ' días'),
+        f.cerrada ? 'Feria cerrada' + (f.cierreFeria && f.cierreFeria.por ? ' por ' + f.cierreFeria.por : '')
+                  : 'Feria todavía abierta: cierre parcial'
+      ] },
+      { t: 'cifras', items: cifrasDe(r, 'Vendido en la feria') },
+      { t: 'tabla', titulo: 'Día por día', cab: ['Día', 'Fecha', 'Ventas', 'Vendido', 'Acumulado'],
+        alin: ['i', 'i', 'd', 'd', 'd'], anchos: [0.8, 2.6, 1, 1.5, 1.5],
+        filas: r.dias.map(function (rd, i) {
+          acum += rd.total;
+          return ['Día ' + (i + 1), fechaLarga(rd.dia), String(rd.n), money(rd.total), money(acum)];
+        }),
+        pie: ['Total', '', String(r.n), money(r.total), money(r.total)] },
+      { t: 'tabla', titulo: 'Cómo pagaron', cab: ['Forma de pago', 'Monto'], alin: ['i', 'd'],
+        anchos: [3, 1.4], filas: filasMetodos(r), pie: ['Total', money(r.total)] },
+      { t: 'tabla', titulo: 'Lo que se vendió en toda la feria', cab: ['Producto', 'Unidades', 'Monto'],
+        alin: ['i', 'd', 'd'], anchos: [3, 1, 1.4], filas: filasProductos(r),
+        pie: ['Total', String(Object.keys(r.productos).reduce(function (s, k) { return s + r.productos[k]; }, 0)),
+              money(r.total)] }
+    ];
+    // Lo que se vendió cada día, que es lo que Luis pidió ver por aparte.
+    if (r.dias.length > 1) {
+      r.dias.forEach(function (rd, i) {
+        if (!rd.n) return;
+        b.push({ t: 'tabla', titulo: 'Día ' + (i + 1) + ' · ' + fechaLarga(rd.dia) + ' · ' + money(rd.total),
+                 cab: ['Producto', 'Unidades', 'Monto'], alin: ['i', 'd', 'd'], anchos: [3, 1, 1.4],
+                 filas: filasProductos(rd) });
+      });
+    }
+    var gs = gastosFeria(f.id);
+    if (gs.length) {
+      b.push({ t: 'tabla', titulo: 'Gastos de la feria', cab: ['Gasto', 'Fecha', 'Monto'],
+               alin: ['i', 'i', 'd'], anchos: [3, 1.4, 1.4],
+               filas: gs.map(function (g) { return [g.descripcion || 'Gasto', fechaCorta(g.fecha), money(g.monto)]; }),
+               pie: ['Total', '', money(r.gastos)] });
+    }
+    return b;
+  }
+
+  function bloquesDia(f, dia) {
+    var r = resumenDia(f, dia), n = diasFeria(f).indexOf(dia) + 1, acum = 0;
+    resumenFeria(f).dias.forEach(function (rd) { if (rd.dia <= dia) acum += rd.total; });
+    var b = [
+      { t: 'titulo', texto: 'Cierre del día' + (n ? ' ' + n : ''), sub: f.nombre + (f.lugar ? ' · ' + f.lugar : '') },
+      { t: 'meta', lineas: [
+        'Fecha: ' + fechaConAnio(dia),
+        (diaCerrado(f, dia) || f.cerrada)
+          ? 'Día cerrado' + (f.cierres && f.cierres[dia] && f.cierres[dia].por ? ' por ' + f.cierres[dia].por : '')
+          : 'Día todavía abierto: cierre parcial',
+        'Acumulado de la feria hasta este día: ' + money(acum)
+      ] },
+      { t: 'cifras', items: cifrasDe(r, 'Vendido este día') },
+      { t: 'tabla', titulo: 'Cómo pagaron', cab: ['Forma de pago', 'Monto'], alin: ['i', 'd'],
+        anchos: [3, 1.4], filas: filasMetodos(r), pie: ['Total', money(r.total)] },
+      { t: 'tabla', titulo: 'Lo que se vendió este día', cab: ['Producto', 'Unidades', 'Monto'],
+        alin: ['i', 'd', 'd'], anchos: [3, 1, 1.4], filas: filasProductos(r),
+        pie: ['Total', String(Object.keys(r.productos).reduce(function (s, k) { return s + r.productos[k]; }, 0)),
+              money(r.total)] }
+    ];
+    if (r.vueltos) b.push({ t: 'nota', texto: 'Dado en vueltos: ' + money(r.vueltos) });
+    var gs = gastosFeria(f.id).filter(function (g) { return g.fecha === dia; });
+    if (gs.length) {
+      b.push({ t: 'tabla', titulo: 'Gastos del día', cab: ['Gasto', 'Monto'], alin: ['i', 'd'], anchos: [3, 1.4],
+               filas: gs.map(function (g) { return [g.descripcion || 'Gasto', money(g.monto)]; }),
+               pie: ['Total', money(r.gastos)] });
+    }
+    return b;
+  }
+
+  function nombreArchivo(texto) {
+    var s = String(texto);
+    if (s.normalize) s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return s.replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+|-+$/g, '') + '.pdf';
+  }
+
+  // El PDF se arma primero y se entrega después, con un toque aparte: los
+  // teléfonos solo dejan abrir "compartir" justo cuando el dedo toca.
+  var informeListo = null;
+  function prepararInforme(bloques, nombre) {
+    if (!window.Informe) return aviso('Falta actualizar la app: cerrala y volvé a abrirla');
+    aviso('Preparando el PDF…');
+    var pie = 'CARLOUIS · impreso el ' + ahoraTexto() + (quienSoy() ? ' por ' + quienSoy() : '');
+    Informe.pdf(bloques, pie).then(function (blob) {
+      var archivo = null;
+      try { archivo = new File([blob], nombre, { type: 'application/pdf' }); } catch (e) {}
+      var puedeCompartir = !!(archivo && navigator.canShare && navigator.canShare({ files: [archivo] }));
+      informeListo = { blob: blob, archivo: archivo, nombre: nombre, bloques: bloques, pie: pie };
+      abrirHoja('El PDF está listo', '' +
+        '<p class="mut" style="margin:0 0 .9rem">' + esc(nombre) + '</p>' +
+        (puedeCompartir
+          ? '<button class="btn btn--g btn--ok" type="button" data-pdf-compartir>' +
+            '<svg aria-hidden="true"><use href="#i-share"/></svg> Enviar por WhatsApp o guardar</button>' +
+            '<div style="height:.6rem"></div>'
+          : '') +
+        '<button class="btn btn--g ' + (puedeCompartir ? 'btn--sec' : 'btn--ok') + '" type="button" data-pdf-descargar>' +
+        '<svg aria-hidden="true"><use href="#i-down"/></svg> Descargar el PDF</button>' +
+        '<div style="height:.6rem"></div>' +
+        '<button class="btn btn--g btn--sec" type="button" data-pdf-imprimir>Imprimir</button>');
+    }).catch(function () { aviso('No se pudo crear el PDF'); });
+  }
+  function descargarInforme() {
+    if (!informeListo) return;
+    var url = URL.createObjectURL(informeListo.blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = informeListo.nombre;
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { document.body.removeChild(a); URL.revokeObjectURL(url); }, 60000);
+    aviso('PDF descargado');
+  }
+  function imprimirInforme() {
+    if (!informeListo) return;
+    var c = $('[data-impresion]');
+    if (!c) {
+      c = document.createElement('div');
+      c.className = 'impresion'; c.setAttribute('data-impresion', '');
+      document.body.appendChild(c);
+    }
+    c.innerHTML = Informe.html(informeListo.bloques, informeListo.pie);
+    setTimeout(function () { window.print(); }, 250);
+  }
 
   // ¿Cuántos días dura? Un toque por opción, de 1 a 7.
   var feriaPorAbrir = null;
@@ -1923,6 +2078,8 @@
       '<div class="total"><span>Acumulado de la feria</span><span>' + money(acum) + '</span></div>' +
       htmlMetodos(r) + htmlProductos(r, 'Lo que se vendió este día');
     if (!r.n && !r.gastos) h += '<p class="mut">Ese día no hubo ventas ni gastos.</p>';
+    h += '<button class="btn btn--g btn--sec" type="button" style="margin-top:1rem" data-pdf-dia="' + dia +
+      '" data-feria-id="' + esc(f.id) + '">' + '<svg aria-hidden="true"><use href="#i-down"/></svg> ' + 'PDF de este día</button>';
 
     if (!f.cerrada) {
       h += cerrado
@@ -1992,7 +2149,8 @@
     f.cierreFeria = { hora: new Date().toISOString(), por: quienSoy() || '' };
     cajaFeria = {};
     guardar(); cerrarHoja();
-    ir('#/hoy');
+    ir('#/ferias/' + f.id);
+    window.scrollTo(0, 0);
     aviso('Feria cerrada. Neto ' + money(r.neto));
   }
 
@@ -2711,6 +2869,27 @@
     }
     var ccf = t.closest('[data-confirmar-cierre-feria]');
     if (ccf) { cerrarFeria(ccf.getAttribute('data-confirmar-cierre-feria')); return; }
+    var pf = t.closest('[data-pdf-feria]');
+    if (pf) {
+      var fpdf = feriaPorId(pf.getAttribute('data-pdf-feria'));
+      if (fpdf) prepararInforme(bloquesFeria(fpdf), nombreArchivo('Cierre ' + fpdf.nombre + ' ' + fpdf.fecha));
+      return;
+    }
+    var pd = t.closest('[data-pdf-dia]');
+    if (pd) {
+      var fdia = feriaPorId(pd.getAttribute('data-feria-id')), ddia = pd.getAttribute('data-pdf-dia');
+      if (fdia) prepararInforme(bloquesDia(fdia, ddia), nombreArchivo('Cierre dia ' + fdia.nombre + ' ' + ddia));
+      return;
+    }
+    if (t.closest('[data-pdf-compartir]')) {
+      if (informeListo && informeListo.archivo && navigator.share) {
+        navigator.share({ files: [informeListo.archivo], title: informeListo.nombre })
+          .catch(function (err) { if (err && err.name !== 'AbortError') descargarInforme(); });
+      }
+      return;
+    }
+    if (t.closest('[data-pdf-descargar]')) { descargarInforme(); return; }
+    if (t.closest('[data-pdf-imprimir]')) { imprimirInforme(); return; }
     var vf = t.closest('[data-ver-feria]');
     if (vf) { ir('#/ferias/' + vf.getAttribute('data-ver-feria')); return; }
 

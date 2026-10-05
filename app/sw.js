@@ -9,13 +9,14 @@
    Al cambiar cualquier archivo hay que subir VERSION, si no el teléfono
    sigue mostrando la versión vieja. */
 
-var VERSION = 'carlouis-app-v14';
+var VERSION = 'carlouis-app-v15';
 
 var ARCHIVOS = [
   './',
   './index.html',
   './app.css',
   './app.js',
+  './informe.js',
   './productos.js',
   './config.js',
   './nube.js',

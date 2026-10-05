@@ -555,3 +555,34 @@ body:has(.cobro-fijo) .aviso { bottom: calc(var(--tabs-h) + 6rem); }
   color: var(--ember-700); cursor: pointer; text-decoration: underline;
 }
 .contar { cursor: pointer; text-decoration: underline dotted; text-underline-offset: 4px; padding: .5rem .1rem; }
+
+/* ---------- Imprimir un cierre ------------------------------------------- */
+.impresion { display: none; }
+@media print {
+  @page { size: letter; margin: 14mm; }
+  html, body { background: #fff !important; padding: 0 !important; margin: 0 !important; }
+  body > *:not(.impresion) { display: none !important; }
+  .impresion { display: block; color: #000; font: 11pt/1.4 "Karla", Arial, sans-serif; }
+  .imp__cab { display: flex; justify-content: space-between; align-items: center;
+              border-bottom: 2pt solid #E0A02E; padding-bottom: 6pt; margin-bottom: 14pt; }
+  .imp__cab img { height: 30pt; width: auto; }
+  .imp__cab p { margin: 0; text-align: right; font-size: 8.5pt; color: #5C4A3F; }
+  .impresion h1 { font: 700 22pt "Fraunces", Georgia, serif; color: #6B1608; margin: 0 0 2pt; }
+  .impresion h2 { font: 700 13.5pt "Fraunces", Georgia, serif; color: #6B1608; margin: 16pt 0 4pt; break-after: avoid; }
+  .imp__sub { font-weight: 700; font-size: 12.5pt; margin: 0 0 6pt; }
+  .imp__meta { margin: 0 0 10pt; color: #5C4A3F; font-size: 10.5pt; }
+  .imp__cifras { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8pt; margin: 8pt 0 4pt; }
+  .imp__cifras div { border: 1pt solid #DDCFBC; border-radius: 6pt; padding: 7pt 9pt; }
+  .imp__cifras b { display: block; font: 700 15pt "Fraunces", Georgia, serif; color: #6B1608; }
+  .imp__cifras span { font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: #5C4A3F; }
+  .impresion table { width: 100%; border-collapse: collapse; break-inside: avoid; page-break-inside: avoid; }
+  /* Que el navegador no repita "Total" en cada página si parte una tabla. */
+  .impresion tfoot { display: table-row-group; }
+  .impresion th { font-size: 8pt; text-transform: uppercase; letter-spacing: .04em; color: #5C4A3F;
+                  text-align: left; padding: 3pt 5pt; border-bottom: 1pt solid #5C4A3F; }
+  .impresion td { padding: 4pt 5pt; border-bottom: .5pt solid #DDCFBC; }
+  .impresion .d { text-align: right; }
+  .impresion tfoot td { font-weight: 700; border-top: 1pt solid #000; border-bottom: 0; }
+  .impresion tr { break-inside: avoid; }
+  .imp__pie { margin-top: 18pt; font-size: 8.5pt; color: #5C4A3F; }
+}
